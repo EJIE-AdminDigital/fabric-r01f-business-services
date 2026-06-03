@@ -1,0 +1,34 @@
+package r01f.services.core.persistence.db.guice.jpa.finder;
+
+import java.lang.reflect.Method;
+
+/**
+ * Utility that helps you introspect dynamic finder methods.
+ */
+public final class DynamicFinder {
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////	
+	private final Method _method;
+	private final Finder _finder;
+/////////////////////////////////////////////////////////////////////////////////////////
+//	CONSTRUCTOR & BUILDER
+/////////////////////////////////////////////////////////////////////////////////////////
+	public DynamicFinder(final Method method) {
+		_method = method;
+		_finder = method.getAnnotation(Finder.class);
+	}
+	/**
+	 * Returns some metadata if the method is annotated {@code @Finder} or null.
+	 * @param method a method you want to test as a dynamic finder
+	 */
+	public static DynamicFinder from(final Method method) {
+		return method.isAnnotationPresent(Finder.class) ? new DynamicFinder(method) : null;
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////
+	public Finder metadata() {
+		return _finder;
+	}
+}

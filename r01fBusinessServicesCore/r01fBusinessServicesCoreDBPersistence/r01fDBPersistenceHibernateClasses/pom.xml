@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+<!-- ====================================================================== -->
+<!-- PROPERTIES                                                             -->
+<!-- ====================================================================== -->
+	<properties>
+		<!---
+		**********************************************************************
+		WARNING!!
+		The jakarta.persistence version MUST be aligned with:
+			- the spring version
+			- the hibernate version
+
+		When using HIBERNATE 6 / Spring 3: 	                  <jakarta.persistence.version>3.1.0</jakarta.persistence.version>
+		When using ECLIPSELINK:                              <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
+
+		[ Very Important! ] 		
+	      #######################################################################################
+		  [1] Hibernate version should align with the [ Spring Boot version] / [Jakarta Pesistence] 
+		      (e.g., SB 3.3.5 uses Hibernate 6.5.3).
+		  [2] The Jakarta EE version must follow Hibernate's requirements.  
+		       SB 3.3.5      >>>  Hibernate 6.5.3                >>>  jakarta.persistence = 3.1.0		  
+		       SB 4.1.0-RC1  >>>> Hibernate 7.2.12.Final         >>>  jakarta.persistence = 3.2.0
+		  NOTE: the jakarta.persistence version is set at the r01fBusinessServices pom.xml
+		  -->	
+		  
+		   
+	     <!--  Cannonical version for SpringBoot SB 4.1.0-RC1 
+	           ###############################################
+	           [ Includee also Hibernate version at Hibernate Project: Hibernate 7.2.12.Final ]
+	           
+	           Last Hibernate version for SpringBoot SB 4.1.0-RC1 
+	           ###############################################
+	           [ Includee also Hibernate version at Hibernate Project: Hibernate 8.0.0.Alpha1]
+	    -->
+		  
+		 <hibernate.version>8.0.0.Alpha1</hibernate.version>
+		
+		<!-- Previous Version:
+			<hibernate.version>6.5.3.Final</hibernate.version>
+		    <hikariCP.version>6.2.1</hikariCP.version> -->
+	</properties>
+<!-- ====================================================================== -->
+<!-- PARENT                                                                 -->
+<!-- ====================================================================== -->
+	<parent>
+		<groupId>r01.fabric.businessservices.core.persistence.db</groupId>
+		<artifactId>r01fBusinessServicesCoreDBPersistence</artifactId>
+		<version>${revision}</version>
+	</parent>
+
+<!-- ====================================================================== -->
+<!-- ARTIFACT                                                               -->
+<!-- ====================================================================== -->
+	<name>r01fDBPersistenceHibernateClasses</name>
+	<artifactId>r01fDBPersistenceHibernateClasses</artifactId>
+
+<!-- ====================================================================== -->
+<!-- DEPENDENCIES                                                           -->
+<!-- ====================================================================== -->
+	<dependencies>
+		<!-- ///////////////////////////////////////// -->
+		<!-- R01 Persistence                           -->
+		<!-- ///////////////////////////////////////// -->
+		<dependency>
+		    <groupId>r01.fabric.businessservices.core.persistence.db</groupId>
+		    <artifactId>r01fDBPersistenceClasses</artifactId>
+		    <version>${revision}</version>
+		</dependency>
+				
+		<!-- ///////////////////////////////////////// -->
+		<!-- Hibernate Version / SpringBoot 4                      -->
+		<!-- ///////////////////////////////////////// -->
+		
+		<dependency>
+		    <groupId>org.hibernate.orm</groupId>
+		    <artifactId>hibernate-core</artifactId>
+		    <version>${hibernate.version}</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.hibernate.orm</groupId>
+		    <artifactId>hibernate-hikaricp</artifactId>
+		    <version>${hibernate.version}</version>    
+		</dependency>
+	  
+		
+		<!-- ///////////////////////////////////////// -->
+		<!-- Hibernate 6 / SpringBoot 3                      -->
+		<!-- ///////////////////////////////////////// -->
+        <!---
+		<dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-core</artifactId>
+		    <version>${hibernate.version}</version>
+		</dependency>
+		
+		
+		<dependency>
+	        <groupId>org.hibernate</groupId>
+	        <artifactId>hibernate-hikaricp</artifactId>
+	        <version>${hibernate.version}</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>com.zaxxer</groupId>
+	        <artifactId>HikariCP</artifactId>
+	        <version>${hikariCP.version}</version>
+	    </dependency>
+         -->
+	
+		
+		<!-- ///////////////////////////////////////// -->
+		<!-- R01F > IO (lobs)                          -->
+		<!-- ///////////////////////////////////////// -->
+		<dependency>
+			<groupId>r01.fabric.base</groupId>
+			<artifactId>r01fIOClasses</artifactId>
+			<version>${r01f.base.version}</version>
+		</dependency>
+	</dependencies>
+	
+<!-- ====================================================================== -->
+<!-- BUILD                                                                  -->
+<!-- ====================================================================== -->
+	<build>
+		<pluginManagement>
+			<plugins>
+				<!--
+				ECLIPSE (see main pom.xml for further info) ===================
+				This plugin has NO effects in maven build:
+					m2e ONLY runs some 'standard' goals of the maven pom.xml since the aim of m2e is NOT to be a complete CI tool
+					... in order to include 'non-standard' goals in m2e execution and avoid [plugin execution not covered by the eclipse m2e plugin project build lifecycle mapping]
+						the 'non-standard' plugin MUST be explicitly included in m2e execution
+				-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration> 
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<!-- flatten plugin -->
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>flatten-maven-plugin</artifactId>
+										<versionRange>[1.1.0,)</versionRange>
+										<goals>
+											<goal>flatten</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>

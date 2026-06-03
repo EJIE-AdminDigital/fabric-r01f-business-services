@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+<!-- ====================================================================== -->
+<!-- PROPERTIES                                                             -->
+<!-- ====================================================================== -->
+	<properties>
+		 <!-- Spring -->
+	     <spring.version></spring.version>
+	</properties>
+	
+<!-- ====================================================================== -->
+<!-- PARENT                                                                 -->
+<!-- ====================================================================== -->
+	<parent>
+		<groupId>r01.fabric.businessservices</groupId>
+		<artifactId>r01fBusinessServices</artifactId>
+		<version>${revision}</version>
+	</parent>
+
+<!-- ====================================================================== -->
+<!-- ARTIFACT                                                               -->
+<!-- ====================================================================== -->
+	<groupId>r01.fabric.businessservices.test</groupId>
+	<name>r01fBusinessServicesTest</name>
+	<artifactId>r01fBusinessServicesTest</artifactId>
+	<packaging>pom</packaging>				<!-- it's a parent project -->
+
+<!-- ====================================================================== -->
+<!-- MODULES                                                                -->
+<!-- ====================================================================== -->
+	<modules>
+		<module>r01fBusinessServicesTestBaseClasses</module>
+		<module>r01fBusinessServicesTestGuiceClasses</module>
+		<module>r01fBusinessServicesTestSpringClasses</module>
+	</modules>
+
+<!-- ====================================================================== -->
+<!-- DEPENDENCIES                                                           -->
+<!-- ====================================================================== -->
+	<dependencies>
+		
+	
+	</dependencies>
+</project>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+<!-- ====================================================================== -->
+<!-- PROPERTIES                                                             -->
+<!-- ====================================================================== -->
+	<properties>
+		 <!-- Guice -->
+	     <guice.version>7.0.0</guice.version>
+	</properties>
+	
+<!-- ====================================================================== -->
+<!-- PARENT                                                                 -->
+<!-- ====================================================================== -->
+	<parent>
+		<groupId>r01.fabric.businessservices</groupId>
+		<artifactId>r01fBusinessServices</artifactId>
+		<version>${revision}</version>
+	</parent>
+
+<!-- ====================================================================== -->
+<!-- ARTIFACT                                                               -->
+<!-- ====================================================================== -->
+	<groupId>r01.fabric.businessservices.guice</groupId>
+	<name>r01fBusinessServicesGuice</name>
+	<artifactId>r01fBusinessServicesGuice</artifactId>
+	<packaging>pom</packaging>				<!-- it's a parent project -->
+
+<!-- ====================================================================== -->
+<!-- MODULES                                                                -->
+<!-- ====================================================================== -->
+	<modules>
+		<module>r01fBusinessServicesGuiceClasses</module>
+		<!--<module>r01fBusinessServicesGuiceCorePersistenceClasses</module>-->
+		<module>r01fBusinessServicesGuiceCorePersistenceDBClasses</module>
+		<module>r01fBusinessServicesGuiceCorePersistenceSearchClasses</module>
+		<module>r01fBusinessServicesGuiceCorePersistenceSearchLuceneClasses</module>
+		<module>r01fBusinessServicesGuiceCoreRESTClasses</module>
+		<module>r01fBusinessServicesGuiceCoreRESTHK2Classes</module>
+		<module>r01fBusinessServicesGuiceCoreWebServicesClasses</module>
+		<module>r01fBusinessServicesGuiceCoreWebServicesSpringClasses</module>
+		<module>r01fDBPersistenceGuiceClasses</module>
+	</modules>
+
+<!-- ====================================================================== -->
+<!-- DEPENDENCIES                                                           -->
+<!-- ====================================================================== -->
+	<dependencies>
+		<!-- ///////////////////////////////////////// -->
+		<!-- Guice                                     -->
+		<!-- ///////////////////////////////////////// -->
+		<dependency>
+			<groupId>r01.fabric.base.di</groupId>
+			<artifactId>r01fDIGuiceClasses</artifactId>
+			<version>${r01f.base.version}</version>
+		</dependency>
+	</dependencies>
+</project>

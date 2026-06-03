@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+<!-- ====================================================================== -->
+<!-- PROPERTIES                                                             -->
+<!-- ====================================================================== -->
+	<properties>
+		 <!-- Spring -->
+	     <spring.version></spring.version>
+	</properties>
+	
+<!-- ====================================================================== -->
+<!-- PARENT                                                                 -->
+<!-- ====================================================================== -->
+	<parent>
+		<groupId>r01.fabric.businessservices</groupId>
+		<artifactId>r01fBusinessServices</artifactId>
+		<version>${revision}</version>
+	</parent>
+
+<!-- ====================================================================== -->
+<!-- ARTIFACT                                                               -->
+<!-- ====================================================================== -->
+	<groupId>r01.fabric.businessservices.spring</groupId>
+	<name>r01fBusinessServicesSpring</name>
+	<artifactId>r01fBusinessServicesSpring</artifactId>
+	<packaging>pom</packaging>				<!-- it's a parent project -->
+
+<!-- ====================================================================== -->
+<!-- MODULES                                                                -->
+<!-- ====================================================================== -->
+	<modules>
+		<module>r01fBusinessServicesSpringClasses</module>
+		<module>r01fBusinessServicesSpringCoreClasses</module>		
+		<module>r01fBusinessServicesSpringCoreRESTClasses</module>
+		<module>r01fBusinessServicesSpringCorePersistenceDBClasses</module>
+	</modules>
+
+<!-- ====================================================================== -->
+<!-- DEPENDENCIES                                                           -->
+<!-- ====================================================================== -->
+	<dependencies>
+		<!-- ///////////////////////////////////////// -->
+		<!-- Spring                                     -->
+		<!-- ///////////////////////////////////////// -->
+		<dependency>
+			<groupId>r01.fabric.base.spring</groupId>
+			<artifactId>r01fSpringClasses</artifactId>
+			<version>${r01f.base.version}</version>
+		</dependency>	
+	
+	</dependencies>
+</project>

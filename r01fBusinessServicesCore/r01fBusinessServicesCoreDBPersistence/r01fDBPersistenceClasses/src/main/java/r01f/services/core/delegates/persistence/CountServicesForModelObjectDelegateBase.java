@@ -1,0 +1,50 @@
+package r01f.services.core.delegates.persistence;
+
+
+ 
+
+import r01f.eventbus.EventBus;
+import r01f.guids.PersistableObjectOID;
+import r01f.model.PersistableModelObject;
+import r01f.model.persistence.CountResult;
+import r01f.securitycontext.SecurityContext;
+import r01f.services.core.ServicesCoreModuleConfig;
+import r01f.services.interfaces.CountServicesForModelObject;
+
+/**
+ * Service layer delegated type for COUNT operations
+ */
+public abstract class CountServicesForModelObjectDelegateBase<O extends PersistableObjectOID,
+															  M extends PersistableModelObject<O>>
+		      extends PersistenceServicesDelegateForModelObjectBase<O,M>
+		   implements CountServicesForModelObject<O,M> {
+/////////////////////////////////////////////////////////////////////////////////////////
+//	CONSTRUCTOR
+/////////////////////////////////////////////////////////////////////////////////////////
+	public CountServicesForModelObjectDelegateBase(final ServicesCoreModuleConfig coreCfg,
+												   final Class<M> modelObjectType,
+											 	   final CountServicesForModelObject<O,M> dbCrud,
+											 	   final EventBus eventBus) {
+		super(coreCfg,
+			  modelObjectType,
+			  dbCrud,
+			  eventBus);
+	}
+	public CountServicesForModelObjectDelegateBase(final ServicesCoreModuleConfig coreCfg,
+												   final Class<M> modelObjectType,
+											 	   final CountServicesForModelObject<O,M> dbCrud) {
+		this(coreCfg,
+			 modelObjectType,
+		     dbCrud,
+		     null);		// no event bus
+	}
+////////////////////////////////////////////////////////////////////////////////////////
+//  LOAD | EXISTS
+////////////////////////////////////////////////////////////////////////////////////////
+	@Override @SuppressWarnings("unchecked")
+	public CountResult<M> countAll(final SecurityContext securityContext) {
+		CountResult<M> outCount = this.getServiceImplAs(CountServicesForModelObject.class)
+											.countAll(securityContext);
+		return outCount;
+	}
+}
