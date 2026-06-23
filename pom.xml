@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+<!-- ====================================================================== -->
+<!-- PROPERTIES                                                             -->
+<!-- ====================================================================== -->
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!-- Java version -->
+		<maven.compiler.source>21</maven.compiler.source>
+		<maven.compiler.target>21</maven.compiler.target>
+
+		<!-- REVISION -->
+		<!-- Update revision:
+				> mvn -Drevision={new revision} clean package
+		-->
+		<revision>R01F-BUSINESS-SERVICES-VERSION</revision>
+
+		<!-- Dependencies versions -->
+		<r01f.base.version>R01F-BASE-VERSION</r01f.base.version>
+
+		<!--
+		**********************************************************************
+		WARNING!!
+		The jakarta.persistence version MUST be aligned with:
+			- the spring version
+			- the hibernate version
+
+		When using HIBERNATE 6 / Spring 3: 	                  <jakarta.persistence.version>3.1.0</jakarta.persistence.version>
+		When using ECLIPSELINK:                              <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
+
+		[ Very Important! ]
+	      #######################################################################################
+		  [1] Hibernate version should align with the [ Spring Boot version] / [Jakarta Pesistence]
+		      (e.g., SB 3.3.5 uses Hibernate 6.5.3).
+		  [2] The Jakarta EE version must follow Hibernate's requirements.
+		       SB 3.3.5      >>>  Hibernate 6.5.3                >>>  jakarta.persistence = 3.1.0
+		       SB 4.1.0-RC1  >>>> Hibernate 7.2.12.Final         >>>  jakarta.persistence = 3.2.0
+		  NOTE: the jakarta.persistence version is set at the r01fBusinessServices pom.xml
+		  -->
+
+
+	     <!--  Cannonical version for SpringBoot SB 4.1.0-RC1
+	           ###############################################
+	           [ Includee also Hibernate version at Hibernate Project: Hibernate 7.2.12.Final ]
+	     -->
+	     <!--
+			     <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
+		         <jakarta.transaction.version>2.0.1</jakarta.transaction.version>
+         -->
+
+ 		<!--  RC version for SpringBoot SB 4.1.0-RC1
+	           ###############################################
+	           [ Include also Hibernate version at Hibernate Project: Hibernate 7.2.12.Final ]
+	     -->
+	         <jakarta.persistence.version>4.0.0-M1</jakarta.persistence.version>
+	         <jakarta.transaction.version>2.0.1</jakarta.transaction.version>
+
+			<junit.version>6.1.0-M1</junit.version>
+	</properties>
+
+<!-- ====================================================================== -->
+<!-- ARTIFACT                                                               -->
+<!-- ====================================================================== -->
+	<groupId>r01.fabric.businessservices</groupId>
+	<name>r01fBusinessServices</name>
+	<artifactId>r01fBusinessServices</artifactId>
+	<version>${revision}</version>
+	<packaging>pom</packaging>				<!-- it's a parent project -->
+
+<!-- ====================================================================== -->
+<!-- MODULES                                                                -->
+<!-- ====================================================================== -->
+	<modules>
+		<module>r01fBusinessServicesClasses</module>
+		<module>r01fBusinessServicesClientRESTClasses</module>
+		<module>r01fBusinessServicesCore</module>
+		<module>r01fBusinessServicesGuice</module>
+		<module>r01fBusinessServicesSpring</module>
+		<module>r01fBusinessServicesTest</module>
+	</modules>
+
+<!-- ====================================================================== -->
+<!-- DEPENDENCIES                                                           -->
+<!-- ====================================================================== -->
+	<dependencies>
+		<!-- ///////////////////////////////////////// -->
+		<!-- R01F                                      -->
+		<!-- ///////////////////////////////////////// -->
+		<dependency>
+			<groupId>r01.fabric.base</groupId>
+			<artifactId>r01fBaseClasses</artifactId>
+			<version>${r01f.base.version}</version>
+		</dependency>
+	</dependencies>
+
+
+<!-- ====================================================================== -->
+<!-- PLUGINS                                                                -->
+<!-- ====================================================================== -->
+	<build>
+		<!--
+		Default plugin config
+		BEWARE!! In [eclipse] ensure this config is set:
+					[window] > [preferences] > [Maven] > [Errors/Wranings] > [Plugin execution NOT covered by lifecycle configuration] >>> se to WARNING
+		-->
+		<pluginManagement>
+			<plugins>
+				<!--
+					[0] - CLEAN: https://maven.apache.org/plugins/maven-clean-plugin/
+						  The Clean Plugin is used when you want to remove files generated at build-time in a project's ServiceCatalog.
+				-->
+				<plugin>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>3.1.0</version>
+				</plugin>
+				<!--
+					PHASES: see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_war_packaging
+						[1] - process-resources
+							  process-test-resources
+						[2] - test-compile
+						[3] - test
+						[4] - package
+						[5] - install
+						[6] - deploy
+				-->
+				<!--
+					[1] - RESOURCES: https://maven.apache.org/plugins/maven-resources-plugin/
+						  The Resources Plugin handles the copying of project resources to the output directory
+					There are two different kinds of resources: main resources and test resources
+				-->
+				<plugin>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>3.1.0</version>
+				</plugin>
+				<!--
+					[2] - COMPILE: https://maven.apache.org/plugins/maven-compiler-plugin/
+						The Compiler Plugin is used to compile the sources of your project.
+				-->
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.8.1</version>
+					<configuration>
+						<source>${maven.compiler.source}</source>
+						<target>${maven.compiler.target}</target>
+					</configuration>
+				</plugin>
+				<!--
+					[3] - TEST: https://maven.apache.org/surefire/maven-surefire-plugin/
+						The Surefire Plugin is used during the test phase of the build lifecycle to execute the unit tests of an application
+				-->
+				<plugin>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>3.0.0-M3</version>
+				</plugin>
+				<!--
+					[4] - PACKAGE: https://maven.apache.org/plugins/maven-war-plugin/
+						The WAR Plugin is responsible for collecting all artifact dependencies, classes and resources of the web application and packaging them into a web application archive
+				-->
+				<plugin>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>3.1.1</version>	<!-- version 3.1.2 is problematic in older versions of eclipse (upgrade the maven conector from https://download.eclipse.org/m2e-wtp/releases/1.4/) -->
+					<configuration>
+						<archive>
+							<addMavenDescriptor>false</addMavenDescriptor>
+							<manifestEntries>
+								<version>${revision}</version>
+							</manifestEntries>
+						</archive>
+					</configuration>
+				</plugin>
+				<plugin>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>3.2.3</version>
+					<configuration>
+						<archive>
+							<addMavenDescriptor>false</addMavenDescriptor>
+							<manifestEntries>
+								<version>${revision}</version>
+							</manifestEntries>
+						</archive>
+					</configuration>
+				</plugin>
+				<!--
+					[5] - INSTALL: https://maven.apache.org/plugins/maven-install-plugin/
+						The Install Plugin is used during the install phase to add artifact(s) to the local repository
+				-->
+				<plugin>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>3.0.0-M1</version>
+				</plugin>
+				<!--
+					[6] - DEPLOY: https://maven.apache.org/plugins/maven-deploy-plugin/usage.html
+				-->
+				<plugin>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>3.0.0-M1</version>
+					<executions>
+						<execution>
+							<id>default-deploy</id>
+							<phase>deploy</phase>
+							<goals>
+								<goal>deploy</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<!-- Add the [resources] dir to the compile & package phase -->
+				<!-- https://www.mojohaus.org/build-helper-maven-plugin/usage.html -->
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>1.7</version>
+					<executions>
+						<execution>
+							<id>add-source</id>
+							<phase>generate-sources</phase>
+							<goals>
+								<goal>add-source</goal>
+							</goals>
+							<configuration>
+								<sources>
+									<source>src/main/resources</source>
+									<source>src/test/resources</source>
+									<source>src/main/config</source>
+									<source>src/main/aspect</source>
+								</sources>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+
+				<!-- Automatic replacement of a parent [version] variable in child modules -->
+				<!-- https://www.mojohaus.org/flatten-maven-plugin/usage.html -->
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>flatten-maven-plugin</artifactId>
+					<version>1.1.0</version>
+					<configuration>
+						<updatePomFile>true</updatePomFile>
+						<!-- <flattenMode>resolveCiFriendliesOnly</flattenMode> -->
+					</configuration>
+					<executions>
+						<execution>
+							<id>flatten</id>
+							<phase>process-resources</phase>
+							<goals>
+								<goal>flatten</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>flatten.clean</id>
+							<phase>clean</phase>
+							<goals>
+								<goal>clean</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+				<!--
+				Version plugin (not used; replaced by revision + flatten)
+					> mvn versions:set -DnewVersion={new version}
+				-->
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>versions-maven-plugin</artifactId>
+					<version>2.7</version>
+				</plugin>
+
+				<!--
+				ECLIPSE ========================================================
+				This plugin has NO effects in maven build:
+					m2e ONLY runs some 'standard' goals of the maven pom.xml since the aim of m2e is NOT to be a complete CI tool
+					... in order to include 'non-standard' goals in m2e execution and avoid [plugin execution not covered by the eclipse m2e plugin project build lifecycle mapping]
+						the 'non-standard' plugin MUST be explicitly included in m2e execution
+
+				m2eclipse executes the default phases and goals of maven into the internal Eclipse build workflow.
+					IDE usecase is editing sources and running tests, NOT the complete Maven build,
+					... so for example, plugin goals that publish build results to a remote repository can be ignored
+					    without any adverse side effects, while java source code compilation is strictly necessary
+
+				m2eclipse requires EXPLICIT INSTRUCTIONS about what to do with all Maven plugins bound to “interesting” phases
+				of a project build lifecycle
+					These INSTRUCTUONS are called [project build lifecycle mapping] or simply [lifecycle mapping]
+					because they define how m2e maps information from pom.xml file to:
+						- Eclipse workspace project configuration
+						- behaviour during Eclipse workspace build
+					Project build [lifecycle mapping] can be configured in:
+					[1] - The pom.xml
+							<build>
+								<pluginManagement>
+									<plugins>
+										<plugin>
+											<groupId>org.eclipse.m2e</groupId>
+											<artifactId>lifecycle-mapping</artifactId>
+											<version>1.0.0</version>
+											<configuration>
+												<lifecycleMappingMetadata>
+													... put here the lifecycle metadata ...
+												</lifecycleMappingMetadata>
+											</configuraction>
+										</plugin>
+									</plugins>
+								</pluginManagement>
+							</build>
+
+					[2] - The [lifecycle-mapping-metadata.xml] file (see [window] > [preferences] > [maven] > [lifecycle mappings])
+							Just create a file called [lifecycle-mapping-metadata.xml] at the location configured at [window] > [preferences] > [maven] > [lifecycle mappings]
+							The content of this file is the same as the content of the <configuration> above:
+								<lifecycleMappingMetadata>
+									... put here the lifecycle metadata ...
+								</lifecycleMappingMetadata>
+
+					The first approach does NOT require any [eclipse]-specific config but 'polutes' the pom.xml with
+					CI non-required config
+
+				See: https://www.eclipse.org/m2e/documentation/m2e-execution-not-covered.html
+					 https://stackoverflow.com/questions/30063357/how-can-i-map-maven-lifecycle-phases-not-covered-by-the-eclipse-m2e-plugin
+				-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<!-- flatten plugin -->
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>flatten-maven-plugin</artifactId>
+										<versionRange>[1.1.0,)</versionRange>
+										<goals>
+											<goal>flatten</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+		<!--
+		Plugins to be run by default
+		-->
+		<plugins>
+			<!--
+			Run the [flatten] plugin by default
+			if the [flatten] plugin is NOT run by default the GOAL MUST be run instead:
+				mvn clean flatten:flatten install
+			If none of the above is done, the folder containing the artifact will be
+			incorrectly named ${revision} instead of the revision number
+			-->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+			</plugin>
+
+			<!--
+			Plugin wich attach sources of a project in a jar below generated classes one
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+					</executions>
+				</plugin>
+		</plugins>
+
+		<!--
+		The Resources Plugin handles the copying of project resources to the output directory
+		-->
+		<resources>
+			<resource>
+				<directory>src/main/config</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+	</build>
+
+<!-- ====================================================================== -->
+<!-- REPOSITORIES                                                           -->
+<!-- ====================================================================== -->
+	<!--
+	IMPORTANT: IZENPE's root certificate MUST be installed at the jdk's [cert-store]
+	[1] - Using a [web browser], goto to the repository url
+		  		https://bin.alm02.itbatera.euskadi.eus/repository/maven-public-releases/
+	[2] - Check the certificate chain:
+				[Izenpe.com]
+					|- EAEKo Herri Administrazioen CA - CA AAPP Vascas (2)
+							|- builds1.alm02.itbatera.euskadi.eus
+
+			Download the ROOT certificate as CER files (only the [root] certificate is really needed)
+
+	[3] - When in [eclipse], guess what is the eclipse workspace active jdk
+				[window] > [preferences] > [java] > [installed JREs]
+
+	[3] - Open a system console
+			a) goto to the [jdk] bin directory
+					$> cd {jdk_root}/bin
+			b) run the [keytool]
+				- If JRE <= 8
+						$>keytool -keystore {jdk_root}\jre\lib\security\cacerts -import -file {develop_root}\projects\fabric\r01f\docs\eclipse\maven\certs\izenpe.com.cer -alias izenpe_root -storepass changeit
+				- If JRE > 8
+						$>keytool -keystore {jdk_root}\lib\security\cacerts -import -file {develop_root}\projects\fabric\r01f\docs\eclipse\maven\certs\izenpe.com.cer -alias izenpe_root -storepass changeit
+			BEWARE!!!
+			DO NOT delete the jdk's original keystore at {jdk_root}\jre\lib\security\cacerts since it contains the
+			most common certificate-authorities public root certificates
+	-->
+	<repositories>
+		<repository>
+			<id>in-house-80-app-snapshots</id>
+			<url>https://bin.alm80.itbatera.euskadi.eus/repository/in-house-80-app-snapshots/</url>
+		</repository>
+		<repository>
+			<id>in-house-80-app-releases</id>
+			<url>https://bin.alm80.itbatera.euskadi.eus/repository/in-house-80-app-releases/</url>
+		</repository>
+        <repository>
+            <id>in-house-80-app-public-releases</id>
+            <name>Repositorio in-house-app-releases</name>
+            <url>https://bin.alm80.itbatera.euskadi.eus/repository/maven-public-releases/</url>
+        </repository>
+		<repository>
+			<id>in-house-80-app-group</id>
+			<url>https://bin.alm80.itbatera.euskadi.eus/repository/in-house-80-app-group/</url>
+		</repository>
+	</repositories>
+
+
+<!-- ====================================================================== -->
+<!-- ARTIFACT DISTRIBUTION                                                  -->
+<!-- ====================================================================== -->
+	<distributionManagement>
+		<repository>
+			<id>in-house-80-app-releases</id>
+			<name>Repositorio in-house-app-releases</name>
+            <url>https://bin.alm80.itbatera.euskadi.eus/repository/maven-public-releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>in-house-80-app-snapshots</id>
+			<name>Repositorio in-house-app-snapshots</name>
+			<url>https://bin.alm80.itbatera.euskadi.eus/repository/in-house-80-app-snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+<!-- ====================================================================== -->
+<!-- PROFILES                                                               -->
+<!-- ====================================================================== -->
+<!--
+	"batsdlc" profile is used on gitlab compilations, this way we can set the revision and dependencies versions for artifacts deployed to nexus without changing the versions used on local environment.
+-->
+	<profiles>
+		<profile>
+			<id>batsdlc</id>
+			<properties>
+
+				<!-- Unified version for all r01f artifacts -->
+				<r01f.version>0.3.30</r01f.version>
+
+				<!--  Revion version for all modules -->
+			    <revision>${r01f.version}</revision>
+
+				<!-- Dependencies versions -->
+				<r01f.base.version>${r01f.version}</r01f.base.version>
+			</properties>
+		</profile>
+	</profiles>
+</project>
