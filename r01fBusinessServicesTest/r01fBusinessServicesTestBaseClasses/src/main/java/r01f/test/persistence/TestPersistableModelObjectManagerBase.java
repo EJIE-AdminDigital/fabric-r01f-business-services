@@ -30,6 +30,7 @@ abstract class TestPersistableModelObjectManagerBase<O extends PersistableObject
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Getter protected final Class<M> _modelObjType;
 	@Getter protected final Factory<? extends M> _mockObjectsFactory;
+	@Getter protected final Function<M,M> _preSetupAction;
 	@Getter protected final ClientAPIDelegateForModelObjectCRUDServices<O,M> _CRUDApi;
 	@Getter protected final long _milisToWaitForBackgroundJobs;
 
@@ -38,37 +39,37 @@ abstract class TestPersistableModelObjectManagerBase<O extends PersistableObject
 //  CONSTRUCTORS TO USE WHEN THERE'RE BACKGROUND JOBS (ie indexing)
 /////////////////////////////////////////////////////////////////////////////////////////
 	public TestPersistableModelObjectManagerBase(final Class<M> modelObjType,
-											 	 final Factory<? extends M> mockObjectsFactory,
+											 	 final Factory<? extends M> mockObjectsFactory,final Function<M,M> preSetupAction,
 											 	 final ClientAPIDelegateForModelObjectCRUDServices<O,M> crudAPI,
 											 	 final long milisToWaitForBackgroundJobs) {
 		_modelObjType = modelObjType;
 		_mockObjectsFactory = mockObjectsFactory;
-		_CRUDApi = crudAPI;
-		_milisToWaitForBackgroundJobs = milisToWaitForBackgroundJobs;
-	}
-	@SuppressWarnings("unchecked")
-	public TestPersistableModelObjectManagerBase(final M modelObj,
-											 	 final ClientAPIDelegateForModelObjectCRUDServices<O,M> crudAPI,
-											 	 final long milisToWaitForBackgroundJobs) {
-		_modelObjType = (Class<M>)modelObj.getClass();
-		_mockObjectsFactory = () -> modelObj;
-		// remember to add the given obj
-		_createdMockObjsOids = Lists.newArrayList();
-		_createdMockObjsOids.add(modelObj.getOid());
-
+		_preSetupAction = preSetupAction;
 		_CRUDApi = crudAPI;
 		_milisToWaitForBackgroundJobs = milisToWaitForBackgroundJobs;
 	}
 	public TestPersistableModelObjectManagerBase(final Class<M> modelObjType,
-											 	 final Factory<M> mockObjectsFactory,
+											 	 final Factory<? extends M> mockObjectsFactory,
+											 	 final ClientAPIDelegateForModelObjectCRUDServices<O,M> crudAPI,
+											 	 final long milisToWaitForBackgroundJobs) {
+		this(modelObjType,
+			 mockObjectsFactory,Function.identity(),
+			 crudAPI,
+			 milisToWaitForBackgroundJobs);
+	}
+	public TestPersistableModelObjectManagerBase(final Class<M> modelObjType,
+											 	 final Factory<M> mockObjectsFactory,final Function<M,M> preSetupAction,
 											 	 final ClientAPIDelegateForModelObjectCRUDServices<O,M> crudAPI) {
-		this(modelObjType,mockObjectsFactory,
+		this(modelObjType,
+			 mockObjectsFactory,preSetupAction,
 			 crudAPI,
 			 0l);
 	}
-	public TestPersistableModelObjectManagerBase(final M modelObj,
+	public TestPersistableModelObjectManagerBase(final Class<M> modelObjType,
+											 	 final Factory<M> mockObjectsFactory,
 											 	 final ClientAPIDelegateForModelObjectCRUDServices<O,M> crudAPI) {
-		this(modelObj,
+		this(modelObjType,
+			 mockObjectsFactory,Function.identity(),
 			 crudAPI,
 			 0l);
 	}
@@ -92,6 +93,8 @@ abstract class TestPersistableModelObjectManagerBase<O extends PersistableObject
 
 		objectToBeCreated.setTrackingInfo(new ModelObjectTracking(TestAPIBase.TEST_USER_OID,TestAPIBase.TEST_USER,
 																  Instant.now()));			// Ensure tracking info
+		
+		if (_preSetupAction != null) _preSetupAction.apply(objectToBeCreated);	// pre setup
 
 		M createdModelObj = _CRUDApi.create(objectToBeCreated);
 		if (createdModelObj.getOid() == null) throw new IllegalStateException("The created model object of type " + _modelObjType + " does NOT have oid value!");
@@ -111,7 +114,10 @@ abstract class TestPersistableModelObjectManagerBase<O extends PersistableObject
 		Collection<O> outCreatedMockObjsOids = Sets.newLinkedHashSetWithExpectedSize(numOfObjsToCreate);
 		for (int i=0; i < numOfObjsToCreate; i++) {
 			M newObject = _mockObjectsFactory.create();
-			M objectToBePersisted = preSetupAction.apply(newObject);	// post setup
+			
+			M objectToBePersisted = _preSetupAction != null ? _preSetupAction.apply(newObject) : null;
+			objectToBePersisted = preSetupAction != null ? preSetupAction.apply(newObject) : null;
+			
 			M createdObj = this.setUpMockObj(objectToBePersisted);
 			
 			outCreatedMockObjsOids.add(createdObj.getOid());
@@ -121,23 +127,36 @@ abstract class TestPersistableModelObjectManagerBase<O extends PersistableObject
 	}
 	@Override
 	public void tearDownCreatedMockObjs() {
-		if (CollectionUtils.isNullOrEmpty(_createdMockObjsOids)) return;
-
-		// wait for background jobs to finish
-		// an error in the background job will raise if the DB records are deleted before background jobs finish (ie lucene indexing or notification tasks)
-		long milisToWaitForBackgroundJobs = _createdMockObjsOids.size() * _milisToWaitForBackgroundJobs;
-		if (milisToWaitForBackgroundJobs > 0) {
-			log.info(".... give {} milis for background jobs (ie lucene index or notifications) to complete before deleting created DB records (lucene indexing or notifications will fail if the DB record is deleted)",
-					 milisToWaitForBackgroundJobs);
-			Threads.safeSleep(milisToWaitForBackgroundJobs);
-		}
-
-		// delete all DB records
-		for (O oid : _createdMockObjsOids) {
-			_CRUDApi.delete(oid);
-			log.info("... Deleted {} mock object with oid={}",_modelObjType.getSimpleName(),oid);
-		}
+		this.tearDownCreatedMockObjWithOids(_createdMockObjsOids);
 		this.reset();
+	}
+	@Override
+	public void tearDownCreatedMockObjWithOids(final Collection<O> oids) {
+		if (CollectionUtils.isNullOrEmpty(oids)) return;
+
+		try {
+			// wait for background jobs to finish
+			// an error in the background job will raise if the DB records are deleted before background jobs finish (ie lucene indexing or notification tasks)
+			long milisToWaitForBackgroundJobs = oids.size() * _milisToWaitForBackgroundJobs;
+			if (milisToWaitForBackgroundJobs > 0) {
+				log.info(".... give {} milis for background jobs (ie lucene index or notifications) to complete before deleting created DB records (lucene indexing or notifications will fail if the DB record is deleted)",
+						 milisToWaitForBackgroundJobs);
+				Threads.safeSleep(milisToWaitForBackgroundJobs);
+			}
+	
+			// delete all DB records
+			for (O oid : oids) {
+				if (oid == null) continue;
+				_CRUDApi.delete(oid);
+				log.info("... Deleted {} mock object with oid={}",_modelObjType.getSimpleName(),oid);
+			}
+			// remove the deleted oids from the created mock objs oids
+			if (_createdMockObjsOids != null) _createdMockObjsOids.removeAll(oids);
+		} catch (Throwable th) {
+			log.error("[tear down] > Error deleting {} mock objects with oids={}: {}",
+					  _modelObjType.getSimpleName(),oids,
+					  th.getMessage(),th);
+		}
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	

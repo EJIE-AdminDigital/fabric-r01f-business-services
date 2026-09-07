@@ -6,7 +6,6 @@ import java.util.logging.Level;
 import org.hibernate.cfg.AvailableSettings;
 
 import lombok.experimental.Accessors;
-import r01f.guids.CommonOIDs.AppCode;
 import r01f.services.ids.ServiceIDs.CoreAppCode;
 import r01f.services.ids.ServiceIDs.CoreModule;
 import r01f.xmlproperties.XMLPropertiesForAppComponent;
@@ -70,7 +69,7 @@ public abstract class DBModuleConfigForHibernateBase
 		return DBHibernateSpec.valueOf(dbSpecStr);
 	}
 	@Override
-	DBSchemaCreationBase _dbSchemaCreationFrom(final AppCode appCode,
+	DBSchemaCreationBase _dbSchemaCreationFrom(final CoreAppCode appCode,
 											   final DBSpec spec,
 											   final XMLPropertiesForAppComponent xmlProps) {
 		return new DBSchemaCreationForHibernate(appCode,

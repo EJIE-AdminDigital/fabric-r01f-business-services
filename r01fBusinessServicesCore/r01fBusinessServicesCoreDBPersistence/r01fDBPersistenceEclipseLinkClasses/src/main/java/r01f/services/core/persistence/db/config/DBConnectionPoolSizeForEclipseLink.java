@@ -4,7 +4,7 @@ import java.util.Properties;
 
 import org.eclipse.persistence.config.PersistenceUnitProperties;
 
-import r01f.guids.CommonOIDs.AppCode;
+import r01f.guids.CommonOIDs.IsAppCode;
 import r01f.xmlproperties.XMLPropertiesForAppComponent;
 
 public class DBConnectionPoolSizeForEclipseLink
@@ -13,7 +13,7 @@ public class DBConnectionPoolSizeForEclipseLink
 /////////////////////////////////////////////////////////////////////////////////////////
 //  CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
-	public DBConnectionPoolSizeForEclipseLink(final AppCode appCode,
+	public DBConnectionPoolSizeForEclipseLink(final IsAppCode appCode,
 							    			  final PersistenceUnitType unitType,
 							    			  final DBSpec dbSpec,
 							    			  final XMLPropertiesForAppComponent xmlProps) {

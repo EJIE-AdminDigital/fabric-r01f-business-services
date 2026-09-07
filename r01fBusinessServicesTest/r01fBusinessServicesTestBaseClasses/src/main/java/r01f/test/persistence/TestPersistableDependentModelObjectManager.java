@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 import r01f.concurrent.Threads;
 import r01f.guids.PersistableObjectOID;
 import r01f.model.ModelObjectRef;
@@ -25,6 +26,7 @@ import r01f.util.types.collections.CollectionUtils;
  * @param <M>
  * @param <PR>
  */
+@Slf4j
 @Accessors(prefix="_")
 public class TestPersistableDependentModelObjectManager<O extends PersistableObjectOID,M extends PersistableModelObject<O>,
 														PO extends PersistableObjectOID,P extends PersistableModelObject<PO>>
@@ -104,36 +106,47 @@ public class TestPersistableDependentModelObjectManager<O extends PersistableObj
 			M createdModelObj = _clientApiDelegateForDependentObjsCRUD.create(this.getParentModelObjectRef(),
 												  							  modelObjectToBeCreated);
 			_createdMockObjsOids.add(createdModelObj.getOid());
-			System.out.println("... Created " + _modelObjType.getSimpleName() + " mock object with oid=" + createdModelObj.getOid());
+			log.info("... Created {} mock object with oid={}",
+				     _modelObjType.getSimpleName(),createdModelObj.getOid());
 			outCreatedModelObjs.add(createdModelObj);
 		}
 		return outCreatedModelObjs;
 	}
 	@Override
 	public void tearDownCreatedMockObjs() {
-		if (CollectionUtils.hasData(_createdMockObjsOids)) {
-			// wait for background jobs to finish
-			// an error in the background job will raise if the DB records are deleted before background jobs finish (ie lucene indexing or notification tasks)
-			long milisToWaitForBackgroundJobs = _createdMockObjsOids.size() * _milisToWaitForBackgroundJobs;
-			if (milisToWaitForBackgroundJobs > 0) {
-				System.out.println(".... give " + milisToWaitForBackgroundJobs + " milis for background jobs (ie lucene index or notifications) to complete before deleting created DB records (lucene indexing or notifications will fail if the DB record is deleted)");
-				Threads.safeSleep(milisToWaitForBackgroundJobs);
+		try {
+			if (CollectionUtils.hasData(_createdMockObjsOids)) {
+				// wait for background jobs to finish
+				// an error in the background job will raise if the DB records are deleted before background jobs finish (ie lucene indexing or notification tasks)
+				long milisToWaitForBackgroundJobs = _createdMockObjsOids.size() * _milisToWaitForBackgroundJobs;
+				if (milisToWaitForBackgroundJobs > 0) {
+					log.info(".... give {} milis for background jobs (ie indexing or notifications) to complete before deleting created DB records (indexing or notifications will fail if the DB record is deleted)",
+							 milisToWaitForBackgroundJobs);
+					Threads.safeSleep(milisToWaitForBackgroundJobs);
+				}
+	
+				// delete all child DB records
+				for (O oid : _createdMockObjsOids) {
+					_CRUDApi.delete(oid);
+					log.info("... Deleted {} mock object with oid={}",
+							 _modelObjType.getSimpleName(),oid);
+				}
+				this.reset();
 			}
-
-			// delete all child DB records
-			for (O oid : _createdMockObjsOids) {
-				_CRUDApi.delete(oid);
-				System.out.println("... Deleted " + _modelObjType.getSimpleName() + " mock object with oid=" + oid);
-			}
-			this.reset();
+	
+			// delete the parent DB record
+			log.info("Deleting parent {} object: {}",
+					 _parentObjsManager.getModelObjType().getSimpleName(),_parentObjsManager.getCreatedMockObjsOids());
+			_parentObjsManager.tearDownCreatedMockObjs();
+			_parentObjsManager.reset();
+	
+			_parentObject = null;
+		} catch (Throwable th) {
+			log.error("[tearDown] > Error deleting {} created {} mock objects: {}",
+					  _createdMockObjsOids != null ? _createdMockObjsOids.size() : 0,
+					  _modelObjType.getSimpleName(),
+					  th.getMessage(),th);
 		}
-
-		// delete the parent DB record
-		System.out.println("Deleting parent " + _parentObjsManager.getModelObjType().getSimpleName() + " object: " + _parentObjsManager.getCreatedMockObjsOids());
-		_parentObjsManager.tearDownCreatedMockObjs();
-		_parentObjsManager.reset();
-
-		_parentObject = null;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //

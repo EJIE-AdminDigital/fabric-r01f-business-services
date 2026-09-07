@@ -2,11 +2,8 @@ package r01f.persistence.index.document;
 
 import java.util.regex.Pattern;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.Accessors;
-import r01f.guids.OIDBase;
+import r01f.guids.OIDTyped;
 import r01f.model.metadata.FieldID;
 import r01f.objectstreamer.annotations.MarshallType;
 
@@ -43,25 +40,32 @@ public class IndexDocumentFieldConfigFactories {
 	 * Identifier for a {@link IndexDocumentFieldConfigFactory}
 	 */
 	@MarshallType(as="indexDocumentFieldCfgFactoryId")
-	@EqualsAndHashCode(callSuper=true)
-	@Accessors(prefix="_")
-	@RequiredArgsConstructor
-	public static class IndexDocumentFieldCfgFactoryId 
-	     		extends OIDBase<String> {
+	public record IndexDocumentFieldCfgFactoryId(@Getter String id) 
+	   implements OIDTyped<String> {
 	
-		private static final long serialVersionUID = -3176550010030348277L;
-	/////////////////////////////////////////////////////////////////////////////////////////
-	//  FIELDS
-	/////////////////////////////////////////////////////////////////////////////////////////
-		@Getter private final String _id; 
-	/////////////////////////////////////////////////////////////////////////////////////////
-	//  
-	/////////////////////////////////////////////////////////////////////////////////////////
+		public static IndexDocumentFieldCfgFactoryId from(final String id) {
+			return new IndexDocumentFieldCfgFactoryId(id);
+		}
 		public static IndexDocumentFieldCfgFactoryId forId(final String id) {
+			return new IndexDocumentFieldCfgFactoryId(id);
+		}
+		public static IndexDocumentFieldCfgFactoryId valueOf(final String id) {
+			return new IndexDocumentFieldCfgFactoryId(id);
+		}
+		public static IndexDocumentFieldCfgFactoryId fromString(final String id) {
 			return new IndexDocumentFieldCfgFactoryId(id);
 		}
 		public static IndexDocumentFieldCfgFactoryId forId(final FieldID id) {
 			return IndexDocumentFieldCfgFactoryId.forId(id.asString());
+		}
+		
+		@Override
+		public String asString() {
+			return this.getId();
+		}
+		@Override
+		public String toString() {
+			return this.getId();
 		}
 	}
 /////////////////////////////////////////////////////////////////////////////////////////

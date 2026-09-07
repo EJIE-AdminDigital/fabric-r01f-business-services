@@ -3,11 +3,11 @@ package r01f.services.core.persistence.search.lucene;
 import lombok.extern.slf4j.Slf4j;
 import r01f.annotations.Immutable;
 import r01f.facets.HasID;
+import r01f.facets.HasLangDependentName;
+import r01f.facets.HasLangInDependentName;
 import r01f.facets.HasLanguage;
 import r01f.facets.HasName;
 import r01f.facets.HasOID;
-import r01f.facets.LangDependentNamed.HasLangDependentNamedFacet;
-import r01f.facets.LangInDependentNamed.HasLangInDependentNamedFacet;
 import r01f.facets.Summarizable;
 import r01f.facets.Summarizable.HasSummaryFacet;
 import r01f.guids.OID;
@@ -81,22 +81,22 @@ class LuceneIndexDocToSearchResultItemTransfer {
 		// Name
 		if (typeMetaData.hasFacet(HasName.class)
 		 && item instanceof HasName) {
-			if (typeMetaData.hasFacet(HasLangDependentNamedFacet.class)
-			&& item instanceof HasLangDependentNamedFacet) {
+			if (typeMetaData.hasFacet(HasLangDependentName.class)
+			&& item instanceof HasLangDependentName) {
 				// Lang dependent name
 				FieldID fieldId = FieldID.from(HasMetaDataForHasLanguageDependentName.SEARCHABLE_METADATA.NAME_BY_LANGUAGE);
 				LanguageTexts nameByLang = doc.getFieldValue(fieldId);
 				if (nameByLang != null) {
-					HasLangDependentNamedFacet itemHasName = (HasLangDependentNamedFacet)item;
+					HasLangDependentName itemHasName = (HasLangDependentName)item;
 					itemHasName.setNameByLanguage(nameByLang);
 				}
-			} else if (typeMetaData.hasFacet(HasLangInDependentNamedFacet.class)
-					&& item instanceof HasLangInDependentNamedFacet) {
+			} else if (typeMetaData.hasFacet(HasLangInDependentName.class)
+					&& item instanceof HasLangInDependentName) {
 				// Lang in-dependent name
 				FieldID fieldId = FieldID.from(HasMetaDataForHasLanguageInDependentName.SEARCHABLE_METADATA.NAME);
 				String name = doc.getFieldValue(fieldId);
 				if (name != null) {
-					HasLangInDependentNamedFacet itemHasName = (HasLangInDependentNamedFacet)item;
+					HasLangInDependentName itemHasName = (HasLangInDependentName)item;
 					itemHasName.setName(name);
 				}
 			}
@@ -146,14 +146,14 @@ class LuceneIndexDocToSearchResultItemTransfer {
 		}
 		// name
 		if (modelObject.hasFacet(HasName.class)) {
-			if (modelObject.hasFacet(HasLangDependentNamedFacet.class)) {
+			if (modelObject.hasFacet(HasLangDependentName.class)) {
 				FieldID fieldId = FieldID.from(HasMetaDataForHasLanguageDependentName.SEARCHABLE_METADATA.NAME_BY_LANGUAGE);
 				LanguageTexts nameByLang = doc.getFieldValue(fieldId);
-				if (nameByLang != null) ((HasLangDependentNamedFacet)modelObject).setNameByLanguage(nameByLang);
-			} else if (modelObject.hasFacet(HasLangInDependentNamedFacet.class)) {
+				if (nameByLang != null) ((HasLangDependentName)modelObject).setNameByLanguage(nameByLang);
+			} else if (modelObject.hasFacet(HasLangInDependentName.class)) {
 				FieldID fieldId = FieldID.from(HasMetaDataForHasLanguageInDependentName.SEARCHABLE_METADATA.NAME);
 				String name = doc.getFieldValue(fieldId);
-				if (name != null) ((HasLangInDependentNamedFacet)modelObject).setName(name);
+				if (name != null) ((HasLangInDependentName)modelObject).setName(name);
 			}
 		}
 		// summary
@@ -202,17 +202,17 @@ class LuceneIndexDocToSearchResultItemTransfer {
 		// Name
 		if (modelObject.hasFacet(HasName.class)
 		 && item instanceof HasName) {
-			if (modelObject.hasFacet(HasLangDependentNamedFacet.class)
-			 && item instanceof HasLangDependentNamedFacet) {
+			if (modelObject.hasFacet(HasLangDependentName.class)
+			 && item instanceof HasLangDependentName) {
 				// Lang dependent name
-				HasLangDependentNamedFacet modelHasName = (HasLangDependentNamedFacet)modelObject;
-				HasLangDependentNamedFacet itemHasName = (HasLangDependentNamedFacet)item;
+				HasLangDependentName modelHasName = (HasLangDependentName)modelObject;
+				HasLangDependentName itemHasName = (HasLangDependentName)item;
 				
 				if (itemHasName.getName() != null && modelHasName.getName() == null) modelHasName.setNameByLanguage(itemHasName.getNameByLanguage());
 			} else {
 				// Lang independent name
-				HasLangInDependentNamedFacet modelHasName = (HasLangInDependentNamedFacet)modelObject;
-				HasLangInDependentNamedFacet itemHasName = (HasLangInDependentNamedFacet)item;
+				HasLangInDependentName modelHasName = (HasLangInDependentName)modelObject;
+				HasLangInDependentName itemHasName = (HasLangInDependentName)item;
 				
 				if (itemHasName.getName() != null && modelHasName.getName() == null) modelHasName.setName(itemHasName.getName());
 			}

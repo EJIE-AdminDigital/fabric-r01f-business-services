@@ -26,6 +26,7 @@ import r01f.services.core.callback.spec.COREServiceMethodCallbackSpec;
 import r01f.services.interfaces.CRUDServicesForModelObject;
 import r01f.util.types.Strings;
 import r01f.validation.ObjectValidationResult;
+import r01f.validation.ObjectValidationResultBuilder;
 import r01f.validation.SelfValidates;
 import r01f.validation.Validates;
 
@@ -34,10 +35,11 @@ import r01f.validation.Validates;
  */
 @Slf4j
 @Accessors(prefix="_")
-public abstract class CRUDServicesForModelObjectDelegateBase<O extends PersistableObjectOID,
-															 M extends PersistableModelObject<O>>
+public abstract class CRUDServicesForModelObjectDelegateBase<O extends PersistableObjectOID,M extends PersistableModelObject<O>>
 		      extends PersistenceServicesDelegateForModelObjectBase<O,M>
-		   implements CRUDServicesForModelObject<O,M> {
+		   implements CRUDServicesForModelObject<O,M>,
+		   			  CompletesModelObjectBeforeCreateOrUpdate<M>,
+		   			  ValidatesModelObjectBeforeCreateOrUpdate<M> {
 /////////////////////////////////////////////////////////////////////////////////////////
 //  FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -221,7 +223,7 @@ public abstract class CRUDServicesForModelObjectDelegateBase<O extends Persistab
 		// [3] complete the object
 		M theModelObjToPersist = modelObj;
 		if (this instanceof CompletesModelObjectBeforeCreateOrUpdate) {
-			CompletesModelObjectBeforeCreateOrUpdate<M> completes = (CompletesModelObjectBeforeCreateOrUpdate<M>)this;
+			CompletesModelObjectBeforeCreateOrUpdate<M> completes = this;
 			theModelObjToPersist = completes.completeModelObjBeforeCreateOrUpdate(securityContext,
 																	  			  requestedOperation,
 																	  			  modelObj);
@@ -381,7 +383,7 @@ public abstract class CRUDServicesForModelObjectDelegateBase<O extends Persistab
 		 || valid == null) {
 			if (this instanceof ValidatesModelObjectBeforeCreateOrUpdate) {
 				// Validation is being used
-				ValidatesModelObjectBeforeCreateOrUpdate<M> validates = (ValidatesModelObjectBeforeCreateOrUpdate<M>)this;
+				ValidatesModelObjectBeforeCreateOrUpdate<M> validates = this;
 				valid = validates.validateModelObjBeforeCreateOrUpdate(securityContext,
 																	   reqOp,
 																	   modelObj);
@@ -399,5 +401,31 @@ public abstract class CRUDServicesForModelObjectDelegateBase<O extends Persistab
 									   	.build();
 		}
 		return outError;
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//  PARAMS VALIDATION ON CREATION / UPDATE
+/////////////////////////////////////////////////////////////////////////////////////////
+	@Override
+	public M completeModelObjBeforeCreateOrUpdate(final SecurityContext securityContext, 
+												  final PersistenceRequestedOperation requestedOp,
+												  final M modelObj) {
+		return modelObj;
+	}
+	@Override @SuppressWarnings("unchecked")
+	public ObjectValidationResult<M> validateModelObjBeforeCreateOrUpdate(final SecurityContext securityContext,
+																	 	  final PersistenceRequestedOperation requestedOp,
+																	 	  final M entity) {
+		// if the model obj is null...
+		if (entity == null) return  ObjectValidationResultBuilder.isNotValidBecauseNull();
+		
+		// validate
+		ObjectValidationResult<M> outValid = ObjectValidationResultBuilder.on(entity)
+																		  .isValid();	// valid by default
+		if (entity instanceof Validates) {
+			Validates<M> validates = (Validates<M>)entity;
+			ObjectValidationResult<M> objValid = validates.validate(entity);
+			outValid = objValid;
+		}
+		return outValid;
 	}
 }

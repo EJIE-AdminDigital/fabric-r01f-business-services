@@ -7,7 +7,7 @@ import org.hibernate.cfg.SchemaToolingSettings;
 import org.hibernate.tool.schema.Action;
 
 import r01f.file.FileName;
-import r01f.guids.CommonOIDs.AppCode;
+import r01f.services.ids.ServiceIDs.CoreAppCode;
 import r01f.types.Path;
 import r01f.util.types.StringConverter;
 import r01f.xmlproperties.XMLPropertiesForAppComponent;
@@ -74,7 +74,7 @@ public class DBSchemaCreationForHibernate
 			  dataLoadScriptPath,
 			  (Properties)null);
 	}
-	public DBSchemaCreationForHibernate(final AppCode appCode,
+	public DBSchemaCreationForHibernate(final CoreAppCode appCode,
 										final DBSpec spec,
 										final XMLPropertiesForAppComponent xmlProps) {
 		super(appCode,

@@ -83,9 +83,6 @@ public abstract class TestPersistableModelObjectBase<O extends PersistableObject
 																							 // mock objects factory
 																							 _managesTestMockObjects);
 		findTest.testFind(deleteCreatedObjs);
-		
-		// [99] - Delete created mock objects
-		if (deleteCreatedObjs) this.tearDownCreatedMockObjs();
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //  DELEGATES

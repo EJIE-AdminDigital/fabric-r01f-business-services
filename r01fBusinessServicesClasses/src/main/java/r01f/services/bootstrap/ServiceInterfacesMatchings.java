@@ -11,7 +11,6 @@ import java.util.stream.StreamSupport;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
-import lombok.extern.slf4j.Slf4j;
 import r01f.debug.Debuggable;
 import r01f.services.bootstrap.config.IsCoreServiceImplOrProxyToCoreServiceImpl;
 import r01f.services.ids.ServiceIDs.ClientApiAppCode;
@@ -25,7 +24,7 @@ import r01f.util.types.collections.CollectionUtils;
  * Encapsulates a collection of {@link ServiceInterfaceMatch} object
  * that matches a {@link ServiceInterface} with a CORE or PROXY impl
  */
-@Slf4j
+
 @Accessors(prefix="_")
 @RequiredArgsConstructor
 public class ServiceInterfacesMatchings 

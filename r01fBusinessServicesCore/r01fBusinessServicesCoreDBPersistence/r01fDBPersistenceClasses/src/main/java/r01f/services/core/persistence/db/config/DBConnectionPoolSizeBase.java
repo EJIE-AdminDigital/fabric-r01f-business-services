@@ -8,7 +8,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import r01f.debug.Debuggable;
-import r01f.guids.CommonOIDs.AppCode;
+import r01f.guids.CommonOIDs.IsAppCode;
 import r01f.util.types.Numbers;
 import r01f.util.types.Strings;
 import r01f.xmlproperties.XMLPropertiesForAppComponent;
@@ -26,7 +26,7 @@ public abstract class DBConnectionPoolSizeBase
 /////////////////////////////////////////////////////////////////////////////////////////
 //  CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
-	public DBConnectionPoolSizeBase(final AppCode appCode,
+	public DBConnectionPoolSizeBase(final IsAppCode appCode,
 							    	final PersistenceUnitType unitType,
 							    	final DBSpec dbSpec,
 							    	final XMLPropertiesForAppComponent xmlProps) {

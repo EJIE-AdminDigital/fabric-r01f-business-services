@@ -50,16 +50,26 @@ public class TestPersistableModelObjectCRUD<O extends PersistableObjectOID,M ext
 				 _modelObjFactory.getModelObjType());
 
 		Stopwatch stopWatch = Stopwatch.createStarted();
-
-		// [1] Test create
-		M createdModelObj = this.testCreate();
-
-		// [2] Test update
-		M updatedModelObj = this.testUpdate(createdModelObj,
-											modelObjectStateUpdateCommand);
-
-		// [3] Delete the entity
-		if (testDelete) this.testDelete(updatedModelObj);
+			
+		M createdModelObj = null;
+		M updatedModelObj = null;
+		try {
+			// [1] Test create
+			createdModelObj = this.testCreate();
+	
+			// [2] Test update
+			updatedModelObj = this.testUpdate(createdModelObj,
+										      modelObjectStateUpdateCommand);
+		} catch (Throwable th) {
+			log.error("Error while testing CRUD of {}: {}",
+					  _modelObjFactory.getModelObjType(),
+					  th.getMessage(),th);
+			Assertions.fail("Error while testing CRUD of " + _modelObjFactory.getModelObjType() + ": " + th.getMessage(),
+							th);
+		} finally {
+			// [3] Delete the entity
+			if (testDelete) this.testDelete(updatedModelObj);
+		}
 
 		// WARNING!!! There's NO need to call _modelObjFactory.tearDownCreatedMockModelObjs() because all created model objs
 		//			  have been removed while calling delete
@@ -77,13 +87,15 @@ public class TestPersistableModelObjectCRUD<O extends PersistableObjectOID,M ext
 		log.warn("\tCREATE AN ENTITY OF TYPE {}",
 				 _modelObjFactory.getModelObjType());
 		// create an object
-		O createdModelObjOid = _modelObjFactory.setUpSingleMockObj().getOid();
-
+		M createdModelObj = _modelObjFactory.setUpSingleMockObj();
+		O createdModelObjOid = createdModelObj.getOid();
+		
 		// load it
-		M createdModelObj = _crudAPI.load(createdModelObjOid);	// load the created obj
+		M loadedModelObj = _crudAPI.load(createdModelObjOid);	// load the created obj
+		
 
 		log.warn("\t...created entity with oid={} (dbVersion={})",
-				  createdModelObj.getOid(),createdModelObj.getEntityVersion());
+				  createdModelObj.getOid(),loadedModelObj.getEntityVersion());
 
 		// if it's a dependent object, test the parent reference
 		this.testDependentObjParentRef(createdModelObjOid);
@@ -154,14 +166,27 @@ public class TestPersistableModelObjectCRUD<O extends PersistableObjectOID,M ext
 		return loadedModelObj;
 	}
 	public void testDelete(final M modelObjectToDelete) {
-		// wait for background jobs to complete (if there's any background job that depends on DB data -like lucene indexing-
-		// 										 if the DB data is deleted BEFORE the background job finish, it'll fail)
-		log.warn("\tDELETE THE ENTITY OF TYPE {} WITH oid={}",
-				 _modelObjFactory.getModelObjType(),modelObjectToDelete.getOid());
-		_modelObjFactory.tearDownCreatedMockObjs();
-
-		// try to load the deleted object... it must NOT exist
-		M shouldNotExists = _crudAPI.loadOrNull(modelObjectToDelete.getOid());
-		Assertions.assertNull(shouldNotExists);
+		if (modelObjectToDelete == null) {
+			log.warn("SKIP DELETE TEST OF ENTITY OF TYPE {} because the model object is null",
+					 _modelObjFactory.getModelObjType());
+			return;
+		}
+		try {
+			log.warn("\tDELETE THE ENTITY OF TYPE {} WITH oid={}",
+					 _modelObjFactory.getModelObjType(),modelObjectToDelete.getOid());
+			
+			// delete the entity
+			_modelObjFactory.tearDownCreatedMockObjs();
+			
+			// try to load the deleted object... it must NOT exist
+			M shouldNotExists = _crudAPI.loadOrNull(modelObjectToDelete.getOid());
+			Assertions.assertNull(shouldNotExists);
+		} catch (Throwable th) {
+			log.error("Error while deleting entity of type {} with oid={}: {}",
+					  _modelObjFactory.getModelObjType(),modelObjectToDelete.getOid(),
+					  th.getMessage(),th);
+			Assertions.fail("Error while deleting entity of type " + _modelObjFactory.getModelObjType() + " with oid=" + modelObjectToDelete.getOid() + ": " + th.getMessage(),
+					 	    th);
+		}
 	}
 }

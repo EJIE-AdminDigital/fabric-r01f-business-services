@@ -11,7 +11,6 @@ import com.google.inject.Module;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
-import lombok.extern.slf4j.Slf4j;
 import r01f.model.annotations.ModelObjectsMarshaller;
 import r01f.objectstreamer.Marshaller;
 import r01f.services.api.ClientAPI;
@@ -31,7 +30,7 @@ import r01f.util.types.Strings;
 @Accessors(prefix="_")
 @RequiredArgsConstructor
 public abstract class TestAPIGuiceBase 
-		extends TestAPIBase {
+		      extends TestAPIBase {
 /////////////////////////////////////////////////////////////////////////////////////////
 //  INJECTOR
 /////////////////////////////////////////////////////////////////////////////////////////

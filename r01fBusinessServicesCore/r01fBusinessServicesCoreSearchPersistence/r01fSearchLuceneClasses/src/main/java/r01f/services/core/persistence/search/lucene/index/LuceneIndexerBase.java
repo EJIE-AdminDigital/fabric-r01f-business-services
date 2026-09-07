@@ -180,6 +180,10 @@ public abstract class LuceneIndexerBase<P extends IndexableModelObject>
 									  							public String getId() {
 									  								return _luceneDOCIDFieldValueFrom(modelObj);
 									  							}
+																@Override
+																public String asString() {
+																	return this.getId();
+																}
 									  					  }));
 
 		// [3] - Create a fields factory that uses the fields config to create the lucene fields

@@ -227,6 +227,10 @@ public class LuceneSearchResultDocument<M extends IndexableModelObject>
 								public String getId() {
 									return luceneField.stringValue();
 								}
+								@Override
+								public String asString() {
+									return this.getId();
+								}
 					      };
 		}
 		else if (ReflectionUtils.isImplementing(type,OID.class)) {

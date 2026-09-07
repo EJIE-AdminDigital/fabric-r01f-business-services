@@ -1,0 +1,18 @@
+{
+	"maven.terminal.customEnv": [
+		{
+			"environmentVariable": "MAVEN_OPTS",
+			"value": "-Xms4G -Xmx12G -XX:+UseG1GC -Dvscode.build=true"
+		}
+	],
+	"maven.excludedFolders": [
+		"**/.*",
+		"**/node_modules",
+		"**/target",
+		"**/vscode-target",
+		"**/bin",
+		"**/archetype-resources"
+	],
+	"maven.executable.preferMavenWrapper": true,
+	"java.jdt.ls.vmargs": "-Xms4G -Xmx12G -XX:+UseG1GC -Dvscode.build=true"
+}

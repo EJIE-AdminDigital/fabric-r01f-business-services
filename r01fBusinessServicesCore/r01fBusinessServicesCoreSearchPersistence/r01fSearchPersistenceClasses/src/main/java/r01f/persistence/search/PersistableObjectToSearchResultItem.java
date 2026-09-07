@@ -5,10 +5,10 @@ import java.util.function.Function;
 
 import lombok.RequiredArgsConstructor;
 import r01f.facets.HasID;
+import r01f.facets.HasLangDependentName;
+import r01f.facets.HasLangInDependentName;
 import r01f.facets.HasName;
 import r01f.facets.HasOID;
-import r01f.facets.LangDependentNamed.HasLangDependentNamedFacet;
-import r01f.facets.LangInDependentNamed.HasLangInDependentNamedFacet;
 import r01f.guids.OID;
 import r01f.locale.Language;
 import r01f.locale.LanguageTexts;
@@ -100,13 +100,13 @@ public class PersistableObjectToSearchResultItem<M extends IndexableModelObject,
 		// Name
 		if (modelObj instanceof HasName
 		 && item instanceof HasName) {
-			if (item instanceof HasLangDependentNamedFacet itemHasName
-			 && modelObj instanceof HasLangDependentNamedFacet objHasName) {
+			if (item instanceof HasLangDependentName itemHasName
+			 && modelObj instanceof HasLangDependentName objHasName) {
 				LanguageTexts nameByLang = objHasName.getNameByLanguage();
 				itemHasName.setNameByLanguage(nameByLang);
-			} else if (item instanceof HasLangInDependentNamedFacet itemHasName
-				    && modelObj instanceof HasLangDependentNamedFacet) {
-				HasLangInDependentNamedFacet objHasName = (HasLangInDependentNamedFacet)modelObj;
+			} else if (item instanceof HasLangInDependentName itemHasName
+				    && modelObj instanceof HasLangDependentName) {
+				HasLangInDependentName objHasName = (HasLangInDependentName)modelObj;
 				
 				String name = objHasName.getName();
 				itemHasName.setName(name);

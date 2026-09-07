@@ -2,12 +2,9 @@ package r01f.persistence.index.document;
 
 import java.util.regex.Pattern;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.Accessors;
 import r01f.exceptions.Throwables;
-import r01f.guids.OIDBase;
+import r01f.guids.OIDTyped;
 import r01f.locale.Language;
 import r01f.model.IndexableModelObject;
 import r01f.model.metadata.FieldID;
@@ -26,25 +23,37 @@ import r01f.util.types.Strings;
  * is stored in multiple lucene fields, one for each document: r01.summary.es, r01.summary.eu, etc
  */
 @MarshallType(as="indexDocumentFieldId")
-@EqualsAndHashCode(callSuper=true)
-@Accessors(prefix="_")
-@RequiredArgsConstructor
-public class IndexDocumentFieldID
-     extends OIDBase<String> {
+public record IndexDocumentFieldID(@Getter String id)
+   implements OIDTyped<String> {
 
-	private static final long serialVersionUID = -1938356780090697086L;
-/////////////////////////////////////////////////////////////////////////////////////////
-//  FIELDS
-/////////////////////////////////////////////////////////////////////////////////////////
-	@Getter private final String _id;
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////////////
+	public static IndexDocumentFieldID from(final String id) {
+		return new IndexDocumentFieldID(id);
+	}
 	public static IndexDocumentFieldID forId(final String id) {
+		return new IndexDocumentFieldID(id);
+	}
+	public static IndexDocumentFieldID valueOf(final String id) {
+		return new IndexDocumentFieldID(id);
+	}
+	public static IndexDocumentFieldID fromString(final String id) {
 		return new IndexDocumentFieldID(id);
 	}
 	public static IndexDocumentFieldID forId(final FieldID fieldId) {
 		return IndexDocumentFieldID.forId(fieldId.asString());
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////
+	@Override
+	public String asString() {
+		return this.getId();
+	}
+	@Override
+	public String toString() {
+		return this.getId();
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //  Sometimes a metadata value depends on some dimension

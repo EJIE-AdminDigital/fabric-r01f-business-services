@@ -6,7 +6,7 @@ import java.util.Properties;
 import org.hibernate.cfg.JdbcSettings;
 
 import lombok.experimental.Accessors;
-import r01f.guids.CommonOIDs.AppCode;
+import r01f.guids.CommonOIDs.IsAppCode;
 import r01f.util.types.collections.CollectionUtils;
 import r01f.xmlproperties.XMLPropertiesForAppComponent;
 
@@ -18,7 +18,7 @@ public class DBConnectionPoolDataForHibernate
 /////////////////////////////////////////////////////////////////////////////////////////
 //  CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
-	public DBConnectionPoolDataForHibernate(final AppCode appCode,
+	public DBConnectionPoolDataForHibernate(final IsAppCode appCode,
 											  final PersistenceUnitType unitType,
 											  final DBSpec dbSpec,
 							   				  final XMLPropertiesForAppComponent xmlProps) {
@@ -46,7 +46,7 @@ public class DBConnectionPoolDataForHibernate
 											  otherProps);
 	}
 	@Override
-	DBConnectionPoolSizeBase _dbConnectionPoolSizeFrom(final AppCode appCode,
+	DBConnectionPoolSizeBase _dbConnectionPoolSizeFrom(final IsAppCode appCode,
 											  		   final PersistenceUnitType unitType,
 											  		   final DBSpec dbSpec,
 											  		   final XMLPropertiesForAppComponent xmlProps) {

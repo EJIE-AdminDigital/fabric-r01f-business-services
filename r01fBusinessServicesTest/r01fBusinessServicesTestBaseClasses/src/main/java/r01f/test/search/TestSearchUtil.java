@@ -3,12 +3,12 @@ package r01f.test.search;
 import java.util.Iterator;
 
 import r01f.facets.Facetable;
+import r01f.facets.HasLangDependentName;
+import r01f.facets.HasLangInDependentName;
 import r01f.facets.HasName;
 import r01f.facets.HasOID;
 import r01f.facets.LangDependentNamed;
-import r01f.facets.LangDependentNamed.HasLangDependentNamedFacet;
 import r01f.facets.LangInDependentNamed;
-import r01f.facets.LangInDependentNamed.HasLangInDependentNamedFacet;
 import r01f.facets.Summarizable.HasSummaryFacet;
 import r01f.locale.Language;
 import r01f.locale.LanguageTexts;
@@ -38,16 +38,16 @@ public class TestSearchUtil {
 				String itemSum = null; 
 				
 				if (item instanceof HasName) {
-					if (item instanceof HasLangDependentNamedFacet) {
-						HasLangDependentNamedFacet langDepNamedItem = (HasLangDependentNamedFacet)item;
+					if (item instanceof HasLangDependentName) {
+						HasLangDependentName langDepNamedItem = (HasLangDependentName)item;
 						LanguageTexts langTexts = langDepNamedItem.getNameByLanguage();
 						for (Iterator<Language> langIt = langTexts.getDefinedLanguages().iterator(); langIt.hasNext(); ) {
 							Language lang = langIt.next();
 							sb.append("[" + lang + "]: " + langTexts.get(lang));
 							if (langIt.hasNext()) sb.append(", ");
 						}
-					} else if (item instanceof HasLangInDependentNamedFacet) {
-						HasLangInDependentNamedFacet langIndepNamedItem = (HasLangInDependentNamedFacet)item;
+					} else if (item instanceof HasLangInDependentName) {
+						HasLangInDependentName langIndepNamedItem = (HasLangInDependentName)item;
 						String name = langIndepNamedItem.getName();
 						sb.append(name);
 					} else {
@@ -78,8 +78,8 @@ public class TestSearchUtil {
 					 &&  ((SearchResultItemContainsPersistableObject<?,?>)item).getModelObject() != null
 					 && ((SearchResultItemContainsPersistableObject<?,?>)item).getModelObject().hasFacet(HasName.class)) {
 					Facetable modelObj = ((SearchResultItemContainsPersistableObject<?,?>)item).getModelObject();
-					if (modelObj.hasFacet(HasLangDependentNamedFacet.class)) {
-						LangDependentNamed langNames = modelObj.asFacet(HasLangDependentNamedFacet.class)
+					if (modelObj.hasFacet(HasLangDependentName.class)) {
+						LangDependentNamed langNames = modelObj.asFacet(HasLangDependentName.class)
 														   	   .asLangDependentNamed();
 						for (Iterator<Language> langIt = langNames.getAvailableLanguages().iterator(); langIt.hasNext(); ) {
 							Language lang = langIt.next();
@@ -87,7 +87,7 @@ public class TestSearchUtil {
 							if (langIt.hasNext()) sb.append(", ");
 						}
 					} else {
-						LangInDependentNamed name = modelObj.asFacet(HasLangInDependentNamedFacet.class)
+						LangInDependentNamed name = modelObj.asFacet(HasLangInDependentName.class)
 															.asLangInDependentNamed();
 						sb.append(name.getName());
 					}

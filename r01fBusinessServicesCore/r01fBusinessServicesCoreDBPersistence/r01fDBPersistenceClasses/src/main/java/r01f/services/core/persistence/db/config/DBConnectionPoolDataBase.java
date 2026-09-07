@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import r01f.debug.Debuggable;
-import r01f.guids.CommonOIDs.AppCode;
+import r01f.guids.CommonOIDs.IsAppCode;
 import r01f.securitycontext.SecurityIDS.LoginID;
 import r01f.securitycontext.SecurityIDS.Password;
 import r01f.types.JavaTypeName;
@@ -35,7 +35,7 @@ public abstract class DBConnectionPoolDataBase
 /////////////////////////////////////////////////////////////////////////////////////////
 //  CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
-	public DBConnectionPoolDataBase(final AppCode appCode,
+	public DBConnectionPoolDataBase(final IsAppCode appCode,
 									final PersistenceUnitType unitType,
 									final DBSpec dbSpec,
 							   		final XMLPropertiesForAppComponent xmlProps) {
@@ -82,7 +82,7 @@ public abstract class DBConnectionPoolDataBase
 /////////////////////////////////////////////////////////////////////////////////////////
 	public abstract Properties asProperties();
 	abstract DBConnectionPoolConfigData _connectionPoolConfigDataFrom(final Map<String,String> propsMap);
-	abstract DBConnectionPoolSizeBase _dbConnectionPoolSizeFrom(final AppCode appCode,
+	abstract DBConnectionPoolSizeBase _dbConnectionPoolSizeFrom(final IsAppCode appCode,
 											  					final PersistenceUnitType unitType,
 											  					final DBSpec dbSpec,
 											  					final XMLPropertiesForAppComponent xmlProps);

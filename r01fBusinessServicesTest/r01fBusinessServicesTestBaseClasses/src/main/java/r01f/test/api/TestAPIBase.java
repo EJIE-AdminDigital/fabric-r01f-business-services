@@ -78,7 +78,7 @@ public abstract class TestAPIBase {  // Just required at this lever for this con
 											null);	// default msg
 	}
 	protected static void _giveTimeForBackgroundJobsToFinish(final long milis,
-															final String msg,final Object... msgParams) {
+															 final String msg,final Object... msgParams) {
 		// wait for background jobs to complete (if there's any background job that depends on DB data -like lucene indexing-
 		// 										 if the DB data is deleted BEFORE the background job finish, it'll fail)
 		if (Strings.isNullOrEmpty(msg)) {
@@ -86,8 +86,8 @@ public abstract class TestAPIBase {  // Just required at this lever for this con
 		} else {
 			log.warn("... give {} milis for {}",milis,Strings.customized(msg,msgParams));
 		}
-			Threads.safeSleep(milis);
-		}
+		Threads.safeSleep(milis);
+	}
 	protected static void _giveTimeForBackgroundJobsToFinish(final TimeLapse lapse,
 															  final String msg,final Object... msgParams) {
 		_giveTimeForBackgroundJobsToFinish(lapse.asMillis(),

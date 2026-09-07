@@ -28,7 +28,7 @@ import r01f.types.jobs.EnqueuedJob;
 import r01f.util.types.Strings;
 
 /**
- * Types in charge of convert the {@link Response} of a REST method form the business type returned from the method (ie {@link R01MStructureLabel})
+ * Types in charge of convert the {@link Response} of a REST method form the business type returned from the method (ie {@link DN00Label})
  * to the bytes returned by the servlet in the {@link OutputStream}
  * ie: if inside a REST module exists a method like
  * <pre class='brush:java'>

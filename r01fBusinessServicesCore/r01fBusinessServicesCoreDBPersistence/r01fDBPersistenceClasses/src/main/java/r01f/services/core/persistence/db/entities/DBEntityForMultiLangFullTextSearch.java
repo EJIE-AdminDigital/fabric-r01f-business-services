@@ -5,6 +5,7 @@ import java.util.stream.Stream;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -103,6 +104,11 @@ import r01f.util.types.Strings;
  * </pre>
  * ... then a full-text index must be created for every column
  */
+
+@IdClass(DBPrimaryKeyForModelObjectImpl.class)	// BEWARE!!!!
+												// hibernate requires this annotation to be 
+												// at the same level of the @Id field(s)
+												// (and not in a superclass)
 @MappedSuperclass
 
 @Accessors(prefix="_")

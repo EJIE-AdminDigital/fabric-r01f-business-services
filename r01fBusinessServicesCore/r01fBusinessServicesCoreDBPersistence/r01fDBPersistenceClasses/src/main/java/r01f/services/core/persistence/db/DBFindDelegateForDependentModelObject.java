@@ -16,8 +16,8 @@ import r01f.model.persistence.FindSummariesResult;
 import r01f.reflection.ReflectionUtils;
 import r01f.reflection.ReflectionUtils.FieldAnnotated;
 import r01f.securitycontext.SecurityContext;
-import r01f.services.core.persistence.db.DBFindForModelObjectBase.FindQueryDBEntityWrapper;
-import r01f.services.core.persistence.db.DBFindForModelObjectBase.FindQueryWrapper;
+import r01f.services.core.persistence.db.DBFindForModelObjectBase.FindDBEntityQueryWrapper;
+import r01f.services.core.persistence.db.DBFindForModelObjectBase.FindTupleQueryWrapper;
 import r01f.services.core.persistence.db.entities.DBEntityForModelObject;
 import r01f.services.core.persistence.db.entities.annotations.DBEntitySummaryField;
 import r01f.services.core.persistence.db.entities.annotations.ParentOidDBEntityField;
@@ -66,14 +66,14 @@ public abstract class DBFindDelegateForDependentModelObject<O extends Persistabl
 	@Override @SuppressWarnings({ "unchecked","rawtypes" })
 	public FindOIDsResult<O> findOidsOfDependentsOf(final SecurityContext securityContext,
 											  		final PO parentOid) {
-		FindQueryWrapper qry = _dbFind.new FindQueryWrapper();
+		FindTupleQueryWrapper qry = _dbFind.new FindTupleQueryWrapper();
 		qry.addFilterByOidPredicate(parentOid,_getParentOidDBEntityFieldName());
 		return qry.findOidsUsing(securityContext);
 	}
 	@Override @SuppressWarnings({ "unchecked","rawtypes" })
 	public FindResult<M> findDependentsOf(final SecurityContext securityContext,
 										  final PO parentOid) {
-		FindQueryDBEntityWrapper qry = _dbFind.new FindQueryDBEntityWrapper();
+		FindDBEntityQueryWrapper qry = _dbFind.new FindDBEntityQueryWrapper();
 		qry.addFilterByOidPredicate(parentOid,_getParentOidDBEntityFieldName());
 		return qry.findUsing(securityContext);
 	}
@@ -82,7 +82,7 @@ public abstract class DBFindDelegateForDependentModelObject<O extends Persistabl
 															  final PO parentOid,
 															  final Language lang) {
 		if (_dbTupleToSummarizedObj == null) throw new IllegalStateException("A [db tuple] to [summarized object] is needed; otherwise override this function!");
-		FindQueryWrapper qry = _dbFind.new FindQueryWrapper(_summaryDBRowCols())
+		FindTupleQueryWrapper qry = _dbFind.new FindTupleQueryWrapper(_summaryDBRowCols())
 												.addFilterByOidPredicate(parentOid,_getParentOidDBEntityFieldName());
 		return qry.findSummariesUsing(securityContext)
 				  .convertingTupleToSummaryUsing(_dbTupleToSummarizedObj);

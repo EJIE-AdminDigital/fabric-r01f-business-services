@@ -21,11 +21,11 @@ import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import r01f.exceptions.Throwables;
 import r01f.facets.HasID;
+import r01f.facets.HasLangDependentName;
+import r01f.facets.HasLangInDependentName;
 import r01f.facets.HasName;
 import r01f.facets.LangDependentNamed;
-import r01f.facets.LangDependentNamed.HasLangDependentNamedFacet;
 import r01f.facets.LangInDependentNamed;
-import r01f.facets.LangInDependentNamed.HasLangInDependentNamedFacet;
 import r01f.facets.Summarizable.HasSummaryFacet;
 import r01f.guids.OID;
 import r01f.guids.PersistableObjectOID;
@@ -79,7 +79,7 @@ public abstract class DBCRUDForModelObjectBase<O extends PersistableObjectOID,M 
 	/**
 	 * Persistence event listener
 	 */
-	private final Collection<ListensToDBEntityPersistenceEvents<M,DB>> _dbEntityPersistenceEventsListeners = Lists.newArrayList();
+	protected final Collection<ListensToDBEntityPersistenceEvents<M,DB>> _dbEntityPersistenceEventsListeners = Lists.newArrayList();
 /////////////////////////////////////////////////////////////////////////////////////////
 //  CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -771,8 +771,8 @@ public abstract class DBCRUDForModelObjectBase<O extends PersistableObjectOID,M 
 		// [2]... if no name was retrieved, try to use the model object's name
 		if (Strings.isNullOrEmpty(outName)
 		 && modelObject.hasFacet(HasName.class)) {
-			if (modelObject.hasFacet(HasLangDependentNamedFacet.class)) {
-				LangDependentNamed langNames = modelObject.asFacet(HasLangDependentNamedFacet.class)
+			if (modelObject.hasFacet(HasLangDependentName.class)) {
+				LangDependentNamed langNames = modelObject.asFacet(HasLangDependentName.class)
 												   		  .asLangDependentNamed();
 				StringBuilder sb = new StringBuilder();
 				for (Iterator<Language> langIt = langNames.getAvailableLanguages().iterator(); langIt.hasNext(); ) {
@@ -782,7 +782,7 @@ public abstract class DBCRUDForModelObjectBase<O extends PersistableObjectOID,M 
 				}
 				outName = sb.toString();
 			} else {
-				LangInDependentNamed name = modelObject.asFacet(HasLangInDependentNamedFacet.class)
+				LangInDependentNamed name = modelObject.asFacet(HasLangInDependentName.class)
 													   .asLangInDependentNamed();
 				outName = name.getName();
 			}

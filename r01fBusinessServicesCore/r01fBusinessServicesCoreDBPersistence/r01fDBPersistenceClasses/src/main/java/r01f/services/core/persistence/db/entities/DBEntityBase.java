@@ -26,6 +26,7 @@ import r01f.util.types.Strings;
  * @param <R>
  */
 @MappedSuperclass
+
 @Accessors(prefix="_")
 @NoArgsConstructor
 public abstract class DBEntityBase

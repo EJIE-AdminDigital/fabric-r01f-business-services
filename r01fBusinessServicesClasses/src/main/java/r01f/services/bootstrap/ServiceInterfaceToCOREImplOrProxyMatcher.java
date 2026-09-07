@@ -194,7 +194,7 @@ public class ServiceInterfaceToCOREImplOrProxyMatcher {
 					matched = true;
 				}
 			}
-			if (strict && !matched) throw new IllegalStateException(String.format("[core impl] or [proxy] type %s does NOT match any [service interface]ª",
+			if (strict && !matched) throw new IllegalStateException(String.format("[core impl] or [proxy] type %s does NOT match any [service interface]",
 																				  coreOrProxyType));
 		}
 		

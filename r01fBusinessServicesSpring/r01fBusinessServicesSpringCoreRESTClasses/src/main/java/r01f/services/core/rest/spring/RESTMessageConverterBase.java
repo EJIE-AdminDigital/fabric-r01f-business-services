@@ -36,10 +36,10 @@ public abstract class RESTMessageConverterBase<T>
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public boolean canRead( final Class<?> type, final MediaType mediaType) {
-		log.warn("... received  type '{}' ,  received mediaType : {} "
+		/*log.warn("... received  type '{}' ,  received mediaType : {} "
 				+ ", registred _type :{}, _mediaType: {} ",
 				             type, mediaType,
-				             _mappedType,_mediaType);
+				             _mappedType,_mediaType);*/
 		if (mediaType  == null ) {
 			return ReflectionUtils.isImplementingAny(ReflectionUtils.classOfType(type),_mappedType);
 		}
@@ -54,8 +54,8 @@ public abstract class RESTMessageConverterBase<T>
 	public boolean canRead(final Type type, final Class<?> contextClass, final  MediaType mediaType) {
 		boolean canReadMediaType = mediaType.isCompatibleWith(_mediaType);
 		boolean canreadType = _mappedType.isAssignableFrom(TypeToken.of(type).getRawType());
-		log.warn( " canReadMediaType ? {}" ,canReadMediaType );
-		log.warn( " canreadType ? {}" ,canreadType );
+		//log.warn( " canReadMediaType ? {}" ,canReadMediaType );
+		//log.warn( " canreadType ? {}" ,canreadType );
 		return canReadMediaType && canreadType;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -65,10 +65,10 @@ public abstract class RESTMessageConverterBase<T>
 	public boolean canWrite(final Type type, final Class<?> contextClass, final  MediaType mediaType) {
 		boolean outWriteable = false;	
 		try {
-			log.warn("... should write  received type '{}'   with received mediaType : {} ??? "
+			/*log.warn("... should write  received type '{}'   with received mediaType : {} ??? "
 					+ "[ registred _type :{}, _mediaType: {} ]",
 					             type, mediaType,
-					            _mappedType,_mediaType);
+					            _mappedType,_mediaType);*/
 
 			if (mediaType == null) {
 				outWriteable = ReflectionUtils.isImplementingAny(TypeToken.of(type).getRawType(), _mappedType);
@@ -76,9 +76,9 @@ public abstract class RESTMessageConverterBase<T>
 					&& ReflectionUtils.isImplementingAny(ReflectionUtils.classOfType(type),_mappedType)) {
 				outWriteable = true;
 			}
-			log.warn("\n [1] The {} type is {} writeable with {}", type,
+			/*log.warn("\n [1] The {} type is {} writeable with {}", type,
 																   outWriteable ? "" : "NOT",
-																   this.getClass().getName());
+																   this.getClass().getName());*/
 		} catch (final Throwable th) {
 			th.printStackTrace();
 			throw new IllegalStateException(th.getLocalizedMessage());
@@ -94,9 +94,9 @@ public abstract class RESTMessageConverterBase<T>
 				&& ReflectionUtils.isImplementingAny(type,_mappedType)) {
 			outWriteable = true;
 		}
-		log.warn(" \n [2] The {} type is {} writeable with {}", type.getName(),
+		/*log.warn(" \n [2] The {} type is {} writeable with {}", type.getName(),
 															    outWriteable ? "" : "NOT",
-															    this.getClass().getName());
+															    this.getClass().getName());*/
 		return outWriteable;
 
 	}
@@ -123,13 +123,13 @@ public abstract class RESTMessageConverterBase<T>
 /////////////////////////////////////////////////////////////////////////////////////////	
 	@Override
 	public void write(final T object, final MediaType contentType, final HttpOutputMessage outputMessage)  throws IOException {
-		 log.warn(".....(1) write so :" , object.getClass().getName());
+		// log.warn(".....(1) write so :" , object.getClass().getName());
 		_doWrite(object,outputMessage);
 	}
 
 	@Override
 	public void write(final T object, final Type type, final  MediaType contentType, final  HttpOutputMessage outputMessage)throws IOException {
-		 log.warn(".....(2) write so :" , object.getClass().getName());
+		 //log.warn(".....(2) write so :" , object.getClass().getName());
 		_doWrite(object,outputMessage);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -160,7 +160,7 @@ public abstract class RESTMessageConverterBase<T>
 	}
 	protected T _doRead(final Class<? extends T> type,
 			            final HttpInputMessage inputMessage) throws IOException {
-		log.warn("reading {} type",type.getName());
+		//log.warn("reading {} type",type.getName());
 		// json -> java
 		String json = StringPersistenceUtils.load(inputMessage.getBody());
 		T outObj = null;

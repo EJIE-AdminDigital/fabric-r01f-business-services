@@ -9,11 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import r01f.exceptions.Throwables;
 import r01f.facets.FullTextSummarizable.HasFullTextSummaryFacet;
 import r01f.facets.HasID;
+import r01f.facets.HasLangDependentName;
+import r01f.facets.HasLangInDependentName;
 import r01f.facets.HasLanguage;
 import r01f.facets.HasName;
 import r01f.facets.HasOID;
-import r01f.facets.LangDependentNamed.HasLangDependentNamedFacet;
-import r01f.facets.LangInDependentNamed.HasLangInDependentNamedFacet;
 import r01f.facets.Summarizable.HasSummaryFacet;
 import r01f.facets.util.Facetables;
 import r01f.guids.OID;
@@ -211,8 +211,8 @@ public abstract class IndexableFieldValueExtractorBase<M extends IndexableModelO
 		}
 		// name
 		if (modelObj.hasFacet(HasName.class)) {
-			if (modelObj.hasFacet(HasLangDependentNamedFacet.class)) {
-				HasLangDependentNamedFacet hasName = modelObj.asFacet(HasLangDependentNamedFacet.class);
+			if (modelObj.hasFacet(HasLangDependentName.class)) {
+				HasLangDependentName hasName = modelObj.asFacet(HasLangDependentName.class);
 				LanguageTexts nameByLang = hasName.getNameByLanguage();
 
 				FieldMetaData nameByLangField = typeMetaData.findFieldByIdOrThrow(HasMetaDataForHasLanguageDependentName.SEARCHABLE_METADATA.NAME_BY_LANGUAGE)
@@ -223,8 +223,8 @@ public abstract class IndexableFieldValueExtractorBase<M extends IndexableModelO
 				_fields.add(IndexDocumentFieldValue.forMetaData(nameByLangField)
 											   	   .andValue(nameByLang));
 			}
-			else if (modelObj.hasFacet(HasLangInDependentNamedFacet.class)) {
-				HasLangInDependentNamedFacet hasName = modelObj.asFacet(HasLangInDependentNamedFacet.class);
+			else if (modelObj.hasFacet(HasLangInDependentName.class)) {
+				HasLangInDependentName hasName = modelObj.asFacet(HasLangInDependentName.class);
 				String name = hasName.getName();
 
 				FieldMetaData nameField = typeMetaData.findFieldByIdOrThrow(HasMetaDataForHasLanguageInDependentName.SEARCHABLE_METADATA.NAME)

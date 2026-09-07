@@ -10,7 +10,6 @@ import jakarta.persistence.TypedQuery;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import r01f.guids.CommonOIDs.AppCode;
 import r01f.patterns.Memoized;
 import r01f.patterns.MemoizedUponFactory;
 import r01f.services.core.persistence.db.DBEntity;
@@ -201,7 +200,7 @@ public abstract class DBModuleConfigBase
 // ABSTRACT METHODS
 /////////////////////////////////////////////////////////////////////////////////////////
 	abstract DBSpec _dbSpecFromString(final String dbSpecStr);
-	abstract DBSchemaCreationBase _dbSchemaCreationFrom(final AppCode appCode,
+	abstract DBSchemaCreationBase _dbSchemaCreationFrom(final CoreAppCode appCode,
 														final DBSpec spec,
 														final XMLPropertiesForAppComponent xmlProps);
 	

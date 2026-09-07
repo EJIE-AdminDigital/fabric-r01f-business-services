@@ -37,6 +37,10 @@ public abstract class DBBase
 	 */
 	@Getter protected final DBModuleConfig _dbConfig;
 	/**
+	 * Vendor-specific DB hints (obtained from the {@link DBModuleConfig} and the {@link EntityManager})
+	 */
+	@Getter protected final DBPersistenceProviderVendorDBHints _vendorDBHints;
+	/**
 	 * Marshaller
 	 */
 	@Getter protected final Marshaller _modelObjectsMarshaller;
@@ -48,17 +52,18 @@ public abstract class DBBase
 				  final Marshaller marshaller) {
 		_entityManager = entityManager;
 		_dbConfig = dbCfg;
+		_vendorDBHints = DBBase.getVendorDBHints(dbCfg,entityManager);
+		
 		_modelObjectsMarshaller = marshaller;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//
+//	DB VENDOR HINTS
 /////////////////////////////////////////////////////////////////////////////////////////
-	public DBPersistenceProviderVendorDBHints getVendorDBHints() {
-		if (_dbConfig == null) {		
-			return new DBPersistenceProviderVendorDBHints(_entityManager);
-		}
-		return _dbConfig.getDbSpec()
-						.getVendorDBHints();
+	public static DBPersistenceProviderVendorDBHints getVendorDBHints(final DBModuleConfig dbConfig,
+							   								   		  final EntityManager entityManager) {
+		if (dbConfig == null) return new DBPersistenceProviderVendorDBHints(entityManager);
+		return dbConfig.getDbSpec()
+					   .getVendorDBHints();		
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //

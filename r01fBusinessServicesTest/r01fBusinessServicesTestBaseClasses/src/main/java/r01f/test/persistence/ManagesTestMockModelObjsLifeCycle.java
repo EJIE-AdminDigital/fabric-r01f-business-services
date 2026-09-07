@@ -1,6 +1,8 @@
 package r01f.test.persistence;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -91,10 +93,11 @@ public interface ManagesTestMockModelObjsLifeCycle<O extends PersistableObjectOI
 	 * @param objs
 	 */
 	@SuppressWarnings("unchecked")
-	public default void setUpMockObjs(final M... objs) {
-		if (CollectionUtils.isNullOrEmpty(objs)) return;
-		Stream.of(objs)
-			  .forEach(this::setUpMockObj);
+	public default Collection<M> setUpMockObjs(final M... objs) {
+		if (CollectionUtils.isNullOrEmpty(objs)) return Collections.EMPTY_LIST;
+		return Stream.of(objs)
+					 .map(this::setUpMockObj)
+					 .toList();
 	}
 	/**
 	 * Sets up the given mock obj
@@ -121,6 +124,40 @@ public interface ManagesTestMockModelObjsLifeCycle<O extends PersistableObjectOI
 	 * @param createdObjs
 	 */
 	public void tearDownCreatedMockObjs();
+	/**
+	 * Deletes a previously created object
+	 * @param oids
+	 */
+	public void tearDownCreatedMockObjWithOids(final Collection<O> oids);
+	/**
+	 * Deletes a previously created object
+	 * @param oids
+	 */
+	@SuppressWarnings("unchecked")
+	public default void tearDownCreatedMockObjWithOids(final O... oids) {
+		if (CollectionUtils.isNullOrEmpty(oids)) return;
+		Collection<O> fOids = Stream.of(oids)
+								    .filter(Objects::nonNull)
+								    .toList();
+		this.tearDownCreatedMockObjWithOids(fOids);
+	}
+	public default void tearDownCreatedMockObjs(final Collection<M> objs) {
+		if (CollectionUtils.isNullOrEmpty(objs)) return;
+		Collection<O> oids = objs.stream()
+								 .filter(Objects::nonNull)
+								 .map(M::getOid)
+								 .toList();
+		this.tearDownCreatedMockObjWithOids(oids);
+	}
+	@SuppressWarnings("unchecked")
+	public default void tearDownCreatedMockObjs(final M... objs) {
+		if (CollectionUtils.isNullOrEmpty(objs)) return;
+		Collection<O> oids = Stream.of(objs)
+								   .filter(Objects::nonNull)
+								   .map(M::getOid)
+								   .toList();
+		this.tearDownCreatedMockObjWithOids(oids);
+	}
 	/**
 	 * Reset the state removing the stored created mock objs oids
 	 */

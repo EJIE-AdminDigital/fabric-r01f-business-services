@@ -102,48 +102,48 @@ public abstract class DBFindForModelObjectBase<O extends PersistableObjectOID,M 
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public FindOIDsResult<O> findAll(final SecurityContext securityContext) {
-		return new FindQueryWrapper()
+		return new FindTupleQueryWrapper()
 						.findOidsUsing(securityContext);
 	}
 	@Override
 	public FindOIDsResult<O> findByCreateDate(final SecurityContext securityContext,
 											  final Range<Instant> createDate) {
-		return new FindQueryWrapper()
+		return new FindTupleQueryWrapper()
 						.addFilterByDateRangePredicate(createDate,"_createDate")
 						.findOidsUsing(securityContext);
 	}
 	@Override
 	public FindOIDsResult<O> findByLastUpdateDate(final SecurityContext securityContext,
 												  final Range<Instant> lastUpdateDate) {
-		return new FindQueryWrapper()
+		return new FindTupleQueryWrapper()
 						.addFilterByDateRangePredicate(lastUpdateDate,"_lastUpdateDate")
 						.findOidsUsing(securityContext);
 	}
 	@Override
 	public FindOIDsResult<O> findByCreator(final SecurityContext securityContext,
 										   final UserOID creatorUserOid) {
-		return new FindQueryWrapper()
+		return new FindTupleQueryWrapper()
 						.addFilterByUserPredicate(creatorUserOid,"_creatorOid")
 						.findOidsUsing(securityContext);
 	}
 	@Override
 	public FindOIDsResult<O> findByCreator(final SecurityContext securityContext,
 										   final LoginID creatorUserCode) {
-		return new FindQueryWrapper()
+		return new FindTupleQueryWrapper()
 						.addFilterByUserPredicate(creatorUserCode,"_creator")
 						.findOidsUsing(securityContext);
 	}
 	@Override
 	public FindOIDsResult<O> findByLastUpdator(final SecurityContext securityContext,
 											   final UserOID lastUpdatorOid) {
-		return new FindQueryWrapper()
+		return new FindTupleQueryWrapper()
 						.addFilterByUserPredicate(lastUpdatorOid,"_lastUpdatorOid")
 						.findOidsUsing(securityContext);
 	}
 	@Override
 	public FindOIDsResult<O> findByLastUpdator(final SecurityContext securityContext,
 											   final LoginID lastUpdatorUserCode) {
-		return new FindQueryWrapper()
+		return new FindTupleQueryWrapper()
 						.addFilterByUserPredicate(lastUpdatorUserCode,"_lastUpdator")
 						.findOidsUsing(securityContext);
 	}
@@ -166,28 +166,34 @@ public abstract class DBFindForModelObjectBase<O extends PersistableObjectOID,M 
 		return dbObjs;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//	
+//	FIND DBEntities
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Accessors(prefix="_")
-	protected class FindQueryDBEntityWrapper
-			extends QueryWrapperBase<FindQueryDBEntityWrapper> {
-		@Getter protected final CriteriaBuilder _criteriaBuilder;
+	protected class FindDBEntityQueryWrapper
+			extends QueryWrapperBase<FindDBEntityQueryWrapper> {
+		////////// --- Fields
 		@Getter protected final CriteriaQuery<? extends DB> _criteriaQuery;
 		@Getter protected final Root<? extends DB> _root;
 
-		public FindQueryDBEntityWrapper() {
+		////////// --- Constructors
+		public FindDBEntityQueryWrapper() {
 			this(_DBEntityType);
 		}
-		public FindQueryDBEntityWrapper(final Class<? extends DB> dbEntityType) {
-			_criteriaBuilder = _entityManager.getCriteriaBuilder();
+		public FindDBEntityQueryWrapper(final Class<? extends DB> dbEntityType) {
+			super(_entityManager.getCriteriaBuilder());
 			_criteriaQuery = _criteriaBuilder.createQuery(dbEntityType);
 			_root = _criteriaQuery.from(dbEntityType);
 		}
+		////////// --- Methods 
 		public FindResult<M> findUsing(final SecurityContext securityContext) {
+			// [1] - ensure the [criteria query] is built before executing the query
 			this.composeCriteriaQuery();
+			
+			// [2] - execute the query
 			Collection<? extends DB> dbEntities = _entityManager.createQuery(_criteriaQuery)
 																	.setHint(DBFindForModelObjectBase.this.getVendorDBHints().getReadOnlyHintKey(),true)
 																.getResultList();
+			// [3] - Transform the [db entities]
 			FindResult<M> outObjs = _buildResultsFromDBEntities(securityContext,
 															    dbEntities);
 			return outObjs;
@@ -195,40 +201,51 @@ public abstract class DBFindForModelObjectBase<O extends PersistableObjectOID,M 
 		public FindResult<M> findUsing(final SecurityContext securityContext,
 									   final int numResults) {
 			if (numResults <= 0) throw new IllegalArgumentException("The number of db entities to be returnes MUST be > 0");
+			// [1] - ensure the [criteria query] is built before executing the query
 			this.composeCriteriaQuery();
+			
+			// [2] - execute the query
 			Collection<? extends DB> dbEntities = _entityManager.createQuery(_criteriaQuery)
 																	.setHint(DBFindForModelObjectBase.this.getVendorDBHints().getReadOnlyHintKey(),true)
 																	.setMaxResults(numResults)
 																.getResultList();
+			// [3] - Transform the [db entities]
 			FindResult<M> outObjs = _buildResultsFromDBEntities(securityContext,
 															    dbEntities);
 			return outObjs;
 		}
 		public FindOIDsResult<O> findOidsUsing(final SecurityContext securityContext) {
+			// [1] - ensure the [criteria query] is built before executing the query
 			this.composeCriteriaQuery();
+			
+			// [2] - execute the query
 			Collection<? extends DB> dbEntities = _entityManager.createQuery(_criteriaQuery)
 																	.setHint(DBFindForModelObjectBase.this.getVendorDBHints().getReadOnlyHintKey(),true)
 																.getResultList();
+			// [3] - Transform the [db entities]
 			FindOIDsResult<O> outOids = _buildOIDsResultsFromDBEntities(securityContext,
 																		dbEntities);
 			return outOids;
 		}
 	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	FIND TUPLES (not the full DBEntity)
+/////////////////////////////////////////////////////////////////////////////////////////	
 	@Accessors(prefix="_")
-	protected class FindQueryWrapper
-			extends QueryWrapperBase<FindQueryWrapper> {
-
-		@Getter protected final CriteriaBuilder _criteriaBuilder;
+	protected class FindTupleQueryWrapper
+			extends QueryWrapperBase<FindTupleQueryWrapper> {
+		////////// --- Fields
 		@Getter protected final CriteriaQuery<Tuple> _criteriaQuery;
 		@Getter protected final Root<? extends DB> _root;
 
-		public FindQueryWrapper(final String... colNames) {
+		////////// --- Constructors
+		public FindTupleQueryWrapper(final String... colNames) {
 			this(_DBEntityType,
 				 colNames);
 		}
-		public FindQueryWrapper(final Class<? extends DB> dbEntityType,
+		public FindTupleQueryWrapper(final Class<? extends DB> dbEntityType,
 								final String... colNames) {
-			_criteriaBuilder = _entityManager.getCriteriaBuilder();
+			super(_entityManager.getCriteriaBuilder());
 			_criteriaQuery = _criteriaBuilder.createTupleQuery();
 			_root = _criteriaQuery.from(dbEntityType);
 
@@ -264,47 +281,56 @@ public abstract class DBFindForModelObjectBase<O extends PersistableObjectOID,M 
 											     .toArray(Selection[]::new);
 			if (CollectionUtils.hasData(multisel)) _criteriaQuery.select(_criteriaBuilder.tuple(multisel));	// multiselect method is deprecated: _criteriaQuery.multiselect(multisel);
 		}
+		
+		////////// --- Methods
 		public FindOIDsResult<O> findOidsUsing(final SecurityContext securityContext) {
+			// [1] - ensure the [criteria query] is built before executing the query
 			this.composeCriteriaQuery();
-			TypedQuery<Tuple> typedQuery = _entityManager.createQuery(_criteriaQuery);											
-			if ( DBFindForModelObjectBase.this.getVendorDBHints() != null ){
-				typedQuery.setHint(DBFindForModelObjectBase.this.getVendorDBHints().getReadOnlyHintKey(),true);
-			}
-			List<Tuple> tupleResult =typedQuery.getResultList();											
-			FindOIDsResult<O> outOids = _buildOIDsResultsFromDBTuples(securityContext,
-															      	  tupleResult);
-			return outOids;
+			
+			// [2] - Execute the query
+			List<Tuple> tupleResult = _createTupleResultFromQuery();
+			
+			// [3] - Transform the [db tuples]
+			return _buildOIDsResultsFromDBTuples(securityContext,
+											     tupleResult);
 		}
-		public FindQueryExecResultTransform findEntitiesUsing(final SecurityContext securityContext) {
+		public FindQueryExecTupleResultTransform findEntitiesUsing(final SecurityContext securityContext) {
+			// [1] - ensure the [criteria query] is built before executing the query
 			this.composeCriteriaQuery();
+			
+			// [2] - execute the query
+			List<Tuple> tupleResult = _createTupleResultFromQuery();
+			
+			// [3] - execute the query and transform the [db tuples]
+			return new FindQueryExecTupleResultTransform(securityContext,
+														 tupleResult);
+		}
+		public FindQueryExecTupleResultTransform findSummariesUsing(final SecurityContext securityContext) {
+			// [1] - ensure the [criteria query] is built before executing the query
+			this.composeCriteriaQuery();
+			
+			// [2] - execute the query
+			List<Tuple> tupleResult = _createTupleResultFromQuery();
+
+			// [3] - execute the query and transform the [db tuples]
+			return new FindQueryExecTupleResultTransform(securityContext,
+														 tupleResult);
+		}
+		private List<Tuple> _createTupleResultFromQuery() {
 			TypedQuery<Tuple> typedQuery = _entityManager.createQuery(_criteriaQuery);
-			if ( DBFindForModelObjectBase.this.getVendorDBHints() != null ){
-				typedQuery.setHint(DBFindForModelObjectBase.this.getVendorDBHints().getReadOnlyHintKey(),true);
-			}
-			List<Tuple> tupleResult =typedQuery.getResultList();
-			return new FindQueryExecResultTransform(securityContext,
-													tupleResult);
-		}
-		public FindQueryExecResultTransform findSummariesUsing(final SecurityContext securityContext) {
-			this.composeCriteriaQuery();
-			TypedQuery<Tuple> typedQuery = _entityManager.createQuery(_criteriaQuery);			
-			if ( DBFindForModelObjectBase.this.getVendorDBHints() != null ){
-				typedQuery.setHint(DBFindForModelObjectBase.this.getVendorDBHints().getReadOnlyHintKey(),true);
-			}
-			List<Tuple> tupleResult =typedQuery.getResultList();
-			return new FindQueryExecResultTransform(securityContext,
-													tupleResult);
+			if (DBFindForModelObjectBase.this.getVendorDBHints() != null) typedQuery.setHint(DBFindForModelObjectBase.this.getVendorDBHints().getReadOnlyHintKey(),true);
+
+			return typedQuery.getResultList();
 		}
 	}
 	@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
-	public class FindQueryExecResultTransform {
+	public class FindQueryExecTupleResultTransform {
 		private final SecurityContext _securityContext;
 		private final List<Tuple> _tupleResult;
 
 		public FindResult<M> convertingTupleValuesToObjectUsing(final Function<Object[],M> dbTupleToEntityConverter) {
-			FindResult<M> outFindResult = _buildResultFromTupleValues(_securityContext,
-															 		  _tupleResult,dbTupleToEntityConverter);
-			return outFindResult;
+			return _buildResultFromTupleValues(_securityContext,
+											   _tupleResult,dbTupleToEntityConverter);
 		}
 		public FindResult<M> convertingTupleToObjectUsing(final Function<Tuple,M> dbTupleToEntityConverter) {
 			FindResult<M> outFindResult = _buildResultFromTuple(_securityContext,

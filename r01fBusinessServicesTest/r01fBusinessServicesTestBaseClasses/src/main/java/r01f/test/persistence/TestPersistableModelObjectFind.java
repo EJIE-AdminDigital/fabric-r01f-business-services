@@ -51,49 +51,57 @@ public class TestPersistableModelObjectFind<O extends PersistableObjectOID,M ext
 				 _managesTestMockObjs.getModelObjType());
 
 		Stopwatch stopWatch = Stopwatch.createStarted();
-
-		// [0]: SetUp: create some test objects
-		_managesTestMockObjs.setUpMockObjs(5);
-
-		// [1] - All entities
-		log.warn("\tFIND ALL ENTITY's OIDS");
-		Collection<O> allOids = _findAPI.findAll();
-		log.warn("\t\t>> {}",allOids);
-		Assertions.assertTrue(CollectionUtils.hasData(allOids));
-
-		// [2] - By create / last update date
-		Range<Instant> dateRange = Range.open(Instant.now().minus(1,ChronoUnit.DAYS),
-										   	  Instant.now().plus(1,ChronoUnit.DAYS));
-
-		log.warn("\tFIND ENTITY's OIDs BY CREATE DATE: {}",dateRange.asString());
-		Collection<O> oidsByCreateDate = _findAPI.findByCreateDate(dateRange);
-		log.warn("\t\t>> {}",oidsByCreateDate);
-		Assertions.assertTrue(CollectionUtils.hasData(oidsByCreateDate));
-
-		log.warn("\tFIND ENTITY's OIDs BY LAST UPDATE DATE: {}",dateRange.asString());
-		Collection<O> oidsByLastUpdatedDate = _findAPI.findByCreateDate(dateRange);
-		log.warn("\t\t>> {}",oidsByLastUpdatedDate);
-		Assertions.assertTrue(CollectionUtils.hasData(oidsByLastUpdatedDate));
-
-		// [3] - By creator
-		LoginID user = TestAPIBase.TEST_USER;
-
-		log.warn("\tFIND ENTITY's OIDs BY CREATOR: {}",user);
-		Collection<O> oidsByCreator = _findAPI.findByCreator(user);
-		log.warn("\t\t>> {}",oidsByCreator);
-		Assertions.assertTrue(CollectionUtils.hasData(oidsByCreator));
-
-		// [4] - By last updator (the objects haven't been updated so it must return 0)
-		log.warn("\tFIND ENTITY's OIDs BY LAST UPDATOR: {}",user);
-		Collection<O> oidsByLastUpdator = _findAPI.findByLastUpdator(user);
-		log.warn("\t\t>> {}",oidsByLastUpdator);
-		Assertions.assertTrue(CollectionUtils.isNullOrEmpty(oidsByLastUpdator));
-
-		log.warn("[end ][TEST BASIC FIND {}] (elapsed time: {} milis)-------------------------",
-				 _managesTestMockObjs.getModelObjType(),NumberFormat.getNumberInstance(Locale.getDefault()).format(stopWatch.elapsed(TimeUnit.MILLISECONDS)));
-
-		// [99]: Delete previously created test objects to restore DB state
-		if (deleteCreatedObjs) _managesTestMockObjs.tearDownCreatedMockObjs();
+		try {
+			// [0]: SetUp: create some test objects
+			_managesTestMockObjs.setUpMockObjs(5);
+	
+			// [1] - All entities
+			log.warn("\tFIND ALL ENTITY's OIDS");
+			Collection<O> allOids = _findAPI.findAll();
+			log.warn("\t\t>> {}",allOids);
+			Assertions.assertTrue(CollectionUtils.hasData(allOids));
+	
+			// [2] - By create / last update date
+			Range<Instant> dateRange = Range.open(Instant.now().minus(1,ChronoUnit.DAYS),
+											   	  Instant.now().plus(1,ChronoUnit.DAYS));
+	
+			log.warn("\tFIND ENTITY's OIDs BY CREATE DATE: {}",dateRange.asString());
+			Collection<O> oidsByCreateDate = _findAPI.findByCreateDate(dateRange);
+			log.warn("\t\t>> {}",oidsByCreateDate);
+			Assertions.assertTrue(CollectionUtils.hasData(oidsByCreateDate));
+	
+			log.warn("\tFIND ENTITY's OIDs BY LAST UPDATE DATE: {}",dateRange.asString());
+			Collection<O> oidsByLastUpdatedDate = _findAPI.findByCreateDate(dateRange);
+			log.warn("\t\t>> {}",oidsByLastUpdatedDate);
+			Assertions.assertTrue(CollectionUtils.hasData(oidsByLastUpdatedDate));
+	
+			// [3] - By creator
+			LoginID user = TestAPIBase.TEST_USER;
+	
+			log.warn("\tFIND ENTITY's OIDs BY CREATOR: {}",user);
+			Collection<O> oidsByCreator = _findAPI.findByCreator(user);
+			log.warn("\t\t>> {}",oidsByCreator);
+			Assertions.assertTrue(CollectionUtils.hasData(oidsByCreator));
+	
+			// [4] - By last updator (the objects haven't been updated so it must return 0)
+			log.warn("\tFIND ENTITY's OIDs BY LAST UPDATOR: {}",user);
+			Collection<O> oidsByLastUpdator = _findAPI.findByLastUpdator(user);
+			log.warn("\t\t>> {}",oidsByLastUpdator);
+			Assertions.assertTrue(CollectionUtils.isNullOrEmpty(oidsByLastUpdator));
+	
+			log.warn("[end ][TEST BASIC FIND {}] (elapsed time: {} milis)-------------------------",
+					 _managesTestMockObjs.getModelObjType(),NumberFormat.getNumberInstance(Locale.getDefault()).format(stopWatch.elapsed(TimeUnit.MILLISECONDS)));
+	
+		} catch (Throwable th) {
+			log.error("Error while testing basic find of {}: {}",
+					  _managesTestMockObjs.getModelObjType(),
+					  th.getMessage(),th);
+			Assertions.fail("Error while testing basic find of " + _managesTestMockObjs.getModelObjType() + ": " + th.getMessage(),
+							th);
+		} finally {
+			// [99]: Delete previously created test objects to restore DB state
+			if (deleteCreatedObjs) _managesTestMockObjs.tearDownCreatedMockObjs();			
+		}
 	}
 	protected void testDependentObjectsFind() {
 		// [5] - If it's a dependent model object, test the specific methods

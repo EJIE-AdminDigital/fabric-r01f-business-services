@@ -19,9 +19,9 @@ public class DBModuleConfigForPoolConnectionForEclipselink
 		super(xmlProps,
 			  PersistenceUnitType.DRIVER_MANAGER);
 		_poolData = new DBConnectionPoolDataForEclipseLink(xmlProps.getAppCode(),
-											 _unitType,
-											 _dbSpec,
-											 xmlProps);
+											 			  _unitType,
+											 			  _dbSpec,
+											 			  xmlProps);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //  AS PROPERTIES

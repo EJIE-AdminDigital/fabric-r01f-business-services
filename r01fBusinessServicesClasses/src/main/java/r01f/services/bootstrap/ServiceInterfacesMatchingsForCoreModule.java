@@ -21,7 +21,7 @@ import r01f.services.interfaces.ServiceInterface;
 import r01f.util.types.Strings;
 import r01f.util.types.collections.CollectionUtils;
 
-@Slf4j
+
 @Accessors(prefix="_")
 @RequiredArgsConstructor
 public class ServiceInterfacesMatchingsForCoreModule

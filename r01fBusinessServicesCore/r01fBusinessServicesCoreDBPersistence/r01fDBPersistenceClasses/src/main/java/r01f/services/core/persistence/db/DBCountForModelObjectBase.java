@@ -123,7 +123,6 @@ public abstract class DBCountForModelObjectBase<O extends PersistableObjectOID,M
 	@Accessors(prefix="_")
 	protected class CountQueryWrapper
 			extends QueryWrapperBase<CountQueryWrapper> {
-		@Getter protected final CriteriaBuilder _criteriaBuilder;
 		@Getter protected final CriteriaQuery<Long> _criteriaQuery;
 		@Getter protected final Root<? extends DB> _root;
 		
@@ -135,7 +134,7 @@ public abstract class DBCountForModelObjectBase<O extends PersistableObjectOID,M
 		}
 		public CountQueryWrapper(final Class<? extends DB> dbEntityType,
 								 final String countSpec) {
-			_criteriaBuilder = _entityManager.getCriteriaBuilder();
+			super(_entityManager.getCriteriaBuilder());
 			_criteriaQuery = _criteriaBuilder.createQuery(Long.class);
 			_root = _criteriaQuery.from(dbEntityType);
 			

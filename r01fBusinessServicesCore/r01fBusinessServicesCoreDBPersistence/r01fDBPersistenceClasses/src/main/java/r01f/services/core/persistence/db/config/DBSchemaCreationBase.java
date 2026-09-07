@@ -3,8 +3,8 @@ package r01f.services.core.persistence.db.config;
 import java.util.Properties;
 
 import r01f.file.FileName;
-import r01f.guids.CommonOIDs.AppCode;
 import r01f.internal.R01HomeLocation;
+import r01f.services.ids.ServiceIDs.CoreAppCode;
 import r01f.types.Path;
 import r01f.util.types.Strings;
 import r01f.xmlproperties.XMLPropertiesForAppComponent;
@@ -80,7 +80,7 @@ public abstract class DBSchemaCreationBase {
 			 dataLoadScriptPath,
 			 (Properties)null);
 	}
-	public DBSchemaCreationBase(final AppCode appCode,
+	public DBSchemaCreationBase(final CoreAppCode appCode,
 								final DBSpec dbSpec,
 								final XMLPropertiesForAppComponent xmlProps) {
 		// [0] == DDL action

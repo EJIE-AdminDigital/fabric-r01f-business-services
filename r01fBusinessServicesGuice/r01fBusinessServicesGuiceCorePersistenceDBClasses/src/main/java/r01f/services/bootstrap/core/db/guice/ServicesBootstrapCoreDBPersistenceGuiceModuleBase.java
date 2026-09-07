@@ -7,7 +7,6 @@ import com.google.inject.Binder;
 import com.google.inject.Module;
 
 import lombok.EqualsAndHashCode;
-import lombok.extern.slf4j.Slf4j;
 import r01f.services.bootstrap.core.guice.ServicesBootstrapCoreGuiceModuleBase;
 import r01f.services.core.events.crud.CRUDErrorEventListener;
 import r01f.services.ids.ServiceIDs.CoreAppCode;
@@ -16,7 +15,6 @@ import r01f.services.ids.ServiceIDs.CoreModule;
 /**
  * Mappings internal to services core implementation
  */
-@Slf4j
 @EqualsAndHashCode(callSuper=true)				// This is important for guice modules
 public abstract class ServicesBootstrapCoreDBPersistenceGuiceModuleBase
               extends ServicesBootstrapCoreGuiceModuleBase {

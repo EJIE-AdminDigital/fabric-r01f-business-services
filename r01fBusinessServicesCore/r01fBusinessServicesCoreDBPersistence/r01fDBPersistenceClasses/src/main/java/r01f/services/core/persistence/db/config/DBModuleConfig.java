@@ -89,7 +89,7 @@ public interface DBModuleConfig
 													  		: Strings.customized("{}.{}",
 													  				   			 this.getAppCode(),this.getAppModule());
 		String persistenceUnitName = Strings.customized("persistenceUnit.{}",
-												 	 	jpaServiceName);				// ie: "r01t.urlAlias"
+												 	 	jpaServiceName);				
 		return persistenceUnitName;
 	}
 	public default String getJPAServiceName() {

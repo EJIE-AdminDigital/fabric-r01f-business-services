@@ -5,7 +5,7 @@ import java.util.Properties;
 import org.eclipse.persistence.config.PersistenceUnitProperties;
 
 import r01f.file.FileName;
-import r01f.guids.CommonOIDs.AppCode;
+import r01f.services.ids.ServiceIDs.CoreAppCode;
 import r01f.types.Path;
 import r01f.util.types.StringConverter;
 import r01f.xmlproperties.XMLPropertiesForAppComponent;
@@ -69,7 +69,7 @@ public class DBSchemaCreationForEclipseLink
 			  dataLoadScriptPath,
 			  (Properties)null);
 	}
-	public DBSchemaCreationForEclipseLink(final AppCode appCode,
+	public DBSchemaCreationForEclipseLink(final CoreAppCode appCode,
 										  final DBSpec spec,
 										  final XMLPropertiesForAppComponent xmlProps) {
 		super(appCode,

@@ -4,7 +4,7 @@ import java.util.Properties;
 
 import org.w3c.dom.Node;
 
-import r01f.guids.CommonOIDs.AppCode;
+import r01f.guids.CommonOIDs.IsAppCode;
 import r01f.xmlproperties.XMLPropertiesForAppComponent;
 
 public class DBConnectionPoolSizeForHibernate
@@ -16,7 +16,7 @@ public class DBConnectionPoolSizeForHibernate
 /////////////////////////////////////////////////////////////////////////////////////////
 //  CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
-	public DBConnectionPoolSizeForHibernate(final AppCode appCode,
+	public DBConnectionPoolSizeForHibernate(final IsAppCode appCode,
 							    			final PersistenceUnitType unitType,
 							    			final DBSpec dbSpec,
 							    			final XMLPropertiesForAppComponent xmlProps) {

@@ -392,6 +392,9 @@
 				<directory>src/main/config</directory>
 				<includes>
 					<include>**/*.xml</include>
+					<include>**/*.json</include>
+					<include>**/*.yml</include>
+					<include>**/*.properties</include>
 				</includes>
 			</resource>
 			<resource>
@@ -469,16 +472,16 @@
 <!-- ====================================================================== -->
 <!-- PROFILES                                                               -->
 <!-- ====================================================================== -->
-<!--
-	"batsdlc" profile is used on gitlab compilations, this way we can set the revision and dependencies versions for artifacts deployed to nexus without changing the versions used on local environment.
--->
 	<profiles>
+		<!--
+			"batsdlc" profile is used on gitlab compilations, this way we can set the revision and dependencies versions for artifacts deployed to nexus without changing the versions used on local environment.
+		-->
 		<profile>
 			<id>batsdlc</id>
 			<properties>
 
 				<!-- Unified version for all r01f artifacts -->
-				<r01f.version>0.3.30</r01f.version>
+				<r01f.version>0.4.16</r01f.version>
 
 				<!--  Revion version for all modules -->
 			    <revision>${r01f.version}</revision>
@@ -487,5 +490,95 @@
 				<r01f.base.version>${r01f.version}</r01f.base.version>
 			</properties>
 		</profile>
+
+		<!--
+		VSCODE & ECLIPSE COEXISTENCE
+		============================
+		vscode uses eclipse's JDT Language Server with Maven integration wich by default builds the project in the target/classes folder
+		when using eclipse & vscode at the SAME TIME, eclipse uses the target/classes folder and so des vscode,
+		vscode breaks eclipse's build since it deletes the target/classes folder and so do does eclipse's to vscode
+
+		Solution: use a different target build folder for vscode, this way both IDEs can coexist and build the project at the same time
+
+		"vscode-build-dir" profile is used to change the build directory when building from vscode
+
+		Also ensure to add the following to the vscode's settings.json:
+			    "maven.terminal.customEnv": [
+				    {
+				        "environmentVariable": "JAVA_HOME",
+				        "value": "c:\\develop\\java\\jdk\\jdk-25.0.2+10"
+				    },
+				    {
+				        "environmentVariable": "MAVEN_OPTS",
+				        "value": "-Xms2G -Xmx12G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -Dvscode.build=true"
+				    }
+			    ],
+			    "maven.excludedFolders": [
+			        "**/.*",
+			        "**/node_modules",
+			        "**/target",
+			        "**/vscode-target",
+			        "**/bin",
+			        "**/archetype-resources"
+			    ],
+			    "maven.executable.preferMavenWrapper": true,
+			    "maven.view": "flat",
+			    "java.configuration.maven.globalSettings": "C:\\Users\\___the-user___\\.m2\\settings.xml",
+			    "java.configuration.maven.userSettings": "",
+			    "java.maven.downloadSources": true,
+			    "java.project.explorer.showNonJavaResources": false,
+			    "java.import.maven.enabled": true,
+
+			    "java.server.launchMode": "LightWeight",
+    			"java.autobuild.enabled": false,
+    			"java.configuration.updateBuildConfiguration": "interactive",
+    			"java.project.outputPath": "vscode-target",
+    			"java.jdt.ls.java.home": "c:\\develop\\java\\jdk\\jdk-25.0.2+10",
+    			"java.jdt.ls.vmargs": "-Xmx12G -Xms2G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -Dvscode.build=true",
+    			"java.import.exclusions": [
+			        "**/.git/**",
+			        "**/target/**",
+			        "**/vscode-target/**",
+			        "**/bin/**",
+			        "**/node_modules/**",
+			        "**/.metadata/**",
+			        "**/archetype-resources/**",
+			        "**/META-INF/maven/**"
+			    ]
+		-->
+		<profile>
+	        <id>vscode-build-dir</id>
+	        <activation>
+	            <property>
+	                <name>vscode.build</name>
+	                <value>true</value>
+	            </property>
+	        </activation>
+	        <build>
+	        	<directory>vscode-target</directory>
+
+	        	<!--
+				outputDirectory and testOutputDirectory are part fo the Maven's internal Build model,
+				but they are not user-configurable elements
+
+				The output directory is effectively derived as:
+					${project.build.directory}/classes    (where project.build.directory defaults to: target)
+
+				Setting:
+					<build>
+	    				<directory>my-target</directory>
+					</build>
+				moves EVERYTHING under my-target folder:
+					my-target/classes
+					my-target/test-classes
+				But is NOT possible to change JUST the classes or test-classes subdirectory in a standard POM
+				-->
+				<!--
+	            <outputDirectory>${project.basedir}/target/vscode-classes</outputDirectory>
+	            <testOutputDirectory>${project.basedir}/target/vscode-test-classes</testOutputDirectory>
+	            -->
+	        </build>
+    	</profile>
+
 	</profiles>
 </project>

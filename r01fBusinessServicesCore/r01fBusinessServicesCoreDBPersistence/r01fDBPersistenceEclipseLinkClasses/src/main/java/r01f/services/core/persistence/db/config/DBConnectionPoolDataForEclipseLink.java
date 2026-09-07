@@ -7,7 +7,7 @@ import org.eclipse.persistence.config.PersistenceUnitProperties;
 
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import r01f.guids.CommonOIDs.AppCode;
+import r01f.guids.CommonOIDs.IsAppCode;
 import r01f.util.types.collections.CollectionUtils;
 import r01f.xmlproperties.XMLPropertiesForAppComponent;
 
@@ -19,10 +19,10 @@ public class DBConnectionPoolDataForEclipseLink
 /////////////////////////////////////////////////////////////////////////////////////////
 //  CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
-	public DBConnectionPoolDataForEclipseLink(final AppCode appCode,
-										    final PersistenceUnitType unitType,
-											final DBSpec dbSpec,
-							   				final XMLPropertiesForAppComponent xmlProps) {
+	public DBConnectionPoolDataForEclipseLink(final IsAppCode appCode,
+										      final PersistenceUnitType unitType,
+											  final DBSpec dbSpec,
+							   				  final XMLPropertiesForAppComponent xmlProps) {
 		super(appCode,
 			  unitType,
 			  dbSpec,
@@ -47,7 +47,7 @@ public class DBConnectionPoolDataForEclipseLink
 											  otherProps);
 	}
 	@Override
-	DBConnectionPoolSizeBase _dbConnectionPoolSizeFrom(final AppCode appCode,
+	DBConnectionPoolSizeBase _dbConnectionPoolSizeFrom(final IsAppCode appCode,
 											  		   final PersistenceUnitType unitType,
 											  		   final DBSpec dbSpec,
 											  		   final XMLPropertiesForAppComponent xmlProps) {
