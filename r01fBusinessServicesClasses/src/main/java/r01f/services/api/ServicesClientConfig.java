@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import lombok.Getter;
 import r01f.config.ContainsConfigData;
-import r01f.guids.CommonOIDs.AppComponent;
+import r01f.oids.CommonOIDs.AppComponent;
 import r01f.services.ServicesConfigObject;
 import r01f.services.ids.ServiceIDs.ClientApiAppCode;
 import r01f.util.types.Strings;

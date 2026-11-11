@@ -9,7 +9,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
 import lombok.RequiredArgsConstructor;
-import r01f.model.IndexableModelObject;
+import r01f.model.PersistableObject;
 import r01f.persistence.index.document.IndexDocumentFieldConfigFactories.IndexDocumentFieldConfigFactory;
 import r01f.util.types.collections.CollectionUtils;
 
@@ -18,7 +18,7 @@ import r01f.util.types.collections.CollectionUtils;
  * and caches the created object by it's ID
  */
 @RequiredArgsConstructor
-class IndexDocumentFieldConfigById<M extends IndexableModelObject> {
+class IndexDocumentFieldConfigById<M extends PersistableObject> {
 /////////////////////////////////////////////////////////////////////////////////////////
 //  FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////

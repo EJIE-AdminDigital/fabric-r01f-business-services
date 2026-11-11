@@ -1,6 +1,6 @@
 package r01f.services.core.persistence;
 
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
 import r01f.services.core.IsCoreService;
 import r01f.services.interfaces.ServiceInterface;
 

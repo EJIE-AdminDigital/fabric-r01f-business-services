@@ -3,9 +3,9 @@ package r01f.persistence.index.document;
 import java.util.regex.Pattern;
 
 import lombok.Getter;
-import r01f.guids.OIDTyped;
 import r01f.model.metadata.FieldID;
 import r01f.objectstreamer.annotations.MarshallType;
+import r01f.oids.OIDTyped;
 
 /**
  * Factories for {@link IndexDocumentFieldConfig}

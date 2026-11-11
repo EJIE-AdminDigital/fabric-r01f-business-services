@@ -1,9 +1,9 @@
 package r01f.persistence.search;
 
-import r01f.guids.CommonOIDs.TenantID;
 import r01f.model.search.SearchFilter;
 import r01f.model.search.SearchResultItem;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.CommonOIDs.TenantID;
 
 /**
  * Interface to be implemented by types that holds a {@link SearcherProvider}

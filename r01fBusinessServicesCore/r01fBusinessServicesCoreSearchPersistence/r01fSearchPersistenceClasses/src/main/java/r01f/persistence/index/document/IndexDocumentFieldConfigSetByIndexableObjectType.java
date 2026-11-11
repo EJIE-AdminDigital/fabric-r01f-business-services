@@ -4,14 +4,14 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 
-import r01f.model.IndexableModelObject;
+import r01f.model.PersistableObject;
 import r01f.model.metadata.MetaDataDescribable;
 import r01f.model.metadata.TypeMetaData;
 import r01f.model.metadata.TypeMetaDataInspector;
 import r01f.util.types.collections.CollectionUtils;
 
 /**
- * Holds a {@link Map} of {@link IndexDocumentFieldConfigSet} indexed by {@link IndexableModelObject} type
+ * Holds a {@link Map} of {@link IndexDocumentFieldConfigSet} indexed by {@link PersistableObject} type
  * Mainly it's a means of access indexable objects fields by it's ID
  * 
  * This type is used when the only possible input is the fieldId which is the case of analyzers (ie lucene analyzer)
@@ -26,9 +26,9 @@ public class IndexDocumentFieldConfigSetByIndexableObjectType {
 //  FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * Stores the {@link IndexDocumentFieldConfigSet} for every {@link IndexableModelObject}
+	 * Stores the {@link IndexDocumentFieldConfigSet} for every {@link PersistableObject}
 	 */
-	private final Map<Class<? extends IndexableModelObject>,IndexDocumentFieldConfigSet<? extends IndexableModelObject>> _fieldConfigSetByIndexableObjType;
+	private final Map<Class<? extends PersistableObject>,IndexDocumentFieldConfigSet<? extends PersistableObject>> _fieldConfigSetByIndexableObjType;
 /////////////////////////////////////////////////////////////////////////////////////////
 //  CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -41,11 +41,11 @@ public class IndexDocumentFieldConfigSetByIndexableObjectType {
 		// Get all @TypeMetaData-annotated types as a Map<Class<? extends IndexableModelObject>,IndexDocumentFieldConfigSet<? extends IndexableModelObject>>
 		_fieldConfigSetByIndexableObjType = Maps.newHashMapWithExpectedSize(inspectedTypes.size());
 		for (Map.Entry<Class<? extends MetaDataDescribable>,TypeMetaData<? extends MetaDataDescribable>> typeEntry : inspectedTypes.entrySet()) {
-			Class<? extends IndexableModelObject> type = (Class<? extends IndexableModelObject>)typeEntry.getKey();
-			TypeMetaData<? extends IndexableModelObject> typeMetaData = (TypeMetaData<? extends IndexableModelObject>)typeEntry.getValue();
+			Class<? extends PersistableObject> type = (Class<? extends PersistableObject>)typeEntry.getKey();
+			TypeMetaData<? extends PersistableObject> typeMetaData = (TypeMetaData<? extends PersistableObject>)typeEntry.getValue();
 			
-			IndexDocumentFieldConfigSet<? extends IndexableModelObject> indexDocFieldConfigSet = new IndexDocumentFieldConfigSet(type,
-											   	  																				 typeMetaData);
+			IndexDocumentFieldConfigSet<? extends PersistableObject> indexDocFieldConfigSet = new IndexDocumentFieldConfigSet(type,
+											   	  																			  typeMetaData);
 			
 			_fieldConfigSetByIndexableObjType.put(type,
 												  indexDocFieldConfigSet);
@@ -67,7 +67,7 @@ public class IndexDocumentFieldConfigSetByIndexableObjectType {
 	 * @param fieldId
 	 * @return
 	 */
-	public IndexDocumentFieldConfig<?> getConfigOrThrowFor(final Class<? extends IndexableModelObject> type,
+	public IndexDocumentFieldConfig<?> getConfigOrThrowFor(final Class<? extends PersistableObject> type,
 														  final IndexDocumentFieldID fieldId) {
 		IndexDocumentFieldConfig<?> outCfg = this.getConfigOrNullFor(type,
 																	 fieldId);
@@ -80,7 +80,7 @@ public class IndexDocumentFieldConfigSetByIndexableObjectType {
 	 * @param fieldId
 	 * @return
 	 */
-	public IndexDocumentFieldConfig<?> getConfigOrNullFor(final Class<? extends IndexableModelObject> type,
+	public IndexDocumentFieldConfig<?> getConfigOrNullFor(final Class<? extends PersistableObject> type,
 														  final IndexDocumentFieldID fieldId) {
 		// [1] - Try the cached configs by field id
 		IndexDocumentFieldConfig<?> outCfg = this.getConfigOrNullFor(fieldId);
@@ -123,7 +123,7 @@ public class IndexDocumentFieldConfigSetByIndexableObjectType {
 		if (outCfg != null) return outCfg;
 		
 		// [2] - the field was not found at the cache; traverse every objet's field to find the required field config
-		for (IndexDocumentFieldConfigSet<? extends IndexableModelObject> indexDocFieldConfigSet : _fieldConfigSetByIndexableObjType.values()) {
+		for (IndexDocumentFieldConfigSet<? extends PersistableObject> indexDocFieldConfigSet : _fieldConfigSetByIndexableObjType.values()) {
 			outCfg = indexDocFieldConfigSet.getConfigOrNullFor(fieldId);
 			if (outCfg != null) break;
 		}

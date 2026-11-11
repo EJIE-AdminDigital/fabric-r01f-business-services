@@ -5,8 +5,8 @@ import jakarta.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import r01f.model.security.context.SecurityContext;
 import r01f.persistence.index.IndexManager;
-import r01f.securitycontext.SecurityContext;
 import r01f.servcies.core.persistence.search.lucene.LuceneIndex;
 
 /**

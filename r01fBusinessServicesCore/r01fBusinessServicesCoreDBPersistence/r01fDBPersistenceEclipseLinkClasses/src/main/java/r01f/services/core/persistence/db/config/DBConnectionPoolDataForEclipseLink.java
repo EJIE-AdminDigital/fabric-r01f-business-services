@@ -7,7 +7,7 @@ import org.eclipse.persistence.config.PersistenceUnitProperties;
 
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import r01f.guids.CommonOIDs.IsAppCode;
+import r01f.oids.CommonOIDs.IsAppCode;
 import r01f.util.types.collections.CollectionUtils;
 import r01f.xmlproperties.XMLPropertiesForAppComponent;
 

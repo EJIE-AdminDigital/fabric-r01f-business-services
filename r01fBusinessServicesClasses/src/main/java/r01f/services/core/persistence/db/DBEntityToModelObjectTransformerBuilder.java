@@ -4,15 +4,16 @@ package r01f.services.core.persistence.db;
 import java.util.function.Function;
 
 import lombok.extern.slf4j.Slf4j;
-import r01f.guids.OID;
 import r01f.model.ModelObject;
 import r01f.model.ModelObjectTracking;
 import r01f.model.PersistableModelObject;
 import r01f.model.facets.HasCreationData;
 import r01f.model.facets.HasEntityVersion;
+import r01f.model.facets.HasImpersonatingSecurityPrincipal;
 import r01f.model.facets.HasLastUpdateData;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.OID;
 import r01f.patterns.IsBuilder;
-import r01f.securitycontext.SecurityContext;
 
 
 /**
@@ -67,8 +68,7 @@ public class DBEntityToModelObjectTransformerBuilder
 						// ensure that the model object has the tacking info and entity version
 						if (outModelObj != null) {
 							if (outModelObj instanceof PersistableModelObject) {
-								DBEntityToModelObjectTransformerBuilder.copyDBEntiyTrackingInfoAndEntityVersionToModelObject(dbEntity,
-																															 (PersistableModelObject<? extends OID>)outModelObj);
+								_copyDBEntiyTrackingInfoAndEntityVersionToModelObject(dbEntity,(PersistableModelObject<? extends OID>)outModelObj);
 							}
 						}
 						return outModelObj;
@@ -84,55 +84,65 @@ public class DBEntityToModelObjectTransformerBuilder
 /////////////////////////////////////////////////////////////////////////////////////////
 //  STATIC UTIL METHODS
 /////////////////////////////////////////////////////////////////////////////////////////
-	private static void copyDBEntiyTrackingInfoAndEntityVersionToModelObject(final DBEntity dbEntity,
-																		     final PersistableModelObject<?> modelObject) {
+	private static void _copyDBEntiyTrackingInfoAndEntityVersionToModelObject(final DBEntity dbEntity,final PersistableModelObject<?> modelObject) {
 		// do not forget!
 		ModelObjectTracking trackingInfo = new ModelObjectTracking();
 
-		if (dbEntity instanceof HasCreationData hasCreationData) {
-			if (hasCreationData.getCreateTimeStamp() != null) {
-				trackingInfo.setCreateDate(hasCreationData.getCreateTimeStamp());
+		// Create data
+		if (dbEntity instanceof HasCreationData dbEntityHasCreationData) {
+			if (dbEntityHasCreationData.getCreatedAt() != null) {
+				trackingInfo.setCreatedAt(dbEntityHasCreationData.getCreatedAt());
 			} else if (modelObject.getTrackingInfo() != null
-					&& modelObject.getTrackingInfo().getCreateDate() != null) {
-				trackingInfo.setCreateDate(modelObject.getTrackingInfo().getCreateDate());
+					&& modelObject.getTrackingInfo().getCreatedAt() != null) {
+				trackingInfo.setCreatedAt(modelObject.getTrackingInfo().getCreatedAt());
 			}
-			if (hasCreationData.getCreatorUserOid() != null) {
-				trackingInfo.setCreatorUserOid(hasCreationData.getCreatorUserOid());
+			if (dbEntityHasCreationData.getCreatorSecurityPrincipalOid() != null) {
+				trackingInfo.setCreatorSecurityPrincipalOid(dbEntityHasCreationData.getCreatorSecurityPrincipalOid());
 			} else if (modelObject.getTrackingInfo() != null
-					&& modelObject.getTrackingInfo().getCreatorUserOid() != null) {
-				trackingInfo.setCreatorUserOid(modelObject.getTrackingInfo().getCreatorUserOid());
+					&& modelObject.getTrackingInfo().getCreatorSecurityPrincipalOid() != null) {
+				trackingInfo.setCreatorSecurityPrincipalOid(modelObject.getTrackingInfo().getCreatorSecurityPrincipalOid());
 			}
-			if (hasCreationData.getCreatorUserCode() != null) {
-				trackingInfo.setCreatorUserCode(hasCreationData.getCreatorUserCode());
+			if (dbEntityHasCreationData.getCreatorSecurityPrincipalId() != null) {
+				trackingInfo.setCreatorSecurityPrincipalId(dbEntityHasCreationData.getCreatorSecurityPrincipalId());
 			} else if (modelObject.getTrackingInfo() != null
-					&& modelObject.getTrackingInfo().getCreatorUserCode() != null) {
-				trackingInfo.setCreatorUserCode(modelObject.getTrackingInfo().getCreatorUserCode());
+					&& modelObject.getTrackingInfo().getCreatorSecurityPrincipalId() != null) {
+				trackingInfo.setCreatorSecurityPrincipalId(modelObject.getTrackingInfo().getCreatorSecurityPrincipalId());
 			}
 		}
-
-		if (dbEntity instanceof HasLastUpdateData hasUpdateData) {
-			if (hasUpdateData.getLastUpdateTimeStamp() != null) {
-				trackingInfo.setLastUpdateDate(hasUpdateData.getLastUpdateTimeStamp());
+		// Update data
+		if (dbEntity instanceof HasLastUpdateData dbEntityHasUpdateData) {
+			if (dbEntityHasUpdateData.getLastUpdatedAt() != null) {
+				trackingInfo.setLastUpdatedAt(dbEntityHasUpdateData.getLastUpdatedAt());
 			} else if (modelObject.getTrackingInfo() != null
-					&& modelObject.getTrackingInfo().getLastUpdateDate() != null) {
-				trackingInfo.setLastUpdateDate(modelObject.getTrackingInfo().getLastUpdateDate());
+					&& modelObject.getTrackingInfo().getLastUpdatedAt() != null) {
+				trackingInfo.setLastUpdatedAt(modelObject.getTrackingInfo().getLastUpdatedAt());
 			}
-			if (hasUpdateData.getLastUpdatorUserOid() != null) {
-				trackingInfo.setLastUpdatorUserOid(hasUpdateData.getLastUpdatorUserOid());
+			if (dbEntityHasUpdateData.getLastUpdaterSecurityPrincipalOid() != null) {
+				trackingInfo.setLastUpdaterSecurityPrincipalOid(dbEntityHasUpdateData.getLastUpdaterSecurityPrincipalOid());
 			} else if (modelObject.getTrackingInfo() != null
-					&& modelObject.getTrackingInfo().getLastUpdatorUserOid() != null) {
-				trackingInfo.setLastUpdatorUserOid(modelObject.getTrackingInfo().getLastUpdatorUserOid());
+					&& modelObject.getTrackingInfo().getLastUpdaterSecurityPrincipalOid() != null) {
+				trackingInfo.setLastUpdaterSecurityPrincipalOid(modelObject.getTrackingInfo().getLastUpdaterSecurityPrincipalOid());
 			}
-			if (hasUpdateData.getLastUpdatorUserCode() != null) {
-				trackingInfo.setLastUpdatorUserCode(hasUpdateData.getLastUpdatorUserCode());
+			if (dbEntityHasUpdateData.getLastUpdaterSecurityPrincipalId() != null) {
+				trackingInfo.setLastUpdaterSecurityPrincipalId(dbEntityHasUpdateData.getLastUpdaterSecurityPrincipalId());
 			} else if (modelObject.getTrackingInfo() != null
-					&& modelObject.getTrackingInfo().getLastUpdatorUserCode() != null) {
-				trackingInfo.setLastUpdatorUserCode(modelObject.getTrackingInfo().getLastUpdatorUserCode());
+					&& modelObject.getTrackingInfo().getLastUpdaterSecurityPrincipalId() != null) {
+				trackingInfo.setLastUpdaterSecurityPrincipalId(modelObject.getTrackingInfo().getLastUpdaterSecurityPrincipalId());
+			}
+		}
+		// impersonating security principal
+		if (dbEntity instanceof HasImpersonatingSecurityPrincipal dbEntityHasImpersonatingSecurityPrincipal) {
+			if (dbEntityHasImpersonatingSecurityPrincipal.getImpersonatingSecurityPrincipalOid() != null) {
+				trackingInfo.setImpersonatingSecurityPrincipalOid(dbEntityHasImpersonatingSecurityPrincipal.getImpersonatingSecurityPrincipalOid());
+			} else if (modelObject.getTrackingInfo() != null
+					&& modelObject.getTrackingInfo().getImpersonatingSecurityPrincipalOid() != null) {
+				trackingInfo.setImpersonatingSecurityPrincipalOid(modelObject.getTrackingInfo().getImpersonatingSecurityPrincipalOid());
 			}
 		}
 
 		modelObject.setTrackingInfo(trackingInfo);
 
+		// entity version
 		if (dbEntity instanceof HasEntityVersion hasEntityVersion) {
 			modelObject.setEntityVersion(hasEntityVersion.getEntityVersion());
 		}

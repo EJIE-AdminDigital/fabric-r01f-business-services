@@ -2,9 +2,8 @@ package r01f.services.core.persistence.db;
 
 import jakarta.inject.Provider;
 import jakarta.persistence.EntityManager;
-
-import r01f.guids.CommonOIDs.TenantID;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.CommonOIDs.TenantID;
 
 
 /**

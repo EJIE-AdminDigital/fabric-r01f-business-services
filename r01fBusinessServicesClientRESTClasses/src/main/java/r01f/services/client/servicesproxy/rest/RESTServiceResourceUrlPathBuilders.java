@@ -7,11 +7,11 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import r01f.guids.OID;
-import r01f.guids.OIDForVersionableModelObject;
-import r01f.guids.VersionIndependentOID;
-import r01f.securitycontext.SecurityIDS.LoginID;
-import r01f.securitycontext.SecurityOIDs.UserOID;
+import r01f.oids.OID;
+import r01f.oids.OIDForVersionableModelObject;
+import r01f.oids.SecurityIDs.SecurityPrincipalID;
+import r01f.oids.SecurityOIDs.SecurityPrincipalOID;
+import r01f.oids.VersionIndependentOID;
 import r01f.types.Path;
 import r01f.types.Range;
 import r01f.types.url.Host;
@@ -119,10 +119,10 @@ public class RESTServiceResourceUrlPathBuilders {
 		public UrlPath pathOfEntityList();
 		public UrlPath pathOfEntityListByCreateDate(final Range<Instant> dateRange);
 		public UrlPath pathOfEntityListByLastUpdateDate(final Range<Instant> dateRange);
-		public UrlPath pathOfEntityListByCreator(final UserOID creatorUserOid);
-		public UrlPath pathOfEntityListByCreator(final LoginID creatorUserCode);
-		public UrlPath pathOfEntityListByLastUpdator(final UserOID lastUpdatorUserOid);
-		public UrlPath pathOfEntityListByLastUpdator(final LoginID lastUpdatorUserCode);
+		public UrlPath pathOfEntityListByCreator(final SecurityPrincipalOID creatorPrincipalOid);
+		public UrlPath pathOfEntityListByCreator(final SecurityPrincipalID creatorPrincipalId);
+		public UrlPath pathOfEntityListByLastUpdater(final SecurityPrincipalOID updaterPrincipalOid);
+		public UrlPath pathOfEntityListByLastUpdater(final SecurityPrincipalID updaterPrincipalId);
 	}
 	public static abstract class RESTServiceResourceUrlPathBuilderForModelObjectPersistenceBase<O extends OID>
 						 extends RESTServiceResourceUrlPathBuilderBase
@@ -166,28 +166,28 @@ public class RESTServiceResourceUrlPathBuilders {
 					   						dateRange.asString());
 		}
 		@Override
-		public UrlPath pathOfEntityListByCreator(final UserOID creatorUserOid) {
+		public UrlPath pathOfEntityListByCreator(final SecurityPrincipalOID creatorPrincipalOid) {
 			return Paths.forUrlPaths().join(this.pathOfEntityList(),
 					   					    "byCreatorOid",
-					   					    creatorUserOid.asString());
+					   					    creatorPrincipalOid.asString());
 		}
 		@Override
-		public UrlPath pathOfEntityListByCreator(final LoginID creatorUserCode) {
+		public UrlPath pathOfEntityListByCreator(final SecurityPrincipalID creatorPrincipalId) {
 			return Paths.forUrlPaths().join(this.pathOfEntityList(),
 					   					    "byCreator",
-					   					    creatorUserCode.asString());
+					   					    creatorPrincipalId.asString());
 		}
 		@Override
-		public UrlPath pathOfEntityListByLastUpdator(final UserOID lastUpdatorUserOid) {
+		public UrlPath pathOfEntityListByLastUpdater(final SecurityPrincipalOID updaterPrincipalOid) {
 			return Paths.forUrlPaths().join(this.pathOfEntityList(),
 					   						"byLastUpdatorOid",
-					   						lastUpdatorUserOid.asString());
+					   						updaterPrincipalOid.asString());
 		}
 		@Override
-		public UrlPath pathOfEntityListByLastUpdator(final LoginID lastUpdatorUserCode) {
+		public UrlPath pathOfEntityListByLastUpdater(final SecurityPrincipalID updaterPrincipalId) {
 			return Paths.forUrlPaths().join(this.pathOfEntityList(),
 					   						"byLastUpdator",
-					   						lastUpdatorUserCode.asString());
+					   						updaterPrincipalId.asString());
 		}
 	}
 	public static abstract class RESTServiceResourceUrlPathBuilderForVersionableModelObjectPersistenceBase<O extends OIDForVersionableModelObject>

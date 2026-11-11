@@ -12,20 +12,20 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import r01f.concurrent.Threads;
-import r01f.guids.OID;
-import r01f.guids.PersistableObjectOID;
-import r01f.model.IndexableModelObject;
 import r01f.model.PersistableModelObject;
+import r01f.model.PersistableObject;
 import r01f.model.search.SearchFilterForModelObject;
 import r01f.model.search.SearchResultItemForModelObject;
 import r01f.model.search.SearchResults;
+import r01f.oids.OID;
+import r01f.oids.PersistableObjectOID;
 import r01f.patterns.Factory;
 import r01f.services.api.delegates.ClientAPIDelegateForModelObjectSearchServices;
 import r01f.test.search.TestSearchUtil;
 
 @Slf4j
 @RequiredArgsConstructor(access=AccessLevel.PRIVATE)
-public class TestPersistableModelObjectSearch<F extends SearchFilterForModelObject,I extends SearchResultItemForModelObject<? extends IndexableModelObject>> {
+public class TestPersistableModelObjectSearch<F extends SearchFilterForModelObject,I extends SearchResultItemForModelObject<? extends PersistableObject>> {
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -37,7 +37,7 @@ public class TestPersistableModelObjectSearch<F extends SearchFilterForModelObje
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-	public static <F extends SearchFilterForModelObject,I extends SearchResultItemForModelObject<? extends IndexableModelObject>>
+	public static <F extends SearchFilterForModelObject,I extends SearchResultItemForModelObject<? extends PersistableObject>>
 		   TestPersistableModelObjectSearch<F,I> create(final ClientAPIDelegateForModelObjectSearchServices<F,I> searchApi,
 				   									    final Factory<F> filterFactory,
 				   										final TestPersistableModelObjectManager<? extends OID,? extends PersistableModelObject<? extends OID>> modelObjFactory) {

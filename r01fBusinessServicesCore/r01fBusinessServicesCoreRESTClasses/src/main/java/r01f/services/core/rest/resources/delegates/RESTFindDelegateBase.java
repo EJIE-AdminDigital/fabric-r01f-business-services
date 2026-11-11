@@ -6,12 +6,12 @@ import java.time.Instant;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.experimental.Accessors;
-import r01f.guids.PersistableObjectOID;
 import r01f.model.PersistableModelObject;
 import r01f.model.facets.Versionable;
 import r01f.model.persistence.FindOIDsResult;
-import r01f.securitycontext.SecurityContext;
-import r01f.securitycontext.SecurityIDS.LoginID;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.PersistableObjectOID;
+import r01f.oids.SecurityIDs.SecurityPrincipalID;
 import r01f.services.core.rest.RESTOperationsResponseBuilder;
 import r01f.services.core.rest.RESTOperationsResponseBuilder.PersistenceOperationOnObjectResulCollectionToReponseEntity;
 import r01f.services.core.rest.RESTOperationsResponseBuilder.PersistenceOperationOnObjectResulToReponseEntity;
@@ -71,7 +71,7 @@ public abstract class RESTFindDelegateBase<O extends PersistableObjectOID,M exte
 	 * Finds all persisted model object oids
 	 * If the entity is a {@link Versionable}  {@link PersistableModelObject}, it returns the
 	 * currently active versions
-	 * @param securityContext the user auth data & context info
+	 * @param securityContext 
 	 * @return a {@link PersistenceOperationOK} that encapsulates the oids
 	 */
 	public Response findAll(final SecurityContext securityContext,final String resourcePath) {
@@ -81,7 +81,7 @@ public abstract class RESTFindDelegateBase<O extends PersistableObjectOID,M exte
 	 * Finds all persisted model object oids
 	 * If the entity is a {@link Versionable}  {@link PersistableModelObject}, it returns the
 	 * currently active versions
-	 * @param securityContext the user auth data & context info
+	 * @param securityContext
 	 * @param PersistenceOperationOnObjectResulToReponseEntity<?>  transformer.
 	 * @return a {@link PersistenceOperationOK} that encapsulates the oids
 	 */
@@ -99,7 +99,7 @@ public abstract class RESTFindDelegateBase<O extends PersistableObjectOID,M exte
 	 * Finds all persisted model object oids which create date is in the provided range
 	 * If the entity is a {@link Versionable}  {@link PersistableModelObject}, it returns the
 	 * currently active versions
-	 * @param securityContext the user auth data & context info
+	 * @param securityContext 
 	 * @param PersistenceOperationOnObjectResulToReponseEntity<?>  transformer.
 	 * @param createDate
 	 * @return a {@link PersistenceOperationOK} that encapsulates the oids
@@ -113,7 +113,7 @@ public abstract class RESTFindDelegateBase<O extends PersistableObjectOID,M exte
 	 * Finds all persisted model object oids which create date is in the provided range
 	 * If the entity is a {@link Versionable}  {@link PersistableModelObject}, it returns the
 	 * currently active versions
-	 * @param securityContext the user auth data & context info
+	 * @param securityContext 
 	 * @param PersistenceOperationOnObjectResulToReponseEntity<?>  transformer.
 	 * @param createDate
 	 * @return a {@link PersistenceOperationOK} that encapsulates the oids
@@ -134,7 +134,7 @@ public abstract class RESTFindDelegateBase<O extends PersistableObjectOID,M exte
 	 * Finds all persisted model object oids which last update date is in the provided range
 	 * If the entity is a {@link Versionable}  {@link PersistableModelObject}, it returns the
 	 * currently active versions
-	 * @param securityContext the user auth data & context info
+	 * @param securityContext
 	 * @param lastUpdateDate
 	 * @return a {@link PersistenceOperationOK} that encapsulates the oids
 	 */
@@ -148,7 +148,7 @@ public abstract class RESTFindDelegateBase<O extends PersistableObjectOID,M exte
 	 * Finds all persisted model object oids which last update date is in the provided range
 	 * If the entity is a {@link Versionable}  {@link PersistableModelObject}, it returns the
 	 * currently active versions
-	 * @param securityContext the user auth data & context info
+	 * @param securityContext 
 	 * @param PersistenceOperationOnObjectResulToReponseEntity<?>  transformer.
 	 * @param lastUpdateDate
 	 * @return a {@link PersistenceOperationOK} that encapsulates the oids
@@ -165,32 +165,30 @@ public abstract class RESTFindDelegateBase<O extends PersistableObjectOID,M exte
 		return outResponse;
 	}
 	/**
-	 * Finds all persisted model object oids created by the provided user
+	 * Finds all persisted model object oids created by the provided [principal]
 	 * If the entity is a {@link Versionable}  {@link PersistableModelObject}, it returns the
 	 * currently active versions
-	 * @param securityContext the user auth data & context info
-	 * @param creatorUserCode
+	 * @param securityContext 
+	 * @param creatorPrincipalId
 	 * @return a {@link PersistenceOperationOK} that encapsulates the oids
 	 */
 	public Response findByCreator(final SecurityContext securityContext,final String resourcePath,
-								  final LoginID creatorUserCode) {
-		return findByCreator(securityContext,resourcePath,_transformer, creatorUserCode);
+								  final SecurityPrincipalID creatorPrincipalId) {
+		return findByCreator(securityContext,resourcePath,_transformer, creatorPrincipalId);
 	}
-
-
 	/**
-	 * Finds all persisted model object oids created by the provided user
+	 * Finds all persisted model object oids created by the provided [principal]
 	 * If the entity is a {@link Versionable}  {@link PersistableModelObject}, it returns the
 	 * currently active versions
-	 * @param securityContext the user auth data & context info
+	 * @param securityContext 
 	 * @param PersistenceOperationOnObjectResulToReponseEntity<?>  transformer.
-	 * @param creatorUserCode
+	 * @param creatorPrincipalId
 	 * @return a {@link PersistenceOperationOK} that encapsulates the oids
 	 */
 	public Response findByCreator(final SecurityContext securityContext,final String resourcePath,final PersistenceOperationOnObjectResulToReponseEntity<?> transformer,
-								  final LoginID creatorUserCode) {
+								  final SecurityPrincipalID creatorPrincipalId) {
 		FindOIDsResult<O> findResult = _findServices.findByCreator(securityContext,
-																   creatorUserCode);
+																   creatorPrincipalId);
 		Response outResponse = RESTOperationsResponseBuilder.findOn(_modelObjectType)
 																.at(URI.create(resourcePath))
 																.mediaType(_mediaType)
@@ -198,35 +196,33 @@ public abstract class RESTFindDelegateBase<O extends PersistableObjectOID,M exte
 															.build(findResult);
 		return outResponse;
 	}
-
-
 	/**
-	 * Finds all persisted model object oids last updated by the provided user
+	 * Finds all persisted model object oids last updated by the provided [principal]
 	 * If the entity is a {@link Versionable}  {@link PersistableModelObject}, it returns the
 	 * currently active versions
 	 * @param securityContext the user auth data & context info
-	 * @param lastUpdtorUserCode
+	 * @param updaterPrincipalId
 	 * @return a {@link PersistenceOperationOK} that encapsulates the oids
 	 */
-	public Response findByLastUpdator(final SecurityContext securityContext,final String resourcePath,
-									  final LoginID lastUpdtorUserCode) {
+	public Response findByLastUpdater(final SecurityContext securityContext,final String resourcePath,
+									  final SecurityPrincipalID updaterPrincipalId) {
 
-		return this.findByLastUpdator(securityContext,resourcePath,_transformer,
-									  lastUpdtorUserCode);
+		return this.findByLastUpdater(securityContext,resourcePath,_transformer,
+									  updaterPrincipalId);
 	}
 	/**
-	 * Finds all persisted model object oids last updated by the provided user
+	 * Finds all persisted model object oids last updated by the provided [principal]
 	 * If the entity is a {@link Versionable}  {@link PersistableModelObject}, it returns the
 	 * currently active versions
-	 * @param securityContext the user auth data & context info
+	 * @param securityContext 
 	 * @param PersistenceOperationOnObjectResulToReponseEntity<?>  transformer.
-	 * @param lastUpdtorUserCode
+	 * @param updaterPrincipalId
 	 * @return a {@link PersistenceOperationOK} that encapsulates the oids
 	 */
-	public Response findByLastUpdator(final SecurityContext securityContext,final String resourcePath,final PersistenceOperationOnObjectResulToReponseEntity<?> transformer,
-									  final LoginID lastUpdtorUserCode) {
-		FindOIDsResult<O> findResult = _findServices.findByLastUpdator(securityContext,
-																	   lastUpdtorUserCode);
+	public Response findByLastUpdater(final SecurityContext securityContext,final String resourcePath,final PersistenceOperationOnObjectResulToReponseEntity<?> transformer,
+									  final SecurityPrincipalID updaterPrincipalId) {
+		FindOIDsResult<O> findResult = _findServices.findByLastUpdater(securityContext,
+																	   updaterPrincipalId);
 		Response outResponse = RESTOperationsResponseBuilder.findOn(_modelObjectType)
 																.at(URI.create(resourcePath))
 																.mediaType(_mediaType)

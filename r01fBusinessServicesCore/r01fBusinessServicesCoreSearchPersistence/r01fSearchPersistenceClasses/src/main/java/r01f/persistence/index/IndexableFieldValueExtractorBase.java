@@ -16,14 +16,11 @@ import r01f.facets.HasName;
 import r01f.facets.HasOID;
 import r01f.facets.Summarizable.HasSummaryFacet;
 import r01f.facets.util.Facetables;
-import r01f.guids.OID;
-import r01f.guids.VersionIndependentOID;
-import r01f.guids.VersionOID;
 import r01f.locale.Language;
 import r01f.locale.LanguageTexts;
 import r01f.model.HasTrackableFacet;
-import r01f.model.IndexableModelObject;
 import r01f.model.PersistableModelObject;
+import r01f.model.PersistableObject;
 import r01f.model.facets.HasEntityVersion;
 import r01f.model.facets.HasNumericID;
 import r01f.model.facets.Versionable;
@@ -43,9 +40,12 @@ import r01f.model.metadata.TypeMetaData;
 import r01f.model.metadata.TypeMetaDataForModelObjectBase;
 import r01f.model.metadata.TypeMetaDataInspector;
 import r01f.model.persistence.PersistenceRequestedOperation;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.OID;
+import r01f.oids.VersionIndependentOID;
+import r01f.oids.VersionOID;
 import r01f.persistence.index.document.IndexDocumentFieldValue;
 import r01f.persistence.index.document.IndexDocumentFieldValueSet;
-import r01f.securitycontext.SecurityContext;
 import r01f.types.summary.LangDependentSummary;
 import r01f.types.summary.Summary;
 import r01f.util.types.Strings;
@@ -59,7 +59,7 @@ import r01f.util.types.collections.CollectionUtils;
  */
 @Slf4j
 @Accessors(prefix="_")
-public abstract class IndexableFieldValueExtractorBase<M extends IndexableModelObject>
+public abstract class IndexableFieldValueExtractorBase<M extends PersistableObject>
            implements IndexableFieldValuesExtractor<M> {
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -281,22 +281,22 @@ public abstract class IndexableFieldValueExtractorBase<M extends IndexableModelO
 															.asFieldMetaData();
 				_fields.add(IndexDocumentFieldValue.forMetaData(createDateField)
 											   	   .andValue(Instant.now()));
-				if (securityContext.getLoginId() != null) {
+				if (securityContext.getSecurityPrincipalId() != null) {
 					FieldMetaData creatorField = typeMetaData.findFieldByIdOrThrow(HasMetaDataForHasTrackableFacetForModelObject.SEARCHABLE_METADATA.CREATOR)
 															 .asFieldMetaData();
 					_fields.add(IndexDocumentFieldValue.forMetaData(creatorField)
-											       	   .andValue(securityContext.getLoginId()));
+											       	   .andValue(securityContext.getSecurityPrincipalId()));
 				}
 			} else if (reqOp.is(PersistenceRequestedOperation.UPDATE)) {
 				FieldMetaData lastUpdateDateField = typeMetaData.findFieldByIdOrThrow(HasMetaDataForHasTrackableFacetForModelObject.SEARCHABLE_METADATA.LAST_UPDATE_DATE)
 																.asFieldMetaData();
 				_fields.add(IndexDocumentFieldValue.forMetaData(lastUpdateDateField)
 											   	   .andValue(Instant.now()));
-				if (securityContext.getLoginId() != null) {
+				if (securityContext.getSecurityPrincipalId() != null) {
 					FieldMetaData lastUpdatorField = typeMetaData.findFieldByIdOrThrow(HasMetaDataForHasTrackableFacetForModelObject.SEARCHABLE_METADATA.LAST_UPDATOR)
 																 .asFieldMetaData();
 					_fields.add(IndexDocumentFieldValue.forMetaData(lastUpdatorField)
-													   .andValue(securityContext.getLoginId()));
+													   .andValue(securityContext.getSecurityPrincipalId()));
 				}
 			}
 		}

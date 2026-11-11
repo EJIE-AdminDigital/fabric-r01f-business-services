@@ -4,8 +4,8 @@ import java.util.Map;
 
 import jakarta.inject.Provider;
 import lombok.experimental.Accessors;
+import r01f.model.security.context.SecurityContext;
 import r01f.objectstreamer.Marshaller;
-import r01f.securitycontext.SecurityContext;
 import r01f.services.bootstrap.annotations.api.SecurityContextProviderForSystemUser;
 import r01f.services.interfaces.ServiceInterface;
 import r01f.types.AppVersion;

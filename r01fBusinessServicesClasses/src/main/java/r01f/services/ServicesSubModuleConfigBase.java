@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import r01f.config.ContainsConfigData;
-import r01f.guids.CommonOIDs.IsAppComponent;
+import r01f.oids.CommonOIDs.IsAppComponent;
 
 @Accessors(prefix="_")
 @RequiredArgsConstructor

@@ -2,18 +2,14 @@ package r01f.services.core.persistence.search.db;
 
 import java.util.Collection;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
-
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 
-import r01f.guids.OID;
-import r01f.guids.OIDs;
-import r01f.guids.PersistableObjectOID;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import r01f.locale.Language;
-import r01f.model.IndexableModelObject;
 import r01f.model.ModelObject;
+import r01f.model.PersistableModelObject;
 import r01f.model.metadata.HasMetaDataForHasOIDModelObject;
 import r01f.model.metadata.TypeFieldMetaData;
 import r01f.model.metadata.TypeMetaData;
@@ -21,9 +17,12 @@ import r01f.model.metadata.TypeMetaDataInspector;
 import r01f.model.search.SearchFilterForModelObject;
 import r01f.model.search.SearchResultItemContainsPersistableObject;
 import r01f.model.search.SearchResultItemForModelObject;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.OID;
+import r01f.oids.OIDs;
+import r01f.oids.PersistableObjectOID;
 import r01f.patterns.Factory;
 import r01f.persistence.search.PersistableObjectToSearchResultItem;
-import r01f.securitycontext.SecurityContext;
 import r01f.services.core.persistence.db.DBEntity;
 import r01f.services.core.persistence.db.TransformsDBEntityIntoModelObject;
 import r01f.services.interfaces.SearchServicesForModelObject;
@@ -45,7 +44,7 @@ import r01f.util.types.collections.CollectionUtils;
  * @param <I>
  * @param <DB>
  */
-public abstract class DBSearcherForModelObjectBase<F extends SearchFilterForModelObject,I extends SearchResultItemForModelObject<? extends IndexableModelObject>,
+public abstract class DBSearcherForModelObjectBase<F extends SearchFilterForModelObject,I extends SearchResultItemForModelObject<? extends PersistableModelObject<?>>,
 									 			   DB extends DBEntity>
 			  extends DBSearcherBase<F,I,
 			  						 DB>
@@ -62,7 +61,7 @@ public abstract class DBSearcherForModelObjectBase<F extends SearchFilterForMode
 			  transformsDBEntityToSearchResultItem);
 	}
 	@SuppressWarnings("unchecked")
-	protected <M extends IndexableModelObject,J extends SearchResultItemForModelObject<M>,
+	protected <M extends PersistableModelObject<?>,J extends SearchResultItemForModelObject<M>,
 			   S extends DBSearchQuery<F,DB>> DBSearcherForModelObjectBase(final Class<M> modelObjType,final Class<DB> dbEntityType,
 							 			   								   final EntityManager entityManager,
 							 			   								   final Factory<S> searchQueryFactory,

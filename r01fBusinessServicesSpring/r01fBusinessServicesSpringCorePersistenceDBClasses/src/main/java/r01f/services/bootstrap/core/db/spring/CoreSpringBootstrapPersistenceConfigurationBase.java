@@ -103,17 +103,27 @@ public abstract class CoreSpringBootstrapPersistenceConfigurationBase
 // CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////
 	public CoreSpringBootstrapPersistenceConfigurationBase(final CoreModule configPrefix, 
-			                                               final Class<? extends DBEntity> entityBase,	
+														   final Class<? extends DBEntity>[] entitiesBase,
+														   final CoreDBTransactionAdvisorHandler transationAdvisorHandler,
+														   final CoreDBTransactionInterceptorHandler transactionInterceptorHandler) {
+		super(configPrefix,entitiesBase);
+		_transationAdvisorHandler  = transationAdvisorHandler;
+		_transactionInterceptorHandler  = transactionInterceptorHandler;
+	}
+	@SuppressWarnings("unchecked")
+	public CoreSpringBootstrapPersistenceConfigurationBase(final CoreModule configPrefix, 
+			                                               final Class<? extends DBEntity> entityBase,
 			                                               final CoreDBTransactionAdvisorHandler transationAdvisorHandler, final CoreDBTransactionInterceptorHandler transactionInterceptorHandler) {
 		super(configPrefix,entityBase);
 		_transationAdvisorHandler  = transationAdvisorHandler;
 		_transactionInterceptorHandler  = transactionInterceptorHandler;
 	}
+	@SafeVarargs
 	protected CoreSpringBootstrapPersistenceConfigurationBase(final CoreModule configPrefix, 
-                                                              final Class<? extends DBEntity> entityBase) {
-	  this(configPrefix,
-		   entityBase,
-		   new CoreDBTransactionAdvisorHandlerDefault(), new CoreDBTransactionInterceptorHandlerDefault() );
+															  final Class<? extends DBEntity> ... entitiesBase) {
+		this(configPrefix,
+			entitiesBase,
+			new CoreDBTransactionAdvisorHandlerDefault(), new CoreDBTransactionInterceptorHandlerDefault() );
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 // METHODS
@@ -160,7 +170,8 @@ public abstract class CoreSpringBootstrapPersistenceConfigurationBase
 
 	   
     @Override
-    public Advisor transactionsAdvisor( final TransactionInterceptor interceptor,  final Class<?>... baseServicePackageClasses) {        
+    public Advisor transactionsAdvisor( final TransactionInterceptor interceptor,
+    									final Class<?>... baseServicePackageClasses) {        
         return _transationAdvisorHandler.createFor(interceptor,baseServicePackageClasses );        		
     } 
 	

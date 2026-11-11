@@ -3,12 +3,12 @@ package r01f.model.persistence;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import r01f.model.security.context.SecurityContext;
 import r01f.model.services.COREServiceErrorType;
 import r01f.model.services.COREServiceErrorTypes;
 import r01f.model.services.COREServiceMethod;
 import r01f.model.services.COREServiceMethodExecError;
 import r01f.patterns.IsBuilder;
-import r01f.securitycontext.SecurityContext;
 import r01f.util.types.Strings;
 
 /**

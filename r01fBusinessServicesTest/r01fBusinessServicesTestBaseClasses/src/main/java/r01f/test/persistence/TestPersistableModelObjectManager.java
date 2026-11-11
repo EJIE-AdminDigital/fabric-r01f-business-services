@@ -4,8 +4,8 @@ import java.util.function.Function;
 
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import r01f.guids.PersistableObjectOID;
 import r01f.model.PersistableModelObject;
+import r01f.oids.PersistableObjectOID;
 import r01f.patterns.Factory;
 import r01f.services.api.delegates.ClientAPIDelegateForModelObjectCRUDServices;
 

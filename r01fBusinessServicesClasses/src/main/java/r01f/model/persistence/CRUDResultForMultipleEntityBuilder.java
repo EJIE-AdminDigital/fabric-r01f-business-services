@@ -7,11 +7,11 @@ import com.google.common.collect.Lists;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import r01f.guids.OID;
-import r01f.guids.OIDForVersionableModelObject;
 import r01f.model.PersistableModelObject;
 import r01f.model.facets.Versionable.HasVersionableFacet;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.OID;
+import r01f.oids.OIDForVersionableModelObject;
 import r01f.services.core.persistence.db.DBEntity;
 import r01f.services.core.persistence.db.DBEntityToModelObjectTransformerBuilder;
 import r01f.services.core.persistence.db.TransformsDBEntityIntoModelObject;

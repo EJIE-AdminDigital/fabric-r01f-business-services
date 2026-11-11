@@ -2,8 +2,8 @@ package r01f.services.interfaces;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import r01f.guids.PersistableObjectOID;
 import r01f.model.PersistableModelObject;
+import r01f.oids.PersistableObjectOID;
 
 @NoArgsConstructor(access=AccessLevel.PRIVATE)
 public abstract class ServiceProviders {

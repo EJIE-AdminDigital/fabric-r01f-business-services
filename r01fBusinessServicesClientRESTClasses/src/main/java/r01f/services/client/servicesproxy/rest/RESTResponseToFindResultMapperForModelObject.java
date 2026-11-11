@@ -8,7 +8,6 @@ import com.google.common.reflect.TypeToken;
 
 import r01f.exceptions.Throwables;
 import r01f.generics.ParameterizedTypeImpl;
-import r01f.guids.PersistableObjectOID;
 import r01f.httpclient.HttpResponseResult;
 import r01f.io.util.StringPersistenceUtils;
 import r01f.mime.MimeType;
@@ -18,8 +17,9 @@ import r01f.model.persistence.FindError;
 import r01f.model.persistence.FindOK;
 import r01f.model.persistence.FindResult;
 import r01f.model.persistence.FindResultBuilder;
+import r01f.model.security.context.SecurityContext;
 import r01f.objectstreamer.Marshaller;
-import r01f.securitycontext.SecurityContext;
+import r01f.oids.PersistableObjectOID;
 import r01f.services.api.COREServiceProxyException;
 import r01f.types.url.Url;
 import r01f.util.types.Strings;

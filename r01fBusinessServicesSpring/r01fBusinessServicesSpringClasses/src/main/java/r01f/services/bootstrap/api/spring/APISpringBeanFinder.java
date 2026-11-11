@@ -22,10 +22,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import r01f.model.annotations.ModelObjectsMarshaller;
+import r01f.model.security.context.SecurityContext;
 import r01f.objectstreamer.Marshaller;
 import r01f.patterns.ThrowingFunction;
 import r01f.patterns.ThrowingPredicate;
-import r01f.securitycontext.SecurityContext;
+import r01f.services.interfaces.ExposedServiceInterface;
 import r01f.services.interfaces.ServiceInterface;
 import r01f.types.JavaPackage;
 import r01f.util.types.collections.CollectionUtils;
@@ -164,6 +165,9 @@ public abstract class APISpringBeanFinder {
 		
 		/**
 		 * in the spring context finds the service interfaces that extend the given base service interface
+		 * BEWARE!! only the interfaces annotated with @ExposedServiceInterface are returned (as guice's ServicesClassPathScanner does):
+		 *          intermediate BASE service interfaces are NOT annotated and can be implemented by many CORE beans,
+		 *          so a single bean could NOT be found for them
 		 * @param <B>
 		 * @param classLoader
 		 * @param baseServiceInterface
@@ -199,9 +203,11 @@ public abstract class APISpringBeanFinder {
 													//			- are interfaces
 													//			- are not the base service interface itself 
 													//			- that match the type filter (ie: they extend the base service interface)
+													//			- are annotated with @ExposedServiceInterface (BASE service interfaces are NOT)
 													.filter(metaDataReader ->  metaDataReader.getClassMetadata().isInterface())
 													.filter(metaDataReader -> !metaDataReader.getClassMetadata().getClassName().equalsIgnoreCase(baseServiceInterface.getName()))
 													.filter(ThrowingPredicate.unchecked(metaDataReader -> typeFilter.match(metaDataReader,metadataReaderFactory)))
+													.filter(metaDataReader -> metaDataReader.getAnnotationMetadata().hasAnnotation(ExposedServiceInterface.class.getName()))
 													// map to the type definition
 													.map(ThrowingFunction.unchecked(metaDataReader -> (Class<B>)Class.forName(metaDataReader.getClassMetadata().getClassName())))
 													.collect(Collectors.toList());

@@ -1,9 +1,9 @@
 package r01f.services.interfaces;
 
-import r01f.guids.PersistableObjectOID;
 import r01f.model.PersistableModelObject;
 import r01f.model.persistence.CountResult;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.PersistableObjectOID;
 
 @ExposedServiceInterface
 public interface CountServicesForModelObject<O extends PersistableObjectOID,M extends PersistableModelObject<O>>

@@ -2,13 +2,13 @@ package r01f.services.client.servicesproxy.rest;
 
 import java.time.Instant;
 
-import r01f.guids.PersistableObjectOID;
 import r01f.model.PersistableModelObject;
 import r01f.model.persistence.FindOIDsResult;
+import r01f.model.security.context.SecurityContext;
 import r01f.objectstreamer.Marshaller;
-import r01f.securitycontext.SecurityContext;
-import r01f.securitycontext.SecurityIDS.LoginID;
-import r01f.securitycontext.SecurityOIDs.UserOID;
+import r01f.oids.PersistableObjectOID;
+import r01f.oids.SecurityIDs.SecurityPrincipalID;
+import r01f.oids.SecurityOIDs.SecurityPrincipalOID;
 import r01f.services.client.servicesproxy.rest.RESTServiceResourceUrlPathBuilders.RESTServiceResourceUrlPathBuilderForModelObjectPersistence;
 import r01f.services.interfaces.FindServicesForModelObject;
 import r01f.types.Range;
@@ -51,7 +51,7 @@ public abstract class RESTServicesForDBFindProxyBase<O extends PersistableObject
 	public FindOIDsResult<O> findByCreateDate(final SecurityContext securityContext,
 										  	  final Range<Instant> createDate) {
 		Url restResourceUrl = this.composeURIFor(this.getServicesRESTResourceUrlPathBuilderAs(RESTServiceResourceUrlPathBuilderForModelObjectPersistence.class)
-															   			  .pathOfEntityListByCreateDate(createDate));
+													 .pathOfEntityListByCreateDate(createDate));
 		return _findDelegate.doFindOids(securityContext,
 				           				restResourceUrl);
 	}
@@ -59,39 +59,39 @@ public abstract class RESTServicesForDBFindProxyBase<O extends PersistableObject
 	public FindOIDsResult<O> findByLastUpdateDate(final SecurityContext securityContext,
 											  	  final Range<Instant> lastUpdateDate) {
 		Url restResourceUrl = this.composeURIFor(this.getServicesRESTResourceUrlPathBuilderAs(RESTServiceResourceUrlPathBuilderForModelObjectPersistence.class)
-															   			  .pathOfEntityListByLastUpdateDate(lastUpdateDate));
+													 .pathOfEntityListByLastUpdateDate(lastUpdateDate));
 		return _findDelegate.doFindOids(securityContext,
 				           				restResourceUrl);
 	}
 	@Override
 	public FindOIDsResult<O> findByCreator(final SecurityContext securityContext,
-									   	   final UserOID creatorUserOid) {
+									   	   final SecurityPrincipalOID creatorPrincipalOid) {
 		Url restResourceUrl = this.composeURIFor(this.getServicesRESTResourceUrlPathBuilderAs(RESTServiceResourceUrlPathBuilderForModelObjectPersistence.class)
-															   			  .pathOfEntityListByCreator(creatorUserOid));
+													 .pathOfEntityListByCreator(creatorPrincipalOid));
 		return _findDelegate.doFindOids(securityContext,
 				           				restResourceUrl);
 	}
 	@Override
 	public FindOIDsResult<O> findByCreator(final SecurityContext securityContext,
-									   	   final LoginID creatorUserCode) {
+									   	   final SecurityPrincipalID creatorPrincipalId) {
 		Url restResourceUrl = this.composeURIFor(this.getServicesRESTResourceUrlPathBuilderAs(RESTServiceResourceUrlPathBuilderForModelObjectPersistence.class)
-															   			  .pathOfEntityListByCreator(creatorUserCode));
+													 .pathOfEntityListByCreator(creatorPrincipalId));
 		return _findDelegate.doFindOids(securityContext,
 				           				restResourceUrl);
 	}
 	@Override
-	public FindOIDsResult<O> findByLastUpdator(final SecurityContext securityContext,
-										   	   final UserOID lastUpdtorUserOid) {
+	public FindOIDsResult<O> findByLastUpdater(final SecurityContext securityContext,
+										   	   final SecurityPrincipalOID updaterPrincipalOid) {
 		Url restResourceUrl = this.composeURIFor(this.getServicesRESTResourceUrlPathBuilderAs(RESTServiceResourceUrlPathBuilderForModelObjectPersistence.class)
-															   			  .pathOfEntityListByLastUpdator(lastUpdtorUserOid));
+													 .pathOfEntityListByLastUpdater(updaterPrincipalOid));
 		return _findDelegate.doFindOids(securityContext,
 				           				restResourceUrl);
 	}
 	@Override
-	public FindOIDsResult<O> findByLastUpdator(final SecurityContext securityContext,
-										   	   final LoginID lastUpdtorUserCode) {
+	public FindOIDsResult<O> findByLastUpdater(final SecurityContext securityContext,
+										   	   final SecurityPrincipalID updaterPrincipalId) {
 		Url restResourceUrl = this.composeURIFor(this.getServicesRESTResourceUrlPathBuilderAs(RESTServiceResourceUrlPathBuilderForModelObjectPersistence.class)
-															   			  .pathOfEntityListByLastUpdator(lastUpdtorUserCode));
+													 .pathOfEntityListByLastUpdater(updaterPrincipalId));
 		return _findDelegate.doFindOids(securityContext,
 				           				restResourceUrl);
 	}

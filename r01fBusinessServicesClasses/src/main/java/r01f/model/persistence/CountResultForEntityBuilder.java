@@ -2,9 +2,9 @@ package r01f.model.persistence;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import r01f.model.security.context.SecurityContext;
 import r01f.model.services.COREServiceErrorType;
 import r01f.model.services.COREServiceErrorTypes;
-import r01f.securitycontext.SecurityContext;
 import r01f.types.url.Url;
 import r01f.util.types.Strings;
 

@@ -1,7 +1,7 @@
 package r01f.services.core.delegates.persistence;
 
 import r01f.model.persistence.PersistenceRequestedOperation;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
 import r01f.services.interfaces.CRUDServicesForModelObject;
 import r01f.validation.ObjectValidationResult;
 import r01f.validation.ObjectValidationResults.ObjectValidationResultNOK;

@@ -97,9 +97,9 @@ public class ServicesBootstrapConfig
 									 		  });
 		
 		// [2] - java packages where to look for [core service impl] or [proxy to core service impl] types
-		Collection<ServicesCoreImplOrProxyToCoreModuleConfig> coreImplOrProxyCfgs = modBootCfg.getCoreImplOrProxyToCoreModuleConfigs();
+		Collection<ServicesCoreImplOrProxyToCoreImplConfig> coreImplOrProxyCfgs = modBootCfg.getCoreImplOrProxyToCoreModuleConfigs();
 		
-		for (ServicesCoreImplOrProxyToCoreModuleConfig coreImplOrProxyCfg : coreImplOrProxyCfgs) {
+		for (ServicesCoreImplOrProxyToCoreImplConfig coreImplOrProxyCfg : coreImplOrProxyCfgs) {
 			// a) get the [core impl] or [proxy] base type (a super-type for every [core impl] or [proxy])
 			Collection<Class<? extends IsCoreServiceImplOrProxyToCoreServiceImpl>> coreImplOrProxyBaseTypes = coreImplOrProxyCfg.getCoreServiceOrProxyToCoreServiceBaseTypes();
 	

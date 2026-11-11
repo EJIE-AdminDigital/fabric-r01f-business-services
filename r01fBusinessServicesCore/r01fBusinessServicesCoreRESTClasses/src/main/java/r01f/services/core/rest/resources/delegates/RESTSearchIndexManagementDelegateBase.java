@@ -6,8 +6,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import lombok.experimental.Accessors;
+import r01f.model.security.context.SecurityContext;
 import r01f.rest.resources.delegates.RESTDelegate;
-import r01f.securitycontext.SecurityContext;
 import r01f.services.core.persistence.index.IndexManagementCommand;
 import r01f.services.core.rest.RESTOperationsResponseBuilder;
 import r01f.services.interfaces.IndexManagementServices;

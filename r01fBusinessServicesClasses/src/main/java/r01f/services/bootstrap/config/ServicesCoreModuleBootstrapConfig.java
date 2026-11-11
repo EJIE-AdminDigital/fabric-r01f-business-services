@@ -37,11 +37,11 @@ public class ServicesCoreModuleBootstrapConfig
 	/**
 	 * How is this module exposed to the client API
 	 */
-	@Getter protected final Collection<ServicesCoreImplOrProxyToCoreModuleConfig> _coreImplOrProxyToCoreModuleConfigs;
+	@Getter protected final Collection<ServicesCoreImplOrProxyToCoreImplConfig> _coreImplOrProxyToCoreModuleConfigs;
 /////////////////////////////////////////////////////////////////////////////////////////
-//	
+//
 /////////////////////////////////////////////////////////////////////////////////////////
-	public ServicesCoreImplOrProxyToCoreModuleConfig getCoreImplOrProxyToCoreModuleConfigFor(final ServicesCoreImpl coreImplType) {
+	public ServicesCoreImplOrProxyToCoreImplConfig getCoreImplOrProxyToCoreModuleConfigFor(final ServicesCoreImpl coreImplType) {
 		return CollectionUtils.hasData(_coreImplOrProxyToCoreModuleConfigs)
 					? _coreImplOrProxyToCoreModuleConfigs.stream()
 														 .filter(cfg -> cfg.getCoreImplType() == coreImplType)
@@ -51,7 +51,7 @@ public class ServicesCoreModuleBootstrapConfig
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //  DEBUG
-/////////////////////////////////////////////////////////////////////////////////////////	
+/////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public CharSequence debugInfo() {
 		return Strings.customized("* [{}.{}] CORE module services config:\n" +
@@ -60,7 +60,7 @@ public class ServicesCoreModuleBootstrapConfig
 								  "{}",
 								  _coreAppCode,_coreModule,
 								  _serviceInterfacesBaseTypes,
-								  CollectionUtils.hasData(_coreImplOrProxyToCoreModuleConfigs) 
+								  CollectionUtils.hasData(_coreImplOrProxyToCoreModuleConfigs)
 								  		? _coreImplOrProxyToCoreModuleConfigs.stream()
 																		  .map(cfg -> Strings.customized("\t\t-{}",
 																				   						 cfg.debugInfo()))

@@ -6,6 +6,10 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 
+/**
+ * This "Registrar" is invoked when @EnableCoreEvents is invoked f.e at CommonCore proyects.
+ *    @EnableCoreEvents ---> COREEventBusRegistrar  --> COREEventBusSmartInitializingSingleton
+ */
 public class COREEventBusRegistrar 
 		implements ImportBeanDefinitionRegistrar {	
 /////////////////////////////////////////////////////////////
@@ -15,7 +19,7 @@ public class COREEventBusRegistrar
     public void registerBeanDefinitions(final AnnotationMetadata metadata, final BeanDefinitionRegistry registry) {
         @SuppressWarnings("unused")
         
-		// Currenttly no attributes, this couald be usefull for future features,
+		// Currenttly no attributes, this could be usefull for future features,
          //AnnotationAttributes attrs = AnnotationAttributes.fromMap(metadata.getAnnotationAttributes(EnableCoreEvents.class.getName()));
         // [Registry the singleton]
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(COREEventBusSmartInitializingSingleton.class);

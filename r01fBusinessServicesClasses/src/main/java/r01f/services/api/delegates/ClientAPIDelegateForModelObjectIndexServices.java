@@ -3,11 +3,10 @@ package r01f.services.api.delegates;
 import java.util.Collection;
 
 import jakarta.inject.Provider;
-
-import r01f.guids.OID;
-import r01f.model.IndexableModelObject;
+import r01f.model.PersistableModelObject;
+import r01f.model.security.context.SecurityContext;
 import r01f.objectstreamer.Marshaller;
-import r01f.securitycontext.SecurityContext;
+import r01f.oids.PersistableObjectOID;
 import r01f.services.interfaces.IndexServicesForModelObject;
 import r01f.types.jobs.EnqueuedJob;
 
@@ -16,7 +15,7 @@ import r01f.types.jobs.EnqueuedJob;
  * @param <F>
  * @param <I>
  */
-public abstract class ClientAPIDelegateForModelObjectIndexServices<O extends OID,M extends IndexableModelObject>
+public abstract class ClientAPIDelegateForModelObjectIndexServices<O extends PersistableObjectOID,M extends PersistableModelObject<O>>
 	 		  extends ClientAPIServiceDelegateBase<IndexServicesForModelObject<O,M>> {
 
 /////////////////////////////////////////////////////////////////////////////////////////

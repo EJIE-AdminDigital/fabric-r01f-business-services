@@ -1,17 +1,17 @@
 package r01f.persistence.index;
 
-import r01f.model.IndexableModelObject;
 import r01f.model.PersistableModelObject;
+import r01f.model.PersistableObject;
 import r01f.model.metadata.FieldID;
 import r01f.model.persistence.PersistenceRequestedOperation;
+import r01f.model.security.context.SecurityContext;
 import r01f.persistence.index.document.IndexDocumentFieldValue;
 import r01f.persistence.index.document.IndexDocumentFieldValueSet;
-import r01f.securitycontext.SecurityContext;
 
 /**
  * Interface for types extracting field values from {@link PersistableModelObject}s in order to be indexed
  */
-public interface IndexableFieldValuesExtractor<M extends IndexableModelObject> {
+public interface IndexableFieldValuesExtractor<M extends PersistableObject> {
 	/**
 	 * Returns the type of the model object subject for the extraction
 	 * @return

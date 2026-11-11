@@ -33,7 +33,7 @@ public  class CoreDBTransactionInterceptorHandlerDefault
 	    //[4].
 	    interceptor.setTransactionAttributeSource(txSource);
 	    
-	    //[5] Attach the to the module [person, org] transaction manger bean name  
+	    //[5] Attach the to the module [person, org] transaction manager bean name  
 	    interceptor.setTransactionManagerBeanName(transactionTMbeanName);	    
 	    log.warn("########################################################################################################");
 	    log.warn("##### [ (•‿•) Success! ] Dynamic Transaction Interceptor linked to Manager: '{}'", transactionTMbeanName);

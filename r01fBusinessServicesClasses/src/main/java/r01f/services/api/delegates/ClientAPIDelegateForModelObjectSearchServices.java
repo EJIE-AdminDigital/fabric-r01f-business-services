@@ -14,8 +14,8 @@ import r01f.model.search.SearchFilter;
 import r01f.model.search.SearchResultItem;
 import r01f.model.search.SearchResults;
 import r01f.model.search.query.SearchResultsOrdering;
+import r01f.model.security.context.SecurityContext;
 import r01f.objectstreamer.Marshaller;
-import r01f.securitycontext.SecurityContext;
 import r01f.services.core.persistence.search.SearchResultsLoader;
 import r01f.services.interfaces.SearchServices;
 import r01f.util.types.collections.CollectionUtils;
@@ -113,8 +113,11 @@ public abstract class ClientAPIDelegateForModelObjectSearchServices<F extends Se
 																			 		0,SearchResults.DEFAULT_PAGE_SIZE);
 		}
 		public Collection<I> allItems() {
-			SearchResultsLoader<F,I> loader = SearchResultsLoader.create((filter,startPosition,pageSize) -> this.fromItemAt(startPosition)
-																									   			.returning(pageSize));
+			SearchResultsLoader<F,I> loader = SearchResultsLoader.create((filter,
+																		  order,
+																		  startPosition,
+																		  pageSize) -> this.fromItemAt(startPosition)
+																						   .returning(pageSize));
 			return loader.collectAll(_filter);
 		}
 		public <T> Collection<T> allItemsTransformed(final Function<I,T> transformingFunction) {

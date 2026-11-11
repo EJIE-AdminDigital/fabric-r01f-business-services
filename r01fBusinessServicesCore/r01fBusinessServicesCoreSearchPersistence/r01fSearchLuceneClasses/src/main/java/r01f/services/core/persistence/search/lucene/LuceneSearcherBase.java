@@ -20,9 +20,8 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import r01f.exceptions.Throwables;
-import r01f.guids.OID;
-import r01f.guids.PersistableObjectOID;
-import r01f.model.IndexableModelObject;
+import r01f.model.PersistableModelObject;
+import r01f.model.PersistableObject;
 import r01f.model.metadata.FieldMetaData;
 import r01f.model.metadata.TypeMetaData;
 import r01f.model.metadata.TypeMetaDataForModelObjectBase;
@@ -32,6 +31,8 @@ import r01f.model.search.SearchResultItemContainsPersistableObject;
 import r01f.model.search.SearchResultItemForModelObject;
 import r01f.model.search.SearchResults;
 import r01f.model.search.query.SearchResultsOrdering;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.PersistableObjectOID;
 import r01f.patterns.Factory;
 import r01f.persistence.index.document.IndexDocumentFieldConfigSet;
 import r01f.persistence.search.Searcher;
@@ -39,7 +40,6 @@ import r01f.persistence.search.SearcherCreatesResultItemFromIndexData;
 import r01f.persistence.search.SearcherExternallyLoadsModelObject;
 import r01f.persistence.search.SearcherMapsIndexedFieldsToSearchResultItemFields;
 import r01f.reflection.ReflectionUtils;
-import r01f.securitycontext.SecurityContext;
 import r01f.servcies.core.persistence.search.lucene.LuceneIndex;
 import r01f.servcies.core.persistence.search.lucene.LucenePageResults;
 import r01f.util.types.collections.CollectionUtils;
@@ -52,7 +52,7 @@ import r01f.util.types.collections.CollectionUtils;
 @Slf4j
 @Accessors(prefix="_")
 public abstract class LuceneSearcherBase<F extends SearchFilterForModelObject,
-		   				    		 	 I extends SearchResultItemForModelObject<? extends IndexableModelObject>> 
+		   				    		 	 I extends SearchResultItemForModelObject<? extends PersistableObject>> 
   		   implements Searcher<F,I> {
 	
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -61,7 +61,7 @@ public abstract class LuceneSearcherBase<F extends SearchFilterForModelObject,
 	/**
 	 * Fields config
 	 */
-	@Getter(AccessLevel.PROTECTED) private final IndexDocumentFieldConfigSet<? extends IndexableModelObject> _fieldsConfigSet;
+	@Getter(AccessLevel.PROTECTED) private final IndexDocumentFieldConfigSet<? extends PersistableObject> _fieldsConfigSet;
 	/**
 	 * The Lucene index instance 
 	 */
@@ -73,7 +73,7 @@ public abstract class LuceneSearcherBase<F extends SearchFilterForModelObject,
 /////////////////////////////////////////////////////////////////////////////////////////
 //  CONSTRUCTOR
 /////////////////////////////////////////////////////////////////////////////////////////	
-	public LuceneSearcherBase(final IndexDocumentFieldConfigSet<? extends IndexableModelObject> fieldsConfigSet,
+	public LuceneSearcherBase(final IndexDocumentFieldConfigSet<? extends PersistableObject> fieldsConfigSet,
 							  final LuceneIndex luceneIndex,
 							  final Factory<I> searchResultItemsFactory) {
 		_fieldsConfigSet = fieldsConfigSet;
@@ -221,14 +221,14 @@ public abstract class LuceneSearcherBase<F extends SearchFilterForModelObject,
 	private I _createSearchResultItemFor(final SecurityContext securityContext,
 										 final Document luceneDoc) {
 		// [0] - Create a wrapper for the Lucene Document and get the model object's metadata
-		LuceneSearchResultDocument<? extends IndexableModelObject> indexedDoc = LuceneSearchResultDocument.from(luceneDoc)
-																		  								  .using(TypeMetaDataInspector.singleton());
+		LuceneSearchResultDocument<? extends PersistableObject> indexedDoc = LuceneSearchResultDocument.from(luceneDoc)
+																		  							   .using(TypeMetaDataInspector.singleton());
 		
 		// [1] - Use the search result item factory to create an item
 		I item = _searchResultItemsFactory.create();
 		
 		// [2] - Get the type code and using it get the model object metadata
-		TypeMetaData<? extends IndexableModelObject> modelObjectMetaData = indexedDoc.getModelObjectMetaData();
+		TypeMetaData<? extends PersistableObject> modelObjectMetaData = indexedDoc.getModelObjectMetaData();
 		FieldMetaData typeFieldMetaData = modelObjectMetaData.findFieldByIdOrThrow(TypeMetaDataForModelObjectBase.SEARCHABLE_METADATA.TYPE_CODE)
 															 .asFieldMetaData();
 		log.debug("Creating a searchResultItem from the lucene Document for a model object of type {} with code {}",
@@ -254,7 +254,7 @@ public abstract class LuceneSearcherBase<F extends SearchFilterForModelObject,
 		//PersistableModelObject<? extends OID> modelObject = null;
 		if (item instanceof SearchResultItemContainsPersistableObject) {
 			SearchResultItemContainsPersistableObject<?,?> itemContainsPersistableObj = (SearchResultItemContainsPersistableObject<?,?>)item;
-			Object modelObject = null;
+			PersistableModelObject<?> modelObject = null;
 			if (this instanceof SearcherExternallyLoadsModelObject) {
 				modelObject = _loadModelObjectInstance(this,
 													   securityContext,
@@ -262,7 +262,7 @@ public abstract class LuceneSearcherBase<F extends SearchFilterForModelObject,
 			} else if (this instanceof SearcherCreatesResultItemFromIndexData) {
 				modelObject = _createModelObject(this,
 												 securityContext,
-											     indexedDoc);
+											     (LuceneSearchResultDocument<? extends PersistableModelObject<?>>)indexedDoc);
 			} 
 			else {
 				// At least try to create the model object using the model object type available at the model object meta data
@@ -271,16 +271,15 @@ public abstract class LuceneSearcherBase<F extends SearchFilterForModelObject,
 			if (modelObject == null) throw new IllegalStateException(Throwables.message("Could NOT create a {} instance from the search index returned data",
 																					    modelObjectMetaData.getRawType()));
 			
-			IndexableModelObject indexableModelObject = (IndexableModelObject)modelObject;
 			
 			// set the contained model object fields from indexed document
-			LuceneIndexDocToSearchResultItemTransfer.setContainedObjectFieldValuesFromSearchResultDoc(indexedDoc,indexableModelObject);
+			LuceneIndexDocToSearchResultItemTransfer.setContainedObjectFieldValuesFromSearchResultDoc(indexedDoc,modelObject);
 			
 			// Copy search result item fields to the contained model object
-			LuceneIndexDocToSearchResultItemTransfer.copyFieldValuesFomSearchResultItemToContainedObject(item,indexableModelObject);
+			LuceneIndexDocToSearchResultItemTransfer.copyFieldValuesFomSearchResultItemToContainedObject(item,modelObject);
 			
 			// set the object at the item
-			itemContainsPersistableObj.unsafeSetModelObject(indexableModelObject);
+			itemContainsPersistableObj.unsafeSetModelObject(modelObject);
 		}
 	
 		// [5] - Return
@@ -290,17 +289,17 @@ public abstract class LuceneSearcherBase<F extends SearchFilterForModelObject,
 //  SOME GENERICS TRICKERY (parameter type capture)
 /////////////////////////////////////////////////////////////////////////////////////////
 	@SuppressWarnings("unchecked")
-	private static <O extends OID,P extends IndexableModelObject> P _loadModelObjectInstance(final Searcher<?,?> searcher,
-																							 final SecurityContext securityContext,
-																							 final O oid) {
+	private static <O extends PersistableObjectOID,P extends PersistableModelObject<O>> P _loadModelObjectInstance(final Searcher<?,?> searcher,
+																						  						   final SecurityContext securityContext,
+																						  						   final O oid) {
 		SearcherExternallyLoadsModelObject<O,P> loader = (SearcherExternallyLoadsModelObject<O,P>)searcher;
 		return loader.loadModelObject(securityContext,
 						   			  oid);
 	}
 	@SuppressWarnings("unchecked")
-	private static <P extends IndexableModelObject> P _createModelObject(final Searcher<?,?> searcher,
-																		 final SecurityContext securityContext,
-																		 final LuceneSearchResultDocument<P> doc) {
+	private static <P extends PersistableModelObject<?>> P _createModelObject(final Searcher<?,?> searcher,
+																	  		  final SecurityContext securityContext,
+																	  		  final LuceneSearchResultDocument<P> doc) {
 		SearcherCreatesResultItemFromIndexData<LuceneSearchResultDocument<P>,P> creator = (SearcherCreatesResultItemFromIndexData<LuceneSearchResultDocument<P>,P>)searcher;
 		return creator.createModelObjectFrom(securityContext,
 											 doc);

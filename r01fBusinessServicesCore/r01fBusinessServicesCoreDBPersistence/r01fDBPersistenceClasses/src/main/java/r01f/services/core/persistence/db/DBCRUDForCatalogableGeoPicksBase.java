@@ -12,13 +12,12 @@ import r01f.model.catalogable.geo.GeoCatalogableOIDs.CatalogableGeoPickOID;
 import r01f.model.catalogable.geo.GeoCatalogableOIDs.CatalogableGeoPicksOID;
 import r01f.model.catalogable.geo.GeoPositionPick;
 import r01f.model.catalogable.geo.GeoPositionPicksChanges;
+import r01f.model.security.context.SecurityContext;
 import r01f.patterns.Factory;
-import r01f.securitycontext.SecurityContext;
 import r01f.services.core.persistence.db.config.DBModuleConfig;
 import r01f.services.core.persistence.db.entities.DBEntityForCatalogableGeoPickBase;
 import r01f.services.core.persistence.db.entities.DBEntityForCatalogablePickPrimaryKeyBase;
 import r01f.services.core.persistence.internal.interfaces.CoreCRUDServicesForCatalogableGeoPicks;
-import r01f.types.geo.GeoLocationItem;
 import r01f.types.geo.GeoIDs.GeoCountryID;
 import r01f.types.geo.GeoIDs.GeoCountyID;
 import r01f.types.geo.GeoIDs.GeoDistrictID;
@@ -30,6 +29,7 @@ import r01f.types.geo.GeoIDs.GeoStateID;
 import r01f.types.geo.GeoIDs.GeoStreetID;
 import r01f.types.geo.GeoIDs.GeoTerritoryID;
 import r01f.types.geo.GeoIDs.GeoZipCode;
+import r01f.types.geo.GeoLocationItem;
 import r01f.types.geo.GeoPosition2D;
 import r01f.util.types.Strings;
 
@@ -92,10 +92,9 @@ public abstract class DBCRUDForCatalogableGeoPicksBase<PK extends DBEntityForCat
 		// context
 		Instant createDate = Instant.now();
 		dbPick.setCreateDate(createDate);
-		dbPick.setCreatorUserCode(securityContext.getLoginId());
-		if (securityContext.isForUser()) dbPick.setCreatorUserOid(securityContext.asForUser()
-																				 .getUserOid());
-
+		dbPick.setCreatorSecurityPrincipalOid(securityContext.getSecurityPrincipalOid());
+		dbPick.setCreatorSecurityPrincipalId(securityContext.getSecurityPrincipalId());
+		
 		// target object
 		dbPick.setTargetObjectType(catalogableObjectTypeId.asString());
 		dbPick.setTargetObjectOid(catalogableObjectOid.asString());

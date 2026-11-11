@@ -5,13 +5,13 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import r01f.exceptions.Throwables;
-import r01f.model.IndexableModelObject;
+import r01f.model.PersistableObject;
 import r01f.model.metadata.FieldID;
 import r01f.patterns.Memoized;
 
 @Slf4j
 @RequiredArgsConstructor
-public abstract class IndexDocumentBase<M extends IndexableModelObject> 
+public abstract class IndexDocumentBase<M extends PersistableObject> 
 		   implements IndexDocument<M> {
 /////////////////////////////////////////////////////////////////////////////////////////
 //  FIELDS

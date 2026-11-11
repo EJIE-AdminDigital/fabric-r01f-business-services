@@ -6,12 +6,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import lombok.experimental.Accessors;
-import r01f.guids.PersistableObjectOID;
 import r01f.model.PersistableModelObject;
 import r01f.model.persistence.CRUDResult;
 import r01f.model.persistence.PersistenceException;
-
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.PersistableObjectOID;
 import r01f.services.core.rest.spring.RESTResponsePayload;
 import r01f.services.interfaces.CRUDServicesForModelObject;
 

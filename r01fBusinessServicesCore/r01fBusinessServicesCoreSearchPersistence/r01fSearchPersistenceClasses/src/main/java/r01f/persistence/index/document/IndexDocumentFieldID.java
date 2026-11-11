@@ -4,13 +4,13 @@ import java.util.regex.Pattern;
 
 import lombok.Getter;
 import r01f.exceptions.Throwables;
-import r01f.guids.OIDTyped;
 import r01f.locale.Language;
-import r01f.model.IndexableModelObject;
+import r01f.model.PersistableObject;
 import r01f.model.metadata.FieldID;
 import r01f.model.metadata.TypeFieldMetaData;
 import r01f.model.metadata.TypeMetaData;
 import r01f.objectstreamer.annotations.MarshallType;
+import r01f.oids.OIDTyped;
 import r01f.types.summary.Summary;
 import r01f.util.types.Strings;
 
@@ -135,8 +135,8 @@ public record IndexDocumentFieldID(@Getter String id)
 	 * @param fieldId
 	 * @return
 	 */
-	public static <M extends IndexableModelObject> FieldID findMetaDataId(final TypeMetaData<M> modelObjectMetaData,
-									   			  								   final IndexDocumentFieldID indexFieldId) {
+	public static <M extends PersistableObject> FieldID findMetaDataId(final TypeMetaData<M> modelObjectMetaData,
+									   			  					   final IndexDocumentFieldID indexFieldId) {
 		FieldID outMetaDataId = null;
 		String[] indexFieldIdSplitted = indexFieldId.asString().split("\\.");
 		int i = indexFieldIdSplitted.length;

@@ -6,12 +6,12 @@ import com.google.common.collect.Collections2;
 
 import r01f.eventbus.EventBus;
 import r01f.facets.HasOID;
-import r01f.guids.PersistableObjectOID;
 import r01f.model.search.SearchFilterForModelObject;
 import r01f.model.search.SearchResultItemForModelObject;
 import r01f.model.search.SearchResultsProvider;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.PersistableObjectOID;
 import r01f.persistence.search.Searcher;
-import r01f.securitycontext.SecurityContext;
 import r01f.services.core.ServicesCoreModuleConfig;
 import r01f.services.core.persistence.search.SearchResultsLoader;
 import r01f.services.interfaces.SearchServicesForModelObject;
@@ -45,8 +45,9 @@ public abstract class SearchServicesForModelObjectDelegateBase<F extends SearchF
 							  filter);
 		
 		// Collect all results
-	 	SearchResultsProvider<F,I> resultsProvider = (theFilter,startPosition,pageSize) -> super.filterRecords(securityContext,
-										 										  							   theFilter,null,	// no ordering
+	 	SearchResultsProvider<F,I> resultsProvider = (theFilter,ordering,startPosition,pageSize) -> super.filterRecords(securityContext,
+										 										  							   theFilter,
+										 										  							   ordering,
 										 										  							   startPosition,pageSize);
 	    SearchResultsLoader<F,I> loader = SearchResultsLoader.create(resultsProvider);
 	    Collection<I> allResults = loader.collectAll(filter);

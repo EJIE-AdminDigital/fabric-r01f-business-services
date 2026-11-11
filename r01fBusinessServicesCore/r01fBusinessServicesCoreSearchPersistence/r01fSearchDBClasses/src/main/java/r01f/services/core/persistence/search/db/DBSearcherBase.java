@@ -17,9 +17,9 @@ import r01f.model.search.SearchFilter;
 import r01f.model.search.SearchResultItem;
 import r01f.model.search.SearchResults;
 import r01f.model.search.query.SearchResultsOrdering;
+import r01f.model.security.context.SecurityContext;
 import r01f.patterns.Factory;
 import r01f.persistence.search.Searcher;
-import r01f.securitycontext.SecurityContext;
 import r01f.services.core.persistence.db.DBEntity;
 
 /**

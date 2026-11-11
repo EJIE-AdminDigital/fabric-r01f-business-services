@@ -14,9 +14,9 @@ import com.google.common.base.Stopwatch;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import r01f.guids.PersistableObjectOID;
 import r01f.model.PersistableModelObject;
-import r01f.securitycontext.SecurityIDS.LoginID;
+import r01f.oids.PersistableObjectOID;
+import r01f.oids.SecurityIDs.SecurityPrincipalID;
 import r01f.services.api.delegates.ClientAPIDelegateForModelObjectFindServices;
 import r01f.services.api.delegates.ClientAPIHasDelegateForDependentModelObjectFind;
 import r01f.test.api.TestAPIBase;
@@ -76,16 +76,16 @@ public class TestPersistableModelObjectFind<O extends PersistableObjectOID,M ext
 			Assertions.assertTrue(CollectionUtils.hasData(oidsByLastUpdatedDate));
 	
 			// [3] - By creator
-			LoginID user = TestAPIBase.TEST_USER;
+			SecurityPrincipalID principalId = TestAPIBase.TEST_PRINCIPAL_ID;
 	
-			log.warn("\tFIND ENTITY's OIDs BY CREATOR: {}",user);
-			Collection<O> oidsByCreator = _findAPI.findByCreator(user);
+			log.warn("\tFIND ENTITY's OIDs BY CREATOR: {}",principalId);
+			Collection<O> oidsByCreator = _findAPI.findByCreator(principalId);
 			log.warn("\t\t>> {}",oidsByCreator);
 			Assertions.assertTrue(CollectionUtils.hasData(oidsByCreator));
 	
 			// [4] - By last updator (the objects haven't been updated so it must return 0)
-			log.warn("\tFIND ENTITY's OIDs BY LAST UPDATOR: {}",user);
-			Collection<O> oidsByLastUpdator = _findAPI.findByLastUpdator(user);
+			log.warn("\tFIND ENTITY's OIDs BY LAST UPDATER: {}",principalId);
+			Collection<O> oidsByLastUpdator = _findAPI.findByLastUpdater(principalId);
 			log.warn("\t\t>> {}",oidsByLastUpdator);
 			Assertions.assertTrue(CollectionUtils.isNullOrEmpty(oidsByLastUpdator));
 	

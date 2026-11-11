@@ -9,7 +9,7 @@ import com.google.common.collect.Lists;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import r01f.exceptions.Throwables;
-import r01f.model.IndexableModelObject;
+import r01f.model.PersistableObject;
 import r01f.persistence.index.IndexableFieldValuesExtractor;
 import r01f.persistence.index.document.IndexDocumentFieldConfig;
 import r01f.persistence.index.document.IndexDocumentFieldConfigSet;
@@ -87,11 +87,11 @@ extends LuceneDocumentFactoryBase {
 	/**
 	 * index document field's config
 	 */
-	private final IndexDocumentFieldConfigSet<? extends IndexableModelObject> _fieldsConfigSet;
+	private final IndexDocumentFieldConfigSet<? extends PersistableObject> _fieldsConfigSet;
 /////////////////////////////////////////////////////////////////////////////////////////
 //  BUILDER
 /////////////////////////////////////////////////////////////////////////////////////////
-	public static LuceneDocumentFactoryForIndexableObject of(final IndexDocumentFieldConfigSet<? extends IndexableModelObject> cfgSet) {
+	public static LuceneDocumentFactoryForIndexableObject of(final IndexDocumentFieldConfigSet<? extends PersistableObject> cfgSet) {
 		return new LuceneDocumentFactoryForIndexableObject(cfgSet);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////

@@ -1,9 +1,8 @@
 package r01f.services.api.delegates;
 
 import jakarta.inject.Provider;
-
+import r01f.model.security.context.SecurityContext;
 import r01f.objectstreamer.Marshaller;
-import r01f.securitycontext.SecurityContext;
 import r01f.services.interfaces.IndexManagementServices;
 import r01f.types.jobs.EnqueuedJob;
 

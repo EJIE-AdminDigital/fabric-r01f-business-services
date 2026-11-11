@@ -2,12 +2,12 @@ package r01f.services.interfaces;
 
 import java.util.Collection;
 
-import r01f.guids.OID;
-import r01f.model.IndexableModelObject;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.PersistableModelObject;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.PersistableObjectOID;
 import r01f.types.jobs.EnqueuedJob;
 
-public interface IndexServicesForModelObject<O extends OID,M extends IndexableModelObject> 
+public interface IndexServicesForModelObject<O extends PersistableObjectOID,M extends PersistableModelObject<O>> 
 		 extends ServiceInterface {
 /////////////////////////////////////////////////////////////////////////////////////////
 //  ENTITY INDEX

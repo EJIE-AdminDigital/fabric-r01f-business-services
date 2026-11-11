@@ -1,9 +1,9 @@
 package r01f.services.core.persistence.db;
 
-import r01f.guids.OID;
 import r01f.model.PersistableModelObject;
 import r01f.model.persistence.PersistencePerformedOperation;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.OID;
 import r01f.services.core.persistence.db.entities.DBEntityForModelObject;
 import r01f.services.core.persistence.db.entities.primarykeys.DBPrimaryKeyForModelObject;
 

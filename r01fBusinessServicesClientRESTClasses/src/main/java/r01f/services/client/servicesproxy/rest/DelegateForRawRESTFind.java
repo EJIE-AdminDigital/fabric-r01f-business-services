@@ -1,14 +1,14 @@
 package r01f.services.client.servicesproxy.rest;
 
 import lombok.extern.slf4j.Slf4j;
-import r01f.guids.PersistableObjectOID;
 import r01f.httpclient.HttpResponseResult;
 import r01f.model.PersistableModelObject;
 import r01f.model.persistence.FindOIDsResult;
 import r01f.model.persistence.FindResult;
 import r01f.model.persistence.FindSummariesResult;
+import r01f.model.security.context.SecurityContext;
 import r01f.objectstreamer.Marshaller;
-import r01f.securitycontext.SecurityContext;
+import r01f.oids.PersistableObjectOID;
 import r01f.types.url.Url;
 import r01f.types.url.UrlQueryStringParam;
 import r01f.types.url.Urls;

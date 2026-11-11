@@ -1,8 +1,8 @@
 package r01f.persistence.search;
 
 
-import r01f.model.IndexableModelObject;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.PersistableObject;
+import r01f.model.security.context.SecurityContext;
 
 /**
  * Interface to be implemented by {@link Searcher} subtypes that creates a model object instance
@@ -13,7 +13,7 @@ import r01f.securitycontext.SecurityContext;
  * @param <P>
  */
 public interface SearcherCreatesResultItemFromIndexData<INDEX_DATA,
-														P extends IndexableModelObject>
+														P extends PersistableObject>
 		 extends SearcherSearchResultItemFromIndexDataTransformStrategy {
 	/**
 	 * Creates a model object from the search index stored data

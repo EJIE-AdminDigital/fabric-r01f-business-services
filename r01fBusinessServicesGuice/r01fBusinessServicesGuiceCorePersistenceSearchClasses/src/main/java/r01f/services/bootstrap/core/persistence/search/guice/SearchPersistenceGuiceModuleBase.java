@@ -13,7 +13,7 @@ import com.google.inject.util.Types;
 import lombok.extern.slf4j.Slf4j;
 import r01f.config.ContainsConfigData;
 import r01f.inject.HasMoreBindings;
-import r01f.model.IndexableModelObject;
+import r01f.model.PersistableObject;
 import r01f.model.search.SearchFilter;
 import r01f.model.search.SearchResultItem;
 import r01f.persistence.index.Indexer;
@@ -25,19 +25,92 @@ import r01f.util.types.collections.CollectionUtils;
 
 /**
  * Base {@link Guice} module for search engine (index / search) bindings
+ *
+ * The simplest way to use it is:
+ * <pre class='brush:java'>
+ *		@EqualsAndHashCode(callSuper=true)				// This is important for guice modules
+ *		     class XXSearchGuiceModuleForMyModule
+ *		   extends SearchPersistenceGuiceModuleBase
+ *		implements DBSearchPersistenceGuiceModule {
+ *			public XXSearchGuiceModuleForMyModule(final SearchModuleConfig cfg) {
+ *				super(cfg);
+ *			}
+ *			@Provides @Singleton
+ *			public XSearcherProviderForMyObj searcherProviderForPerson(		        @ModelObjectsMarshaller final Marshaller marshaller,
+ *					                                     @ServicesCoreConfigFor(XXAppCodes.MODULE_CORE_FQN) final ServicesCoreModuleConfig serviceCoreModuelConfig,
+ *												              @EntityManagerFor(XXAppCodes.MODULE_CORE_FQN) final Provider<EntityManager> entityManagerProvider) {
+ *				return new XXSearcherProviderForMyObj(marshaller,
+ *					                                  seviviceCoreModuelConfig.getSubModuleConfigFor(CoreSubModule.DBPERSISTENCE,DBModuleConfig.class),
+ *					                                  entityManagerProvider);
+ *			}
+ *		}
+ *      public static class XSearcherProviderForMyObj
+ *                  extends DBSearcherProviderBase<XXSearchFilterForMyObj,OG00SearchResultItemForMyObj> {
+ *      	public XSearcherProviderForMyObj(final Marshaller marshaller,
+ *      									 final DBModuleConfig dbModuleConfig,
+ *      									 final Provider<EntityManager> entityManagerProvider) {
+ *      		super(marshaller,
+ *      			  dbModuleConfig,
+ *      			  entityManagerProvider);
+ *      	}
+ *      	@Override
+ *      	public Searcher<XXSearchFilterForMyObj,OG00SearchResultItemForMyObj> get() {
+ *      		return new XXDBSearcherForMyObj(_dbModuleConfig,
+ *      						   				_entityManagerProvider.get(),	// a fresh new entity manager
+ *      						   				_marshaller);
+ *      	}
+ *      }
+ * </pre>
+ *
+ * A more complex way is to use the {@link SearcherProviderBinding} and {@link IndexerProviderBinding} to bind searchers and indexers:
+ * <pre class='brush:java'>
+ *    	@EqualsAndHashCode(callSuper=true)				// This is important for guice modules
+ *    	     class XXSearchGuiceModuleForMyModule
+ *    	   extends SearchPersistenceGuiceModuleBase
+ *    	implements DBSearchPersistenceGuiceModule {
+ *    		public XXSearchGuiceModuleForMyModule(final SearchModuleConfig cfg) {
+ *    			super(cfg,
+ *    				  Lists.newArrayList(
+ *    						_createSearcherProviderGuiceBinding()
+ *    				  ));
+ *    		}
+ *    		public static SearcherProviderBinding<XXSearchFilterForMyObj,OG00SearchResultItemForMyObj> _createSearcherProviderGuiceBinding() {
+ *    			return SearcherProviderBinding.of(new TypeLiteral<SearcherProvider<XXSearchFilterForMyObj,OG00SearchResultItemForMyObj>>() {  },
+ *    											  XSearcherProviderForMyObj.class);
+ *    		}
+ *    ... but this time the searcher provider must be injectable (i.e. it must have a constructor annotated with @Inject)
+ *      @Singleton
+ *      public static class XSearcherProviderForMyObj
+ *                  extends DBSearcherProviderBase<XXSearchFilterForMyObj,OG00SearchResultItemForMyObj> {
+ *          @Inject
+ *      	public XSearcherProviderForMyObj(@ModelObjectsMarshaller  final Marshaller marshaller,
+ *      									 						  final DBModuleConfig dbModuleConfig,
+ *      				@EntityManagerFor(XXAppCodes.MODULE_CORE_FQN) final Provider<EntityManager> entityManagerProvider) {
+ *      		super(marshaller,
+ *      			  dbModuleConfig,
+ *      			  entityManagerProvider);
+ *      	}
+ *      	@Override
+ *      	public Searcher<XXSearchFilterForMyObj,OG00SearchResultItemForMyObj> get() {
+ *      		return new XXDBSearcherForMyObj(_dbModuleConfig,
+ *      						   				_entityManagerProvider.get(),	// a fresh new entity manager
+ *      						   				_marshaller);
+ *      	}
+ *      }
+ * </pre>
  */
 @Slf4j
-public abstract class SearchPersistenceGuiceModuleBase 
+public abstract class SearchPersistenceGuiceModuleBase
            implements SearchPersistenceGuiceModule {
 /////////////////////////////////////////////////////////////////////////////////////////
 // 	CONFIG
 /////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * Search engine config 
+	 * Search engine config
 	 */
 	protected final SearchModuleConfig _searchConfig;
 	/**
-	 * Factories for indexers 
+	 * Factories for indexers
 	 */
 	protected final Collection<IndexerProviderBinding<?>> _indexerProviderBindings;
 	/**
@@ -60,18 +133,23 @@ public abstract class SearchPersistenceGuiceModuleBase
 			 null,							// no indexer providers
 			 searcherProviderBindings);
 	}
+	protected SearchPersistenceGuiceModuleBase(final SearchModuleConfig searchEngineConfig) {
+		this(searchEngineConfig,
+			 null,							// no indexer providers
+			 null);							// no searcher providers
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	HasServiceCoreSubModuleConfig
-/////////////////////////////////////////////////////////////////////////////////////////	
+/////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public ServicesCoreSubModuleConfig<? extends ContainsConfigData> getSubModuleConfig() {
 		return ServicesCoreSubModuleConfig.createForSearchPersistenceSubModule(_searchConfig);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//  
-/////////////////////////////////////////////////////////////////////////////////////////	
-	@Override 
-	public void configure(final Binder binder) {	
+//
+/////////////////////////////////////////////////////////////////////////////////////////
+	@Override
+	public void configure(final Binder binder) {
 		// Bind searchers
 		log.warn("\t\t...binding searchers: {} providers",
 				 _searcherProviderBindings != null ? _searcherProviderBindings.size() : 0);
@@ -110,25 +188,25 @@ public abstract class SearchPersistenceGuiceModuleBase
 																				  final SearcherProviderBinding<F,I> binding) {
 		log.warn("\t\t\t-searcher/indexer provider type {}",
 				 binding.getImplementingType());
-		
+
 		binder.bind(binding.getGenericType())
 			  .to(binding.getImplementingType());
-		binder.bind(binding.getImplementingType()) 
+		binder.bind(binding.getImplementingType())
 			  .in(Singleton.class);
 	}
-	private static <M extends IndexableModelObject> void _bind(final Binder binder,
-															   final IndexerProviderBinding<M> binding) {
+	private static <M extends PersistableObject> void _bind(final Binder binder,
+															final IndexerProviderBinding<M> binding) {
 		log.warn("\t\t\t-indexer provider type {}",
 				 binding.getImplementingType());
-		
+
 		binder.bind(binding.getGenericType())
 			  .to(binding.getImplementingType());
-		binder.bind(binding.getImplementingType()) 
+		binder.bind(binding.getImplementingType())
 			  .in(Singleton.class);
 	}
-	
-	
-	
+
+
+
 //	public Collection<TypeLiteral<?>> getServicesToExpose() {
 //		Collection<TypeLiteral<?>> outServicesToExpose = Lists.newArrayList();
 //		// indexers
@@ -147,23 +225,23 @@ public abstract class SearchPersistenceGuiceModuleBase
 //		return outServicesToExpose;
 //	}
 /////////////////////////////////////////////////////////////////////////////////////////
-//  
-/////////////////////////////////////////////////////////////////////////////////////////	
+//
+/////////////////////////////////////////////////////////////////////////////////////////
 	@SuppressWarnings({ "unchecked","unused" })
 	private static <F extends SearchFilter,I extends SearchResultItem> TypeLiteral<Searcher<?,?>> _searcherGuiceKeyFor(final Class<F> filterType,final Class<I> resultItemType) {
-		ParameterizedType pt = Types.newParameterizedType(Searcher.class, 
+		ParameterizedType pt = Types.newParameterizedType(Searcher.class,
 														  filterType,resultItemType);
 		return (TypeLiteral<Searcher<?,?>>)TypeLiteral.get(pt);
 	}
 	@SuppressWarnings("unchecked")
-	public <M extends IndexableModelObject> TypeLiteral<Indexer<?>> _indexerGuiceKey(final Class<M> modelObjType) {
-		ParameterizedType pt = Types.newParameterizedType(Indexer.class, 
+	public <M extends PersistableObject> TypeLiteral<Indexer<?>> _indexerGuiceKey(final Class<M> modelObjType) {
+		ParameterizedType pt = Types.newParameterizedType(Indexer.class,
 										    			  modelObjType);
 		return (TypeLiteral<Indexer<?>>)TypeLiteral.get(pt);
 	}
 	@SuppressWarnings("unchecked")
-	public <M extends IndexableModelObject> TypeLiteral<IndexDocumentFieldConfigSet<?>> _indexDocumentFieldsConfigGuiceKey(final Class<M> modelObjType) {
-		ParameterizedType pt = Types.newParameterizedType(IndexDocumentFieldConfigSet.class, 
+	public <M extends PersistableObject> TypeLiteral<IndexDocumentFieldConfigSet<?>> _indexDocumentFieldsConfigGuiceKey(final Class<M> modelObjType) {
+		ParameterizedType pt = Types.newParameterizedType(IndexDocumentFieldConfigSet.class,
 										    			  modelObjType);
 		return (TypeLiteral<IndexDocumentFieldConfigSet<?>>)TypeLiteral.get(pt);
 	}

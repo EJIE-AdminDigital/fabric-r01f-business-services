@@ -6,7 +6,7 @@ import com.google.common.collect.Maps;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import r01f.model.IndexableModelObject;
+import r01f.model.PersistableObject;
 import r01f.model.search.SearchFilter;
 import r01f.model.search.SearchResultItem;
 import r01f.objectstreamer.Marshaller;
@@ -18,6 +18,6 @@ public abstract class SearcherProviderBase<F extends SearchFilter,I extends Sear
 /////////////////////////////////////////////////////////////////////////////////////////
 //	                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////	
-	protected final Map<Class<? extends IndexableModelObject>,IndexDocumentFieldConfigSet<? extends IndexableModelObject>> _fieldsConfigSetByIndexableObjType = Maps.newHashMap();
+	protected final Map<Class<? extends PersistableObject>,IndexDocumentFieldConfigSet<? extends PersistableObject>> _fieldsConfigSetByIndexableObjType = Maps.newHashMap();
 	protected final Marshaller _marshaller;
 }

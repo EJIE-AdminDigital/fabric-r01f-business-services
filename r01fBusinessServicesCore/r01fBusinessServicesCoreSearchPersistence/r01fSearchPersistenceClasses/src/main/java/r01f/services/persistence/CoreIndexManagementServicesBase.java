@@ -4,9 +4,9 @@ package r01f.services.persistence;
 
 import lombok.experimental.Accessors;
 import r01f.eventbus.EventBus;
+import r01f.model.security.context.SecurityContext;
 import r01f.objectstreamer.Marshaller;
 import r01f.persistence.index.IndexManager;
-import r01f.securitycontext.SecurityContext;
 import r01f.services.core.ServicesCoreModuleConfig;
 import r01f.services.core.persistence.CoreServicesBase;
 import r01f.services.core.persistence.ServiceDelegateProvider;

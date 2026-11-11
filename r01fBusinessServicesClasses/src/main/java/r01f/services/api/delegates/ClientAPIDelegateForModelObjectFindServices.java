@@ -5,14 +5,14 @@ import java.util.Collection;
 
 import jakarta.inject.Provider;
 import lombok.extern.slf4j.Slf4j;
-import r01f.guids.PersistableObjectOID;
 import r01f.model.PersistableModelObject;
 import r01f.model.facets.Versionable;
 import r01f.model.persistence.FindOIDsResult;
+import r01f.model.security.context.SecurityContext;
 import r01f.objectstreamer.Marshaller;
-import r01f.securitycontext.SecurityContext;
-import r01f.securitycontext.SecurityIDS.LoginID;
-import r01f.securitycontext.SecurityOIDs.UserOID;
+import r01f.oids.PersistableObjectOID;
+import r01f.oids.SecurityIDs.SecurityPrincipalID;
+import r01f.oids.SecurityOIDs.SecurityPrincipalOID;
 import r01f.services.interfaces.FindServicesForModelObject;
 import r01f.types.Range;
 
@@ -46,7 +46,7 @@ public abstract class ClientAPIDelegateForModelObjectFindServices<O extends Pers
 	 */
 	public Collection<O> findAll() {
 		FindOIDsResult<O> findResult = this.getServiceProxy()
-												.findAll(this.getSecurityContext());
+										   .findAll(this.getSecurityContext());
 
 		log.debug(findResult.debugInfo().toString());
 
@@ -88,16 +88,16 @@ public abstract class ClientAPIDelegateForModelObjectFindServices<O extends Pers
 		return outOids;
 	}
 	/**
-	 * Finds all persisted model object entities created by the provided user
+	 * Finds all persisted model object entities created by the provided [principal]
 	 * If the entity is a {@link Versionable}  {@link PersistableModelObject}, it returns the
 	 * currently active versions
-	 * @param creatorUserCode
+	 * @param creatorPrincipalId
 	 * @return a {@link PersistenceOperationOK} that encapsulates the entities
 	 */
-	public Collection<O> findByCreator(final LoginID creatorUserCode) {
+	public Collection<O> findByCreator(final SecurityPrincipalID creatorPrincipalId) {
 		FindOIDsResult<O> findResult = this.getServiceProxy()
-												.findByCreator(this.getSecurityContext(),
-															   creatorUserCode);
+										   .findByCreator(this.getSecurityContext(),
+														  creatorPrincipalId);
 
 		log.debug(findResult.debugInfo().toString());
 
@@ -111,10 +111,10 @@ public abstract class ClientAPIDelegateForModelObjectFindServices<O extends Pers
 	 * @param creatorUserCode
 	 * @return a {@link PersistenceOperationOK} that encapsulates the entities
 	 */
-	public Collection<O> findByCreator(final UserOID creatorUserOid) {
+	public Collection<O> findByCreator(final SecurityPrincipalOID creatorPrincipalOid) {
 		FindOIDsResult<O> findResult = this.getServiceProxy()
-												.findByCreator(this.getSecurityContext(),
-															   creatorUserOid);
+											.findByCreator(this.getSecurityContext(),
+														   creatorPrincipalOid);
 
 		log.debug(findResult.debugInfo().toString());
 
@@ -122,16 +122,16 @@ public abstract class ClientAPIDelegateForModelObjectFindServices<O extends Pers
 		return outOids;
 	}
 	/**
-	 * Finds all persisted model object entities last updated by the provided user
+	 * Finds all persisted model object entities last updated by the provided [principal]
 	 * If the entity is a {@link Versionable}  {@link PersistableModelObject}, it returns the
 	 * currently active versions
-	 * @param lastUpdatorUserCode
+	 * @param updaterPrincipalId
 	 * @return a {@link PersistenceOperationOK} that encapsulates the entities
 	 */
-	public Collection<O> findByLastUpdator(final LoginID lastUpdatorUserCode) {
+	public Collection<O> findByLastUpdater(final SecurityPrincipalID updaterPrincipalId) {
 		FindOIDsResult<O> findResult = this.getServiceProxy()
-													.findByLastUpdator(this.getSecurityContext(),
-																   	   lastUpdatorUserCode);
+											.findByLastUpdater(this.getSecurityContext(),
+														   	   updaterPrincipalId);
 
 		log.debug(findResult.debugInfo().toString());
 
@@ -139,16 +139,16 @@ public abstract class ClientAPIDelegateForModelObjectFindServices<O extends Pers
 		return outOids;
 	}
 	/**
-	 * Finds all persisted model object entities last updated by the provided user
+	 * Finds all persisted model object entities last updated by the provided [principal]
 	 * If the entity is a {@link Versionable}  {@link PersistableModelObject}, it returns the
 	 * currently active versions
-	 * @param lastUpdatorUserOid
+	 * @param updaterPrincipalOid
 	 * @return a {@link PersistenceOperationOK} that encapsulates the entities
 	 */
-	public Collection<O> findByLastUpdator(final UserOID lastUpdatorUserOid) {
+	public Collection<O> findByLastUpdater(final SecurityPrincipalOID updaterPrincipalOid) {
 		FindOIDsResult<O> findResult = this.getServiceProxy()
-													.findByLastUpdator(this.getSecurityContext(),
-																   	   lastUpdatorUserOid);
+													.findByLastUpdater(this.getSecurityContext(),
+																   	   updaterPrincipalOid);
 
 		log.debug(findResult.debugInfo().toString());
 

@@ -3,8 +3,8 @@ package r01f.test.persistence;
 import com.google.common.reflect.TypeToken;
 
 import lombok.extern.slf4j.Slf4j;
-import r01f.guids.PersistableObjectOID;
 import r01f.model.PersistableModelObject;
+import r01f.oids.PersistableObjectOID;
 import r01f.patterns.CommandOn;
 import r01f.patterns.Factory;
 import r01f.services.api.delegates.ClientAPIDelegateForModelObjectCRUDServices;

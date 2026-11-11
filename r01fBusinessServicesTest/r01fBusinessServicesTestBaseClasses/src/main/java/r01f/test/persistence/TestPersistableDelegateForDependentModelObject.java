@@ -1,7 +1,7 @@
 package r01f.test.persistence;
 
-import r01f.guids.PersistableObjectOID;
 import r01f.model.PersistableModelObject;
+import r01f.oids.PersistableObjectOID;
 import r01f.services.api.delegates.ClientAPIDelegateForModelObjectCRUDServices;
 import r01f.services.api.delegates.ClientAPIDelegateForModelObjectFindServices;
 

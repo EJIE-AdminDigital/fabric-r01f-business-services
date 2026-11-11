@@ -2,14 +2,14 @@ package r01f.services.client.servicesproxy.rest;
 
 import java.util.Collection;
 
-import r01f.guids.OID;
-import r01f.guids.PersistableObjectOID;
 import r01f.model.search.SearchFilterForModelObject;
 import r01f.model.search.SearchResultItemForModelObject;
 import r01f.model.search.SearchResults;
 import r01f.model.search.query.SearchResultsOrdering;
+import r01f.model.security.context.SecurityContext;
 import r01f.objectstreamer.Marshaller;
-import r01f.securitycontext.SecurityContext;
+import r01f.oids.OID;
+import r01f.oids.PersistableObjectOID;
 import r01f.services.client.servicesproxy.rest.RESTServiceResourceUrlPathBuilders.RESTServiceResourceUrlPathBuilderForModelObjectPersistence;
 import r01f.services.interfaces.SearchServicesForModelObject;
 import r01f.types.url.Url;

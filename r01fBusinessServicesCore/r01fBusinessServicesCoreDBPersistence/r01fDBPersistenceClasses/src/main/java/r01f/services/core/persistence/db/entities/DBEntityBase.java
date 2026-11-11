@@ -11,13 +11,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import r01f.guids.OID;
 import r01f.model.HasTrackingInfo;
 import r01f.model.ModelObjectTracking;
 import r01f.model.facets.HasEntityVersion;
-import r01f.securitycontext.SecurityContext;
-import r01f.securitycontext.SecurityIDS.LoginID;
-import r01f.securitycontext.SecurityOIDs.UserOID;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.OID;
+import r01f.oids.SecurityIDs.SecurityPrincipalID;
+import r01f.oids.SecurityOIDs.SecurityPrincipalOID;
 import r01f.services.core.persistence.db.DBEntity;
 import r01f.util.types.Strings;
 
@@ -39,6 +39,7 @@ public abstract class DBEntityBase
 /////////////////////////////////////////////////////////////////////////////////////////
 //  FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////
+////////// --- CREATE
 	/**
 	 * Create date
 	 */
@@ -46,31 +47,42 @@ public abstract class DBEntityBase
 			insertable=true,updatable=false)
 	@Getter @Setter protected Instant _createDate; 			// http://www.developerscrappad.com/228/java/java-ee/ejb3-jpa-dealing-with-date-time-and-timestamp/
 	/**
-	 * Last update date
-	 */
-	@Column(name="LASTMODIFIED_AT",
-			insertable=false,updatable=true)
-	@Getter @Setter protected Instant _lastUpdateDate;		// http://www.developerscrappad.com/228/java/java-ee/ejb3-jpa-dealing-with-date-time-and-timestamp/
-	/**
-	 * The user code / application code of the creator
+	 * The creator [security principal] id
 	 */
 	@Column(name="CREATED_BY",length=OID.OID_LENGTH)
 	@Getter @Setter protected String _creator;
 	/**
-	 * The user oid of the creator
+	 * The creator [security principal] oid
 	 */
 	@Column(name="CREATED_BY_OID",length=OID.OID_LENGTH)
 	@Getter @Setter protected String _creatorOid;
+	
+////////// --- UPDATE
 	/**
-	 * The user code / application code of the last updator
+	 * Last update date
+	 */
+	@Column(name="LASTMODIFIED_AT",
+			insertable=false,updatable=true)
+	@Getter @Setter protected Instant _lastUpdateDate;		// http://www.developerscrappad.com/228/java/java-ee/ejb3-jpa-dealing-with-date-time-and-timestamp/	
+	/**
+	 * The updater [security principal] id
 	 */
 	@Column(name="UPDATED_BY",length=OID.OID_LENGTH)
-	@Getter @Setter protected String _lastUpdator;
+	@Getter @Setter protected String _lastUpdater;
 	/**
-	 * The user oid of the last updator
+	 * The updater [security principal] oid
 	 */
 	@Column(name="UPDATED_BY_OID",length=OID.OID_LENGTH)
-	@Getter @Setter protected String _lastUpdatorOid;
+	@Getter @Setter protected String _lastUpdaterOid;
+	
+////////// --- IMPERSONATION
+	/**
+	 * The impersonating [security principal] oid (if any)
+	 */
+	@Column(name="IMPERSONATING_PRINCIPAL_OID",length=OID.OID_LENGTH)
+	@Getter @Setter protected String _impersonatingPrincipalOid;	
+	
+////////// --- ENTITY VERSION
 	/**
 	 * Entity Version to prevent conflicts
 	 * See:
@@ -122,6 +134,7 @@ public abstract class DBEntityBase
 	 */
 	@Column(name="ENTITY_VERSION") @Version
 	@Getter @Setter protected long _entityVersion;
+	
 /////////////////////////////////////////////////////////////////////////////////////////
 //  AUTO-UPDATE CREATE_DATE AND LAST_UPDATE_DATE
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -140,87 +153,117 @@ public abstract class DBEntityBase
 	protected abstract void _preUpdate();
 
 /////////////////////////////////////////////////////////////////////////////////////////
-//
+// 	CREATE
 /////////////////////////////////////////////////////////////////////////////////////////
 	@Override
-	public Instant getCreateTimeStamp() {
+	public Instant getCreatedAt() {
 		return _createDate;
 	}
 	@Override
-	public void setCreateTimeStamp(final Instant newTS) {
-		throw new UnsupportedOperationException("Do not call setCreateTimeStamp at the persistence layer!");
+	public void setCreatedAt(final Instant newTS) {
+		throw new UnsupportedOperationException("Do not call setCreatedAt at the persistence layer!");
 	}
 	@Override
-	public Instant getLastUpdateTimeStamp() {
+	public SecurityPrincipalID getCreatorSecurityPrincipalId() {
+		return Strings.isNOTNullOrEmpty(_creator) ? SecurityPrincipalID.forId(_creator) : null;
+	}
+	@Override
+	public void setCreatorSecurityPrincipalId(final SecurityPrincipalID creator) {
+		_creator = creator != null ? creator.asString() : null;
+	}
+	@Override
+	public SecurityPrincipalOID getCreatorSecurityPrincipalOid() {
+		return Strings.isNOTNullOrEmpty(_creatorOid) ? SecurityPrincipalOID.forId(_creatorOid) : null;
+	}
+	@Override
+	public void setCreatorSecurityPrincipalOid(final SecurityPrincipalOID creatorOid) {
+		_creatorOid = creatorOid != null ? creatorOid.asString() : null;
+	}
+	public void setCreatorFrom(final SecurityContext securityContext) {
+		this.setCreatorSecurityPrincipalId(securityContext.getSecurityPrincipalId());
+		this.setCreatorSecurityPrincipalOid(securityContext.getSecurityPrincipal()
+														   .getOid());
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	LAST UPDATE
+/////////////////////////////////////////////////////////////////////////////////////////	
+	@Override
+	public Instant getLastUpdatedAt() {
 		return _lastUpdateDate;
 	}
 	@Override
-	public void setLastUpdateTimeStamp(final Instant newTS) {
-		throw new UnsupportedOperationException("Do not call setLastUpdateTimeStamp at the persistence layer!");
+	public void setLastUpdatedAt(final Instant newTS) {
+		throw new UnsupportedOperationException("Do not call setLastUpdatedAt at the persistence layer!");
 	}
 	@Override
-	public LoginID getCreatorUserCode() {
-		return Strings.isNOTNullOrEmpty(_creator) ? LoginID.forId(_creator) : null;
-	}
-
-	@Override
-	public void setCreatorUserCode(final LoginID creator) {
-		if (creator != null) _creator = creator.asString();
+	public SecurityPrincipalID getLastUpdaterSecurityPrincipalId() {
+		return Strings.isNOTNullOrEmpty(_lastUpdater) ? SecurityPrincipalID.forId(_lastUpdater) : null;
 	}
 	@Override
-	public UserOID getCreatorUserOid() {
-		return Strings.isNOTNullOrEmpty(_creatorOid) ? UserOID.forId(_creatorOid) : null;
+	public void setLastUpdaterSecurityPrincipalId(final SecurityPrincipalID lastUpdater) {
+		_lastUpdater = lastUpdater != null ? lastUpdater.asString() : null;
 	}
 	@Override
-	public void setCreatorUserOid(final UserOID creatorOid) {
-		if (creatorOid != null) _creatorOid = creatorOid.asString();
-	}
-	public void setCreatorFrom(final SecurityContext securityContext) {
-		this.setCreatorUserCode(securityContext.getLoginId());
-		if (securityContext.isForUser()) this.setCreatorUserOid(securityContext.asForUser()
-																			   .getUserOid());
+	public SecurityPrincipalOID getLastUpdaterSecurityPrincipalOid() {
+		return Strings.isNOTNullOrEmpty(_lastUpdaterOid) ? SecurityPrincipalOID.forId(_lastUpdaterOid) : null;
 	}
 	@Override
-	public LoginID getLastUpdatorUserCode() {
-		return Strings.isNOTNullOrEmpty(_lastUpdator) ? LoginID.forId(_lastUpdator) : null;
+	public void setLastUpdaterSecurityPrincipalOid(final SecurityPrincipalOID lastUpdaterOid) {
+		_lastUpdaterOid = lastUpdaterOid != null ? lastUpdaterOid.asString() : null;
+	}
+	public void setLastUpdaterFrom(final SecurityContext securityContext) {
+		this.setLastUpdaterSecurityPrincipalId(securityContext.getSecurityPrincipalId());
+		this.setLastUpdaterSecurityPrincipalOid(securityContext.getSecurityPrincipal()
+														       .getOid());
+	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	IMPERSONATION
+/////////////////////////////////////////////////////////////////////////////////////////
+	@Override
+	public SecurityPrincipalOID getImpersonatingSecurityPrincipalOid() {
+		return Strings.isNOTNullOrEmpty(_impersonatingPrincipalOid) ? SecurityPrincipalOID.forId(_impersonatingPrincipalOid) : null;
 	}
 	@Override
-	public void setLastUpdatorUserCode(final LoginID lastUpdator) {
-		if (lastUpdator != null) _lastUpdator = lastUpdator.asString();
+	public void setImpersonatingSecurityPrincipalOid(final SecurityPrincipalOID impersonatingPrincipalOid) {
+		_impersonatingPrincipalOid = impersonatingPrincipalOid != null ? impersonatingPrincipalOid.asString() : null;
 	}
-	@Override
-	public UserOID getLastUpdatorUserOid() {
-		return Strings.isNOTNullOrEmpty(_lastUpdatorOid) ? UserOID.forId(_lastUpdatorOid) : null;
-	}
-	@Override
-	public void setLastUpdatorUserOid(final UserOID lastUpdatorOid) {
-		if (lastUpdatorOid != null) _lastUpdatorOid = lastUpdatorOid.asString();
-	}
-	public void setLastUpdatorFrom(final SecurityContext securityContext) {
-		this.setLastUpdatorUserCode(securityContext.getLoginId());
-		if (securityContext.isForUser()) this.setLastUpdatorUserOid(securityContext.asForUser()
-																				   .getUserOid());
-	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////	
 	@Override
 	public ModelObjectTracking getTrackingInfo() {
 		ModelObjectTracking modelObjectTracking = new ModelObjectTracking();
-		if (_createDate != null) modelObjectTracking.setCreateDate(_createDate);
-		if (_lastUpdateDate != null) modelObjectTracking.setLastUpdateDate(_lastUpdateDate);
-		if (_creatorOid != null) modelObjectTracking.setCreatorUserOid(UserOID.forId(_creatorOid));
-		if (_creator != null) modelObjectTracking.setCreatorUserCode(LoginID.forId(_creator));
-		if (_lastUpdatorOid != null) modelObjectTracking.setLastUpdatorUserOid(UserOID.forId(_lastUpdatorOid));
-		if (_lastUpdator != null) modelObjectTracking.setLastUpdatorUserCode(LoginID.forId(_lastUpdator));
+		
+		// create
+		if (_createDate != null) modelObjectTracking.setCreatedAt(_createDate);
+		if (_creatorOid != null) modelObjectTracking.setCreatorSecurityPrincipalOid(SecurityPrincipalOID.forId(_creatorOid));
+		if (_creator != null) modelObjectTracking.setCreatorSecurityPrincipalId(SecurityPrincipalID.forId(_creator));
+		
+		// last update
+		if (_lastUpdateDate != null) modelObjectTracking.setLastUpdatedAt(_lastUpdateDate);
+		if (_lastUpdaterOid != null) modelObjectTracking.setLastUpdaterSecurityPrincipalOid(SecurityPrincipalOID.forId(_lastUpdaterOid));
+		if (_lastUpdater != null) modelObjectTracking.setLastUpdaterSecurityPrincipalId(SecurityPrincipalID.forId(_lastUpdater));
+		
+		// impersonation
+		if (_impersonatingPrincipalOid != null) modelObjectTracking.setImpersonatingSecurityPrincipalOid(SecurityPrincipalOID.forId(_impersonatingPrincipalOid));
+		
 		return modelObjectTracking;
 	}
 	@Override
 	public void setTrackingInfo(final ModelObjectTracking tracking) {
 		ModelObjectTracking theTracking = tracking != null ? tracking
 														   : new ModelObjectTracking();
-		_createDate = theTracking.getCreateDate() != null ? theTracking.getCreateDate() : null;
-		_lastUpdateDate = theTracking.getLastUpdateDate() != null ? theTracking.getLastUpdateDate() : null;
-		_creatorOid = theTracking.getCreatorUserOid() != null ? theTracking.getCreatorUserOid().asString() : null;
-		_creator = theTracking.getCreatorUserCode() != null ? theTracking.getCreatorUserCode().asString() : null;
-		_lastUpdatorOid = theTracking.getLastUpdatorUserOid() != null ? theTracking.getLastUpdatorUserOid().asString() : null;
-		_lastUpdator = theTracking.getLastUpdatorUserCode() != null ? theTracking.getLastUpdatorUserCode().asString() : null;
+		// create (beware!! do not use this.setCreatedAt()
+		_createDate = theTracking.getCreatedAt() != null ? theTracking.getCreatedAt() : null;
+		_creatorOid = theTracking.getCreatorSecurityPrincipalOid() != null ? theTracking.getCreatorSecurityPrincipalOid().asString() : null;
+		_creator = theTracking.getCreatorSecurityPrincipalId() != null ? theTracking.getCreatorSecurityPrincipalId().asString() : null;
+		
+		// last update
+		_lastUpdateDate = theTracking.getLastUpdatedAt() != null ? theTracking.getLastUpdatedAt() : null;
+		_lastUpdaterOid = theTracking.getLastUpdaterSecurityPrincipalOid() != null ? theTracking.getLastUpdaterSecurityPrincipalOid().asString() : null;
+		_lastUpdater = theTracking.getLastUpdaterSecurityPrincipalId() != null ? theTracking.getLastUpdaterSecurityPrincipalId().asString() : null;
+		
+		// impersonation
+		_impersonatingPrincipalOid = theTracking.getImpersonatingSecurityPrincipalOid() != null ? theTracking.getImpersonatingSecurityPrincipalOid().asString() : null;
 	}
 }

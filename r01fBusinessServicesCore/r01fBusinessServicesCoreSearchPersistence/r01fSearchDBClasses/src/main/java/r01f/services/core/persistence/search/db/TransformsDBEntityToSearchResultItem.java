@@ -2,7 +2,7 @@ package r01f.services.core.persistence.search.db;
 
 import r01f.locale.Language;
 import r01f.model.search.SearchResultItem;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
 import r01f.services.core.persistence.db.DBEntity;
 
 /**

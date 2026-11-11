@@ -15,6 +15,6 @@ public @interface CoreEventListener {
 	// #####################################
 	//  1."CoreEventListener" was created to scan Component with methods annotated with "CoreEventListenerSubscriber"
 	//  2. Spring equivalent is just the "Component" annotation This is agnostic annotation so the core is free from "Component"  Spring Aplicacion 
-	//  3. SringBoostrap uses  CoreSpringComponentScan to scan anotarions as  CoreEventListener
+	//  3. SpringBoostrap uses  CoreSpringComponentScan to scan anotations as  CoreEventListener
 	
 }

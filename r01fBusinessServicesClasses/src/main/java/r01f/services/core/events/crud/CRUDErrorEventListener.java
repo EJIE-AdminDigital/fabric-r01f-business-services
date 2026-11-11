@@ -13,7 +13,7 @@ import r01f.services.core.events.COREServiceMethodExecEvents.COREServiceMethodEx
  */
 @Slf4j
 public class CRUDErrorEventListener
-  implements COREServiceMethodExecErrorEventListener {
+  implements COREServiceMethodExecErrorEventListener<COREServiceMethodExecErrorEvent> {
 /////////////////////////////////////////////////////////////////////////////////////////
 //  
 /////////////////////////////////////////////////////////////////////////////////////////

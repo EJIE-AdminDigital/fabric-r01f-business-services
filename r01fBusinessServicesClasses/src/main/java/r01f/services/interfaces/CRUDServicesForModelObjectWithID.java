@@ -1,13 +1,13 @@
 package r01f.services.interfaces;
 
 
-import r01f.guids.PersistableObjectID;
-import r01f.guids.PersistableObjectOID;
 import r01f.model.PersistableModelObjectWithID;
 import r01f.model.facets.Versionable;
 import r01f.model.persistence.CRUDResult;
 import r01f.model.persistence.PersistenceOperationResult;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.PersistableObjectID;
+import r01f.oids.PersistableObjectOID;
 
 /**
  * CRUD (create, read, update, delete) interface for not {@link Versionable} model object

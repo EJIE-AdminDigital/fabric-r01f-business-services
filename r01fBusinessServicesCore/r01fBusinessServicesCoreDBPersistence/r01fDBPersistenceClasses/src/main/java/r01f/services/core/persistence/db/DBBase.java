@@ -9,10 +9,10 @@ import r01f.model.HasTrackableFacet;
 import r01f.model.HasTrackingInfo;
 import r01f.model.ModelObject;
 import r01f.model.facets.HasEntityVersion;
+import r01f.model.security.context.SecurityContext;
 import r01f.objectstreamer.HasMarshaller;
 import r01f.objectstreamer.Marshaller;
 import r01f.reflection.ReflectionUtils;
-import r01f.securitycontext.SecurityContext;
 import r01f.services.core.persistence.db.config.DBModuleConfig;
 import r01f.services.core.persistence.db.config.DBPersistenceProviderVendorDBHints;
 

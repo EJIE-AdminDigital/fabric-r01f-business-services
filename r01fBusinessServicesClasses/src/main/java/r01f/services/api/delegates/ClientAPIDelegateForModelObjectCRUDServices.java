@@ -9,13 +9,13 @@ import r01f.aspects.dirtytrack.DirtyTrackAdapter;
 import r01f.aspects.interfaces.dirtytrack.ConvertToDirtyStateTrackable;
 import r01f.aspects.interfaces.dirtytrack.DirtyStateTrackable;
 import r01f.exceptions.Throwables;
-import r01f.guids.PersistableObjectOID;
 import r01f.model.PersistableModelObject;
 import r01f.model.persistence.CRUDResult;
 import r01f.model.persistence.PersistenceException;
 import r01f.model.persistence.PersistenceOperationResult;
+import r01f.model.security.context.SecurityContext;
 import r01f.objectstreamer.Marshaller;
-import r01f.securitycontext.SecurityContext;
+import r01f.oids.PersistableObjectOID;
 import r01f.services.core.callback.spec.COREServiceMethodCallbackSpec;
 import r01f.services.interfaces.CRUDServicesForModelObject;
 
@@ -76,6 +76,9 @@ public abstract class ClientAPIDelegateForModelObjectCRUDServices<O extends Pers
 											   oid);
 		log.debug(loadOpResult.debugInfo().toString());
 
+		return ClientAPIDelegateForModelObjectCRUDServices.objFormLoadResult(loadOpResult);
+	}
+	protected static <O extends PersistableObjectOID,M extends PersistableModelObject<O>> M objFormLoadResult(final CRUDResult<M> loadOpResult) {
 		M outRecord = loadOpResult.getOrThrow();
 		if (outRecord instanceof DirtyStateTrackable) {
 			ClientAPIModelObjectChangesTrack.startTrackingChangesOnLoaded(outRecord);
@@ -92,11 +95,25 @@ public abstract class ClientAPIDelegateForModelObjectCRUDServices<O extends Pers
 	 * @throws PersistenceException
 	 */
 	public M loadOrNull(final O oid) {
+		CRUDResult<M> loadOpResult = this.getServiceProxy()
+										 .load(this.getSecurityContext(),
+											   oid);
+		return ClientAPIDelegateForModelObjectCRUDServices.objOrNullFormLoadResult(loadOpResult);
+	}
+	protected static <O extends PersistableObjectOID,M extends PersistableModelObject<O>> M objOrNullFormLoadResult(final CRUDResult<M> loadOpResult) {
 		M outRecord = null;
-		try {
-			outRecord = this.load(oid);
-		} catch (PersistenceException persistEx) {
-			if (!persistEx.isEntityNotFound()) throw persistEx;
+		if (loadOpResult.hasSucceeded()) {
+			outRecord = loadOpResult.getOrThrow();
+			if (outRecord instanceof DirtyStateTrackable) {
+				ClientAPIModelObjectChangesTrack.startTrackingChangesOnLoaded(outRecord);
+			}
+		} else if (loadOpResult.hasFailed()
+				&& loadOpResult.asCRUDError()
+							   .wasBecauseClientRequestedEntityWasNOTFound()) {
+			// do nothing
+		} else {
+			loadOpResult.asCRUDError()
+						.throwAsPersistenceException();
 		}
 		return outRecord;
 	}

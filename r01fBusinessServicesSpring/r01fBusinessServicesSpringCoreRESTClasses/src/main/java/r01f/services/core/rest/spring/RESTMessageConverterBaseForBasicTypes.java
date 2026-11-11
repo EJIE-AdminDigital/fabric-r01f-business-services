@@ -75,7 +75,7 @@ public abstract class RESTMessageConverterBaseForBasicTypes<T>
 		if (type.equals(_mappedType)) {
 		     outWriteable = true;
 		}
-		log.warn("{} class is {} writeable with {}",type.getName(),
+		log.info("{} class is {} writeable with {}",type.getName(),
 													outWriteable ? "" : "NOT",
 													this.getClass().getName());
 		return outWriteable;

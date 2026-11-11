@@ -1,8 +1,8 @@
 package r01f.services.client.servicesproxy.rest;
 
 import lombok.Getter;
+import r01f.model.security.context.SecurityContext;
 import r01f.objectstreamer.Marshaller;
-import r01f.securitycontext.SecurityContext;
 import r01f.services.client.servicesproxy.rest.RESTServiceResourceUrlPathBuilders.RESTServiceResourceUrlPathBuilder;
 import r01f.services.core.persistence.index.IndexManagementCommand;
 import r01f.services.interfaces.IndexManagementServices;

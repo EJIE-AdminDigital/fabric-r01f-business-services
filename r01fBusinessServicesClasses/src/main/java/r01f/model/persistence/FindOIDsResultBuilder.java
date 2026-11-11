@@ -9,16 +9,16 @@ import com.google.common.collect.Lists;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import r01f.guids.OID;
-import r01f.guids.OIDs;
-import r01f.guids.PersistableObjectOID;
 import r01f.model.PersistableModelObject;
 import r01f.model.metadata.HasMetaDataForHasOIDModelObject;
 import r01f.model.metadata.HasTypesMetaData;
 import r01f.model.metadata.TypeMetaDataInspector;
+import r01f.model.security.context.SecurityContext;
 import r01f.model.services.COREServiceErrorTypes;
+import r01f.oids.OID;
+import r01f.oids.OIDs;
+import r01f.oids.PersistableObjectOID;
 import r01f.patterns.IsBuilder;
-import r01f.securitycontext.SecurityContext;
 import r01f.services.core.persistence.db.DBEntity;
 import r01f.util.types.Strings;
 
@@ -97,8 +97,12 @@ public class FindOIDsResultBuilder
 		}
 		@SuppressWarnings("unchecked")
 		public <O extends PersistableObjectOID> FindOIDsOK<O> foundEntitiesWithOids(final Collection<O> oids) {
-			Class<? extends PersistableModelObject<O>> modelObjType = (Class<? extends PersistableModelObject<O>>)_modelObjType;
-			Class<O> oidType = _guessOidType(_modelObjType);
+			return this.foundEntitiesWithOids(oids,
+										  	  (Class<? extends PersistableModelObject<O>>)_modelObjType);
+		}
+		public <O extends PersistableObjectOID> FindOIDsOK<O> foundEntitiesWithOids(final Collection<O> oids,
+																					final Class<? extends PersistableModelObject<O>> modelObjType) {
+			Class<O> oidType = _guessOidType(modelObjType);
 			
 			FindOIDsOK<O> outFoundOids = new FindOIDsOK<>(modelObjType,oidType);
 			outFoundOids.setRequestedOperation(PersistenceRequestedOperation.FIND);

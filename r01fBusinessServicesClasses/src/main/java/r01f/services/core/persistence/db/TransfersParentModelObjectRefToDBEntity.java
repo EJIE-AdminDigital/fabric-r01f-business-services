@@ -3,7 +3,7 @@ package r01f.services.core.persistence.db;
 import r01f.model.ModelObject;
 import r01f.model.ModelObjectRef;
 import r01f.model.PersistableModelObject;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
 
 /**
  * For a dependent model object, this interface encapsulates the methods that 

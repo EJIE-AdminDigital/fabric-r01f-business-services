@@ -3,7 +3,7 @@ package r01f.services.core.persistence.db.entities.primarykeys;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import r01f.guids.OIDForVersionableModelObject;
+import r01f.oids.OIDForVersionableModelObject;
 
 /**
  * PrimaryKey for any versionable object

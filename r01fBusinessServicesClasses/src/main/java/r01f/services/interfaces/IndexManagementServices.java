@@ -1,6 +1,6 @@
 package r01f.services.interfaces;
 
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
 import r01f.service.ServiceHandler;
 import r01f.types.jobs.EnqueuedJob;
 

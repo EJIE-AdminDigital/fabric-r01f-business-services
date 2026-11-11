@@ -2,17 +2,17 @@ package r01f.services.client.servicesproxy.rest;
 
 import java.time.Instant;
 
-import r01f.guids.OIDForVersionableModelObject;
-import r01f.guids.PersistableObjectOID;
-import r01f.guids.VersionIndependentOID;
 import r01f.httpclient.HttpResponseResult;
 import r01f.model.PersistableModelObject;
 import r01f.model.facets.Versionable.HasVersionableFacet;
 import r01f.model.persistence.CRUDOnMultipleResult;
 import r01f.model.persistence.CRUDResult;
 import r01f.model.persistence.PersistenceRequestedOperation;
+import r01f.model.security.context.SecurityContext;
 import r01f.objectstreamer.Marshaller;
-import r01f.securitycontext.SecurityContext;
+import r01f.oids.OIDForVersionableModelObject;
+import r01f.oids.PersistableObjectOID;
+import r01f.oids.VersionIndependentOID;
 import r01f.services.client.servicesproxy.rest.RESTServiceResourceUrlPathBuilders.RESTServiceResourceUrlPathBuilderForVersionableModelObjectPersistenceBase;
 import r01f.services.core.callback.spec.COREServiceMethodCallbackSpec;
 import r01f.services.interfaces.CRUDServicesForVersionableModelObject;

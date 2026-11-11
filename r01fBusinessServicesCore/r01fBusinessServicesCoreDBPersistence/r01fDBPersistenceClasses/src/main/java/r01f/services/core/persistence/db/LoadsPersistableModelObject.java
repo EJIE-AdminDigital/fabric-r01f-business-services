@@ -2,10 +2,10 @@ package r01f.services.core.persistence.db;
 
 import java.util.Set;
 
-import r01f.guids.PersistableObjectOID;
 import r01f.model.PersistableModelObject;
 import r01f.model.persistence.PersistenceException;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.PersistableObjectOID;
 
 /**
  * Interface for types in charge of loading persistable model objects 

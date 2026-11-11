@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import r01f.model.ModelObject;
 import r01f.model.persistence.FindResultBuilder.FindResultBuilderForError;
+import r01f.model.security.context.SecurityContext;
 import r01f.patterns.IsBuilder;
-import r01f.securitycontext.SecurityContext;
 import r01f.services.core.persistence.db.DBEntity;
 import r01f.util.types.collections.CollectionUtils;
 

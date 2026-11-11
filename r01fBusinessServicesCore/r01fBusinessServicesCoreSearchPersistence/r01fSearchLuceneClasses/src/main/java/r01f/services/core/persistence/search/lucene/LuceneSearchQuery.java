@@ -25,12 +25,12 @@ import com.google.common.collect.Range;
 
 import lombok.extern.slf4j.Slf4j;
 import r01f.enums.EnumWithCode;
-import r01f.guids.OID;
 import r01f.locale.Language;
 import r01f.model.search.SearchFilter;
 import r01f.model.search.query.BooleanQueryClause;
 import r01f.model.search.query.BooleanQueryClause.QualifiedQueryClause;
 import r01f.model.search.query.BooleanQueryClause.QueryClauseOccur;
+import r01f.oids.OID;
 import r01f.model.search.query.ContainedInQueryClause;
 import r01f.model.search.query.ContainsTextQueryClause;
 import r01f.model.search.query.EqualsQueryClause;

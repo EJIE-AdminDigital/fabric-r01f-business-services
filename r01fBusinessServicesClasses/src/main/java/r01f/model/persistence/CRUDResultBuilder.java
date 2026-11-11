@@ -5,7 +5,6 @@ import com.google.common.reflect.TypeToken;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import r01f.guids.OIDForVersionableModelObject;
 import r01f.model.PersistableModelObject;
 import r01f.model.facets.Versionable.HasVersionableFacet;
 import r01f.model.persistence.CRUDResultForMultipleEntityBuilder.CRUDResultForMultipleEntitiesBuilderResultStep;
@@ -14,9 +13,10 @@ import r01f.model.persistence.CRUDResultForSingleEntityBuilder.CRUDResultBuilder
 import r01f.model.persistence.CRUDResultForSingleEntityBuilder.CRUDResultBuilderForErrorStep;
 import r01f.model.persistence.CRUDResultForSingleEntityBuilder.CRUDResultBuilderForOKStep;
 import r01f.model.persistence.CRUDResultForSingleEntityBuilder.CRUDResultBuilderForUpdateError;
+import r01f.model.security.context.SecurityContext;
 import r01f.model.services.COREServiceErrorTypes;
+import r01f.oids.OIDForVersionableModelObject;
 import r01f.patterns.IsBuilder;
-import r01f.securitycontext.SecurityContext;
 import r01f.util.types.Strings;
 
 /**
@@ -149,6 +149,11 @@ public class CRUDResultBuilder
 													   PersistenceRequestedOperation.DELETE);	
 		}
 		// --------- SUCCESS
+		public CRUDResultBuilderForOKStep<T> executed(final PersistenceRequestedOperation requestedOp) {
+			return new CRUDResultBuilderForOKStep<>(_securityContext,
+													_entityType,
+													requestedOp,requestedOp.getPerformedOperation());
+		}
 		public CRUDResultBuilderForOKStep<T> executed(final PersistenceRequestedOperation requestedOp,
 													  final PersistencePerformedOperation performedOp) {
 			return new CRUDResultBuilderForOKStep<>(_securityContext,
@@ -156,24 +161,16 @@ public class CRUDResultBuilder
 													requestedOp,performedOp);
 		}
 		public CRUDResultBuilderForOKStep<T> loaded() {
-			return new CRUDResultBuilderForOKStep<>(_securityContext,
-													_entityType,
-													PersistenceRequestedOperation.LOAD,PersistencePerformedOperation.LOADED);
+			return this.executed(PersistenceRequestedOperation.LOAD,PersistencePerformedOperation.LOADED);
 		}
 		public CRUDResultBuilderForOKStep<T> created() {
-			return new CRUDResultBuilderForOKStep<>(_securityContext,
-													_entityType,
-													PersistenceRequestedOperation.CREATE,PersistencePerformedOperation.CREATED);
+			return this.executed(PersistenceRequestedOperation.CREATE,PersistencePerformedOperation.CREATED);
 		}
 		public CRUDResultBuilderForOKStep<T> updated() {
-			return new CRUDResultBuilderForOKStep<>(_securityContext,
-													_entityType,
-													PersistenceRequestedOperation.UPDATE,PersistencePerformedOperation.UPDATED);
+			return this.executed(PersistenceRequestedOperation.UPDATE,PersistencePerformedOperation.UPDATED);
 		}
 		public CRUDResultBuilderForOKStep<T> deleted() {
-			return new CRUDResultBuilderForOKStep<>(_securityContext,
-													_entityType,
-													PersistenceRequestedOperation.DELETE,PersistencePerformedOperation.DELETED);
+			return this.executed(PersistenceRequestedOperation.DELETE,PersistencePerformedOperation.DELETED);
 		}
 	}	
 	public class CRUDResultBuilderOperationStep<T> 

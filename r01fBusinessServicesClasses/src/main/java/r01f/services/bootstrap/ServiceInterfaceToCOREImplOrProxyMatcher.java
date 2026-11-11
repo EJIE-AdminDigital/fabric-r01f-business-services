@@ -14,7 +14,7 @@ import r01f.reflection.scanner.ClassgraphScanHandler;
 import r01f.services.bootstrap.config.IsCoreServiceImplOrProxyToCoreServiceImpl;
 import r01f.services.bootstrap.config.ServicesBootstrapConfig;
 import r01f.services.bootstrap.config.ServicesBootstrapConfigUtil;
-import r01f.services.bootstrap.config.ServicesCoreImplOrProxyToCoreModuleConfig;
+import r01f.services.bootstrap.config.ServicesCoreImplOrProxyToCoreImplConfig;
 import r01f.services.bootstrap.config.ServicesCoreModuleBootstrapConfig;
 import r01f.services.ids.ServiceIDs.ClientApiAppCode;
 import r01f.services.interfaces.ExposedServiceInterface;
@@ -132,7 +132,7 @@ public class ServiceInterfaceToCOREImplOrProxyMatcher {
 		log.warn("b) for every defined [core impl] or [proxy] config try to match [service interfaces] to [core impl] or [proxy]");
 		
 		ServiceInterfacesMatchingsForCoreModule outMatchingsForModule = new ServiceInterfacesMatchingsForCoreModule(coreModuleCfg.getCoreAppCode(),coreModuleCfg.getCoreModule());
-		for (ServicesCoreImplOrProxyToCoreModuleConfig coreImplOrProxyCfg : coreModuleCfg.getCoreImplOrProxyToCoreModuleConfigs()) {
+		for (ServicesCoreImplOrProxyToCoreImplConfig coreImplOrProxyCfg : coreModuleCfg.getCoreImplOrProxyToCoreModuleConfigs()) {
 			log.warn("\t-{}",coreImplOrProxyCfg.debugInfo());			
 			if (CollectionUtils.isNullOrEmpty(coreImplOrProxyCfg.getCoreServiceOrProxyToCoreServiceBaseTypes())) continue;		// skip 
 			
@@ -148,7 +148,7 @@ public class ServiceInterfaceToCOREImplOrProxyMatcher {
 //	
 /////////////////////////////////////////////////////////////////////////////////////////	
 	private Collection<ServiceInterfaceMatch> _findServiceInterfaceToCoreImplOrProxyMatchings(final Set<Class<? extends ServiceInterface>> serviceInterfaceTypes,
-																			 			      final ServicesCoreImplOrProxyToCoreModuleConfig coreImplOrProxyCfg) {
+																			 			      final ServicesCoreImplOrProxyToCoreImplConfig coreImplOrProxyCfg) {
 		Map<Class<? extends ServiceInterface>,
 			Class<? extends IsCoreServiceImplOrProxyToCoreServiceImpl>> matchings = _findServiceInterfaceToCoreImplOrProxyMatchings(serviceInterfaceTypes,
 																												   					coreImplOrProxyCfg.getCoreServiceOrProxyToCoreServiceBaseTypes(),

@@ -39,6 +39,23 @@
 			<artifactId>r01fBusinessServicesSpringClasses</artifactId>
 			<version>${revision}</version>
 		</dependency>
+		
+		<!-- ///////////////////////////////////////// -->
+		<!-- BusinessServices Spring Event Bus                    -->
+		<!-- ///////////////////////////////////////// -->
+		<dependency>
+			<groupId>r01.fabric.base.eventbus</groupId>
+			<artifactId>r01fSpringEventBusClasses</artifactId>
+			<version>${r01f.base.version}</version>			
+		</dependency>
+		
+		<dependency>
+			<groupId>r01.fabric.base.spring.support</groupId>
+			<artifactId>r01fSpringSupportTransactionClasses</artifactId>
+			<version>${r01f.base.version}</version>			
+		</dependency>
+		
+		
 	</dependencies>
 	
 </project>

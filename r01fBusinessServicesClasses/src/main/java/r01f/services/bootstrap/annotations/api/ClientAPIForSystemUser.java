@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import jakarta.inject.Qualifier;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
 
 
 

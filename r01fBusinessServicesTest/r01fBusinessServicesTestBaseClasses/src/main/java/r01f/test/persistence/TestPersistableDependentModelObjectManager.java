@@ -9,11 +9,11 @@ import com.google.common.collect.Sets;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import r01f.concurrent.Threads;
-import r01f.guids.PersistableObjectOID;
 import r01f.model.ModelObjectRef;
 import r01f.model.ModelObjectReferenciable;
 import r01f.model.ModelObjectTracking;
 import r01f.model.PersistableModelObject;
+import r01f.oids.PersistableObjectOID;
 import r01f.patterns.Factory;
 import r01f.services.api.delegates.ClientAPIDelegateForDependentModelObjectCRUDServices;
 import r01f.services.api.delegates.ClientAPIDelegateForModelObjectCRUDServices;
@@ -101,7 +101,7 @@ public class TestPersistableDependentModelObjectManager<O extends PersistableObj
 		_createdMockObjsOids = Sets.newLinkedHashSetWithExpectedSize(numOfObjsToCreate);
 		for (int i=0; i < numOfObjsToCreate; i++) {
 			M modelObjectToBeCreated = _mockObjectsFactory.create();
-			modelObjectToBeCreated.setTrackingInfo(new ModelObjectTracking(TestAPIBase.TEST_USER_OID,TestAPIBase.TEST_USER,Instant.now()));			// Ensure tracking info
+			modelObjectToBeCreated.setTrackingInfo(new ModelObjectTracking(TestAPIBase.TEST_PRINCIPAL_OID,TestAPIBase.TEST_PRINCIPAL_ID,Instant.now()));			// Ensure tracking info
 
 			M createdModelObj = _clientApiDelegateForDependentObjsCRUD.create(this.getParentModelObjectRef(),
 												  							  modelObjectToBeCreated);

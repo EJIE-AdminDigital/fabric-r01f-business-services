@@ -4,12 +4,12 @@ package r01f.services.interfaces;
 import java.time.Instant;
 
 import lombok.SneakyThrows;
-import r01f.guids.PersistableObjectOID;
 import r01f.model.PersistableModelObject;
 import r01f.model.facets.Versionable;
 import r01f.model.persistence.CRUDResult;
 import r01f.model.persistence.PersistenceOperationResult;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.PersistableObjectOID;
 import r01f.services.core.callback.spec.COREServiceMethodCallbackSpec;
 
 /**

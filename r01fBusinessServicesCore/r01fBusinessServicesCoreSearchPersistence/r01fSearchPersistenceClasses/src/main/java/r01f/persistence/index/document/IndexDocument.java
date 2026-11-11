@@ -2,14 +2,14 @@ package r01f.persistence.index.document;
 
 import java.util.Map;
 
-import r01f.model.IndexableModelObject;
+import r01f.model.PersistableObject;
 import r01f.model.metadata.FieldID;
 import r01f.model.metadata.TypeMetaData;
 
 /**
  * Model a search engine's index document (for example a wrapper of a Lucene Document)
  */
-public interface IndexDocument<M extends IndexableModelObject> {
+public interface IndexDocument<M extends PersistableObject> {
 	/**
 	 * Gets the model object's type this document is about
 	 * (a model object is defined by two types: a base (generic) type and a concrete one)

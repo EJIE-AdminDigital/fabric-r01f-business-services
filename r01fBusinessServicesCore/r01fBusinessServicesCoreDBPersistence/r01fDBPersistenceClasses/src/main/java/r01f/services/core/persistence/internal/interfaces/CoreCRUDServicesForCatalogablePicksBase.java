@@ -4,7 +4,7 @@ import r01f.model.catalogable.CatalogableIDs.CatalogableObjectTypeID;
 import r01f.model.catalogable.CatalogableOIDs.CatalogableObjectOID;
 import r01f.model.catalogable.ContainsPicksForCatalogableObject;
 import r01f.model.persistence.CRUDResult;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
 import r01f.services.interfaces.ServiceInterface;
 
 public interface CoreCRUDServicesForCatalogablePicksBase<T extends ContainsPicksForCatalogableObject<?>>

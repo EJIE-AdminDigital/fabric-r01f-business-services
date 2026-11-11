@@ -14,12 +14,12 @@ import jakarta.persistence.criteria.Root;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import r01f.guids.PersistableObjectOID;
 import r01f.model.PersistableModelObject;
 import r01f.model.persistence.CountResult;
 import r01f.model.persistence.CountResultBuilder;
+import r01f.model.security.context.SecurityContext;
 import r01f.objectstreamer.Marshaller;
-import r01f.securitycontext.SecurityContext;
+import r01f.oids.PersistableObjectOID;
 import r01f.services.core.persistence.db.config.DBModuleConfig;
 import r01f.services.core.persistence.db.entities.DBEntityForModelObject;
 import r01f.services.core.persistence.db.entities.primarykeys.DBPrimaryKeyForModelObject;
@@ -126,7 +126,7 @@ public abstract class DBCountForModelObjectBase<O extends PersistableObjectOID,M
 		@Getter protected final CriteriaQuery<Long> _criteriaQuery;
 		@Getter protected final Root<? extends DB> _root;
 		
-		@Getter protected final String _countSpec;
+		@Getter protected final String _countSpec;	// a string that describes what is being counted (for logging purposes)
 
 		public CountQueryWrapper(final String countSpec) {
 			this(_DBEntityType,

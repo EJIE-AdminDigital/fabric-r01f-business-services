@@ -1,22 +1,21 @@
 package r01f.persistence.index;
 
 import jakarta.inject.Provider;
-
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import r01f.exceptions.Throwables;
-import r01f.model.IndexableModelObject;
+import r01f.model.PersistableObject;
 import r01f.model.metadata.TypeMetaData;
 import r01f.model.persistence.PersistenceRequestedOperation;
+import r01f.model.security.context.SecurityContext;
 import r01f.persistence.index.document.IndexDocumentFieldValueSet;
-import r01f.securitycontext.SecurityContext;
 
 /**
  * Base type for indexers
  * @param <P>
  */
 @Accessors(prefix="_")
-public abstract class IndexerBase<P extends IndexableModelObject>
+public abstract class IndexerBase<P extends PersistableObject>
            implements Indexer<P> {
 /////////////////////////////////////////////////////////////////////////////////////////
 //  FIELDS

@@ -10,10 +10,9 @@ import r01f.facets.HasName;
 import r01f.facets.HasOID;
 import r01f.facets.Summarizable;
 import r01f.facets.Summarizable.HasSummaryFacet;
-import r01f.guids.OID;
 import r01f.locale.Language;
 import r01f.locale.LanguageTexts;
-import r01f.model.IndexableModelObject;
+import r01f.model.PersistableObject;
 import r01f.model.facets.HasEntityVersion;
 import r01f.model.facets.HasNumericID;
 import r01f.model.metadata.FieldID;
@@ -28,6 +27,7 @@ import r01f.model.metadata.TypeMetaData;
 import r01f.model.metadata.TypeMetaDataForModelObjectBase;
 import r01f.model.metadata.annotations.ModelObjectData;
 import r01f.model.search.SearchResultItemForModelObject;
+import r01f.oids.OID;
 import r01f.reflection.ReflectionUtils;
 import r01f.types.summary.Summary;
 
@@ -42,12 +42,12 @@ class LuceneIndexDocToSearchResultItemTransfer {
 	 * @param doc
 	 * @param filter
 	 */
-	public static <I extends SearchResultItemForModelObject<? extends IndexableModelObject>> void setResultItemFieldsFromIndexedDoc(final LuceneSearchResultDocument<? extends IndexableModelObject> doc,
-																														    		final I item) {
-		TypeMetaData<? extends IndexableModelObject> typeMetaData = doc.getModelObjectMetaData();
+	public static <I extends SearchResultItemForModelObject<? extends PersistableObject>> void setResultItemFieldsFromIndexedDoc(final LuceneSearchResultDocument<? extends PersistableObject> doc,
+																														    	 final I item) {
+		TypeMetaData<? extends PersistableObject> typeMetaData = doc.getModelObjectMetaData();
 		
 		// Model object type
-		item.unsafeSetModelObjectType((Class<? extends IndexableModelObject>)typeMetaData.getRawType());
+		item.unsafeSetModelObjectType(typeMetaData.getRawType());
 		item.setModelObjectTypeCode(typeMetaData.getTypeMetaData().modelObjTypeCode());
 		
 		// OID
@@ -124,8 +124,8 @@ class LuceneIndexDocToSearchResultItemTransfer {
 /////////////////////////////////////////////////////////////////////////////////////////
 //  SEARCH RESULT ITEM - CONTAINED OBJECT
 /////////////////////////////////////////////////////////////////////////////////////////	
-	public static void setContainedObjectFieldValuesFromSearchResultDoc(final LuceneSearchResultDocument<? extends IndexableModelObject> doc,
-																		final IndexableModelObject modelObject) {
+	public static void setContainedObjectFieldValuesFromSearchResultDoc(final LuceneSearchResultDocument<? extends PersistableObject> doc,
+																		final PersistableObject modelObject) {
 		// oid
 		if (modelObject.hasFacet(HasOID.class)) {
 			FieldID fieldId = FieldID.from(HasMetaDataForHasOIDModelObject.SEARCHABLE_METADATA.OID);
@@ -176,8 +176,8 @@ class LuceneIndexDocToSearchResultItemTransfer {
 	 * @param modelObject
 	 * @param doc
 	 */
-	public static <I extends SearchResultItemForModelObject<? extends IndexableModelObject>> void copyFieldValuesFomSearchResultItemToContainedObject(final I item,
-																																					  final IndexableModelObject modelObject) {
+	public static <I extends SearchResultItemForModelObject<? extends PersistableObject>> void copyFieldValuesFomSearchResultItemToContainedObject(final I item,
+																																				   final PersistableObject modelObject) {
 		// oid
 		if (modelObject.hasFacet(HasOID.class)
 		 && item instanceof HasOID) {
@@ -197,7 +197,7 @@ class LuceneIndexDocToSearchResultItemTransfer {
 		// NumericId
 		if (modelObject.hasFacet(HasNumericID.class)) {
 			long numericId = item.getNumericId();
-			((HasNumericID)modelObject).setNumericId(numericId);
+			modelObject.setNumericId(numericId);
 		}
 		// Name
 		if (modelObject.hasFacet(HasName.class)

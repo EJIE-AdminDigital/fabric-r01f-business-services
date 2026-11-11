@@ -2,11 +2,10 @@ package r01f.services.core.persistence.index.db;
 
 import jakarta.inject.Provider;
 import jakarta.persistence.EntityManager;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import r01f.model.IndexableModelObject;
+import r01f.model.PersistableObject;
 import r01f.model.metadata.TypeMetaData;
 import r01f.persistence.index.IndexableFieldValuesExtractor;
 import r01f.persistence.index.IndexerBase;
@@ -16,7 +15,7 @@ import r01f.persistence.index.IndexerBase;
  * @param <P>
  */
 @Accessors(prefix="_")
-public abstract class DBIndexerBase<P extends IndexableModelObject>
+public abstract class DBIndexerBase<P extends PersistableObject>
               extends IndexerBase<P> {
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FIELDS

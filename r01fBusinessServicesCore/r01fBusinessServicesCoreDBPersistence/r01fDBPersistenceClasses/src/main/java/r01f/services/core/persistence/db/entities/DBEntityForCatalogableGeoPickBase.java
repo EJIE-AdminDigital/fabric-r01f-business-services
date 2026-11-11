@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import r01f.guids.OID;
+import r01f.oids.OID;
 
 /**
  * This is a BASE type for the DB entity that stores the label catalog

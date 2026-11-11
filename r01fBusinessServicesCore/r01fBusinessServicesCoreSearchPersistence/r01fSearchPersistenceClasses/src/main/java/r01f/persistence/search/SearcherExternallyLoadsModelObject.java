@@ -1,8 +1,8 @@
 package r01f.persistence.search;
 
-import r01f.guids.OID;
-import r01f.model.IndexableModelObject;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.PersistableObject;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.OID;
 
 /**
  * Interface to be implemented by {@link Searcher} subtypes that loads externally the result item encapsulated model object instance
@@ -12,7 +12,7 @@ import r01f.securitycontext.SecurityContext;
  * @param <P>
  */
 public interface SearcherExternallyLoadsModelObject<O extends OID,
-										 		    P extends IndexableModelObject> 
+										 		    P extends PersistableObject> 
 	     extends SearcherSearchResultItemFromIndexDataTransformStrategy {
 	/**
 	 * Loads the model object from a search index external source (ie a BBDD)

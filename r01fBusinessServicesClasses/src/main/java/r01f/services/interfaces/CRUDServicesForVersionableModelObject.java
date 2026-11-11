@@ -3,14 +3,14 @@ package r01f.services.interfaces;
 import java.time.Instant;
 import java.util.Set;
 
-import r01f.guids.OIDForVersionableModelObject;
-import r01f.guids.PersistableObjectOID;
-import r01f.guids.VersionIndependentOID;
 import r01f.model.PersistableModelObject;
 import r01f.model.facets.Versionable.HasVersionableFacet;
 import r01f.model.persistence.CRUDOnMultipleResult;
 import r01f.model.persistence.CRUDResult;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.OIDForVersionableModelObject;
+import r01f.oids.PersistableObjectOID;
+import r01f.oids.VersionIndependentOID;
 import r01f.services.core.callback.spec.COREServiceMethodCallbackSpec;
 
 /**

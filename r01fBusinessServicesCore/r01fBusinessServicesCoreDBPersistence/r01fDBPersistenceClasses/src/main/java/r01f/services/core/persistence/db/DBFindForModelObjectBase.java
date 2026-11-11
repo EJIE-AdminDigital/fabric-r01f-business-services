@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -22,8 +23,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import r01f.facets.util.Facetables;
-import r01f.guids.OIDs;
-import r01f.guids.PersistableObjectOID;
 import r01f.model.PersistableModelObject;
 import r01f.model.SummarizedModelObject;
 import r01f.model.facets.Versionable.HasVersionableFacet;
@@ -33,12 +32,14 @@ import r01f.model.persistence.FindResult;
 import r01f.model.persistence.FindResultBuilder;
 import r01f.model.persistence.FindSummariesResult;
 import r01f.model.persistence.FindSummariesResultBuilder;
+import r01f.model.security.context.SecurityContext;
 import r01f.objectstreamer.Marshaller;
+import r01f.oids.OIDs;
+import r01f.oids.PersistableObjectOID;
+import r01f.oids.SecurityIDs.SecurityPrincipalID;
+import r01f.oids.SecurityOIDs.SecurityPrincipalOID;
 import r01f.patterns.FactoryFrom;
 import r01f.reflection.ReflectionUtils;
-import r01f.securitycontext.SecurityContext;
-import r01f.securitycontext.SecurityIDS.LoginID;
-import r01f.securitycontext.SecurityOIDs.UserOID;
 import r01f.services.core.persistence.db.config.DBModuleConfig;
 import r01f.services.core.persistence.db.entities.DBEntityForModelObject;
 import r01f.services.core.persistence.db.entities.primarykeys.DBPrimaryKeyForModelObject;
@@ -100,11 +101,18 @@ public abstract class DBFindForModelObjectBase<O extends PersistableObjectOID,M 
 /////////////////////////////////////////////////////////////////////////////////////////
 //  FIND METHODS
 /////////////////////////////////////////////////////////////////////////////////////////
+////////// --- FIND ALL	
 	@Override
 	public FindOIDsResult<O> findAll(final SecurityContext securityContext) {
 		return new FindTupleQueryWrapper()
 						.findOidsUsing(securityContext);
 	}
+	@Override
+	public Stream<O> findAllAsStream(final SecurityContext securityContext) {
+		return new FindTupleQueryWrapper()
+						.findOidsAsStreamUsing(securityContext);
+	}
+////////// --- FIND BY CREATE DATE	
 	@Override
 	public FindOIDsResult<O> findByCreateDate(final SecurityContext securityContext,
 											  final Range<Instant> createDate) {
@@ -113,6 +121,14 @@ public abstract class DBFindForModelObjectBase<O extends PersistableObjectOID,M 
 						.findOidsUsing(securityContext);
 	}
 	@Override
+	public Stream<O> findByCreateDateAsStream(final SecurityContext securityContext,
+											  final Range<Instant> createDate) {
+		return new FindTupleQueryWrapper()
+						.addFilterByDateRangePredicate(createDate,"_createDate")
+						.findOidsAsStreamUsing(securityContext);
+	}
+////////// --- FIND BY LAST UPDATE DATE	
+	@Override
 	public FindOIDsResult<O> findByLastUpdateDate(final SecurityContext securityContext,
 												  final Range<Instant> lastUpdateDate) {
 		return new FindTupleQueryWrapper()
@@ -120,32 +136,71 @@ public abstract class DBFindForModelObjectBase<O extends PersistableObjectOID,M 
 						.findOidsUsing(securityContext);
 	}
 	@Override
-	public FindOIDsResult<O> findByCreator(final SecurityContext securityContext,
-										   final UserOID creatorUserOid) {
+	public Stream<O> findByLastUpdateDateAsStream(final SecurityContext securityContext,
+												  final Range<Instant> lastUpdateDate) {
 		return new FindTupleQueryWrapper()
-						.addFilterByUserPredicate(creatorUserOid,"_creatorOid")
-						.findOidsUsing(securityContext);
+						.addFilterByDateRangePredicate(lastUpdateDate,"_lastUpdateDate")
+						.findOidsAsStreamUsing(securityContext);
 	}
+////////// --- FIND BY CREATOR OID
 	@Override
 	public FindOIDsResult<O> findByCreator(final SecurityContext securityContext,
-										   final LoginID creatorUserCode) {
+										   final SecurityPrincipalOID creatorPrincipalOid) {
 		return new FindTupleQueryWrapper()
-						.addFilterByUserPredicate(creatorUserCode,"_creator")
+						.addFilterBySecurityPrincipalPredicate(creatorPrincipalOid,"_creatorOid")
 						.findOidsUsing(securityContext);
 	}
 	@Override
-	public FindOIDsResult<O> findByLastUpdator(final SecurityContext securityContext,
-											   final UserOID lastUpdatorOid) {
+	public Stream<O> findByCreatorAsStream(final SecurityContext securityContext,
+										   final SecurityPrincipalOID creatorPrincipalOid) {
 		return new FindTupleQueryWrapper()
-						.addFilterByUserPredicate(lastUpdatorOid,"_lastUpdatorOid")
+						.addFilterBySecurityPrincipalPredicate(creatorPrincipalOid,"_creatorOid")
+						.findOidsAsStreamUsing(securityContext);
+	}
+////////// --- FIND BY CREATOR ID	
+	@Override
+	public FindOIDsResult<O> findByCreator(final SecurityContext securityContext,
+										   final SecurityPrincipalID creatorPrincipalId) {
+		return new FindTupleQueryWrapper()
+						.addFilterBySecurityPrincipalPredicate(creatorPrincipalId,"_creator")
 						.findOidsUsing(securityContext);
 	}
 	@Override
-	public FindOIDsResult<O> findByLastUpdator(final SecurityContext securityContext,
-											   final LoginID lastUpdatorUserCode) {
+	public Stream<O> findByCreatorAsStream(final SecurityContext securityContext,
+										   final SecurityPrincipalID creatorPrincipalId) {
 		return new FindTupleQueryWrapper()
-						.addFilterByUserPredicate(lastUpdatorUserCode,"_lastUpdator")
+						.addFilterBySecurityPrincipalPredicate(creatorPrincipalId,"_creator")
+						.findOidsAsStreamUsing(securityContext);
+	}
+////////// --- FIND BY LAST UPDATER OID	
+	@Override
+	public FindOIDsResult<O> findByLastUpdater(final SecurityContext securityContext,
+											   final SecurityPrincipalOID updaterPrincipalOid) {
+		return new FindTupleQueryWrapper()
+						.addFilterBySecurityPrincipalPredicate(updaterPrincipalOid,"_lastUpdaterOid")
 						.findOidsUsing(securityContext);
+	}
+	@Override
+	public Stream<O> findByLastUpdaterAsStream(final SecurityContext securityContext,
+											   final SecurityPrincipalOID updaterPrincipalOid) {
+		return new FindTupleQueryWrapper()
+						.addFilterBySecurityPrincipalPredicate(updaterPrincipalOid,"_lastUpdaterOid")
+						.findOidsAsStreamUsing(securityContext);
+	}
+////////// --- FIND BY LAST UPDATER ID
+	@Override
+	public FindOIDsResult<O> findByLastUpdater(final SecurityContext securityContext,
+											   final SecurityPrincipalID updaterPrincipald) {
+		return new FindTupleQueryWrapper()
+						.addFilterBySecurityPrincipalPredicate(updaterPrincipald,"_lastUpdater")
+						.findOidsUsing(securityContext);
+	}
+	@Override
+	public Stream<O> findByLastUpdaterAsStream(final SecurityContext securityContext,
+											   final SecurityPrincipalID updaterPrincipald) {
+		return new FindTupleQueryWrapper()
+						.addFilterBySecurityPrincipalPredicate(updaterPrincipald,"_lastUpdater")
+						.findOidsAsStreamUsing(securityContext);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //	
@@ -184,7 +239,32 @@ public abstract class DBFindForModelObjectBase<O extends PersistableObjectOID,M 
 			_criteriaQuery = _criteriaBuilder.createQuery(dbEntityType);
 			_root = _criteriaQuery.from(dbEntityType);
 		}
-		////////// --- Methods 
+		////////// --- Returning as Stream 
+		public Stream<M> findStreamUsing(final SecurityContext securityContext) {
+			// [1] - ensure the [criteria query] is built before executing the query
+			this.composeCriteriaQuery();
+			
+			// [2] - execute the query
+			return _entityManager.createQuery(_criteriaQuery)
+								 		.setHint(DBFindForModelObjectBase.this.getVendorDBHints().getReadOnlyHintKey(),true)
+								 .getResultStream()
+								 .map(dbEntity -> _transformDBEntityToModelObject(securityContext,
+												   							      dbEntity));
+		}
+		public Stream<M> findStreamUsing(final SecurityContext securityContext,
+										 final int numResults) {
+			// [1] - ensure the [criteria query] is built before executing the query
+			this.composeCriteriaQuery();
+			
+			// [2] - execute the query
+			return _entityManager.createQuery(_criteriaQuery)
+								 		.setHint(DBFindForModelObjectBase.this.getVendorDBHints().getReadOnlyHintKey(),true)
+								 		.setMaxResults(numResults)
+								 .getResultStream()
+								 .map(dbEntity -> _transformDBEntityToModelObject(securityContext,
+												   							      dbEntity));
+		}
+		////////// --- Returning as FindResult
 		public FindResult<M> findUsing(final SecurityContext securityContext) {
 			// [1] - ensure the [criteria query] is built before executing the query
 			this.composeCriteriaQuery();
@@ -213,6 +293,18 @@ public abstract class DBFindForModelObjectBase<O extends PersistableObjectOID,M 
 			FindResult<M> outObjs = _buildResultsFromDBEntities(securityContext,
 															    dbEntities);
 			return outObjs;
+		}
+		////////// --- Returning OIDs
+		public Stream<O> findOidsAsStreamUsing(final SecurityContext securityContext) {
+			// [1] - ensure the [criteria query] is built before executing the query
+			this.composeCriteriaQuery();
+			
+			// [2] - execute the query
+			return _entityManager.createQuery(_criteriaQuery)
+								 		.setHint(DBFindForModelObjectBase.this.getVendorDBHints().getReadOnlyHintKey(),true)
+								 .getResultStream()
+								 .map(dbEntity -> OIDs.<O,M>createOIDFor(_modelObjectType,
+																	 	 dbEntity.getOid()));
 		}
 		public FindOIDsResult<O> findOidsUsing(final SecurityContext securityContext) {
 			// [1] - ensure the [criteria query] is built before executing the query
@@ -244,7 +336,7 @@ public abstract class DBFindForModelObjectBase<O extends PersistableObjectOID,M 
 				 colNames);
 		}
 		public FindTupleQueryWrapper(final Class<? extends DB> dbEntityType,
-								final String... colNames) {
+									 final String... colNames) {
 			super(_entityManager.getCriteriaBuilder());
 			_criteriaQuery = _criteriaBuilder.createTupleQuery();
 			_root = _criteriaQuery.from(dbEntityType);
@@ -294,6 +386,17 @@ public abstract class DBFindForModelObjectBase<O extends PersistableObjectOID,M 
 			return _buildOIDsResultsFromDBTuples(securityContext,
 											     tupleResult);
 		}
+		public Stream<O> findOidsAsStreamUsing(final SecurityContext securityContext) {
+			// [1] - ensure the [criteria query] is built before executing the query
+			this.composeCriteriaQuery();
+			
+			// [2] - Execute the query
+			List<Tuple> tupleResult = _createTupleResultFromQuery();
+			
+			// [3] - Transform the [db tuples]
+			return _buildOIDsStreamFromDBTuples(securityContext,
+											    tupleResult);
+		}
 		public FindQueryExecTupleResultTransform findEntitiesUsing(final SecurityContext securityContext) {
 			// [1] - ensure the [criteria query] is built before executing the query
 			this.composeCriteriaQuery();
@@ -328,6 +431,19 @@ public abstract class DBFindForModelObjectBase<O extends PersistableObjectOID,M 
 		private final SecurityContext _securityContext;
 		private final List<Tuple> _tupleResult;
 
+		////////// --- Stream conversion
+		public Stream<M> convertingTupleValuesToObjectUsingAsStream(final Function<Object[],M> dbTupleToEntityConverter) {
+			return _tupleResult.stream()
+							   .map(tuple -> dbTupleToEntityConverter.apply(tuple.toArray()));
+		}
+		public Stream<M> convertingTupleToObjectUsingAsStream(final Function<Tuple,M> dbTupleToEntityConverter) {
+			return _tupleResult.stream()
+							   .map(tuple -> dbTupleToEntityConverter.apply(tuple));
+		}
+		public Stream<M> convertingTupleToObjectUsingDescriptorDataAsStream() {
+			return this.convertingTupleToObjectUsingAsStream(_createTupleToObjectConverterUsingDescriptorData());
+		}
+		////////// --- FindResult conversion
 		public FindResult<M> convertingTupleValuesToObjectUsing(final Function<Object[],M> dbTupleToEntityConverter) {
 			return _buildResultFromTupleValues(_securityContext,
 											   _tupleResult,dbTupleToEntityConverter);
@@ -338,17 +454,16 @@ public abstract class DBFindForModelObjectBase<O extends PersistableObjectOID,M 
 			return outFindResult;
 		}
 		public FindResult<M> convertingTupleToObjectUsingDescriptorData() {
-			if (!ReflectionUtils.isImplementing(_DBEntityType,DBEntityHasModelObjectDescriptor.class)) throw new UnsupportedOperationException(_DBEntityType + " does NOT implement " + DBEntityHasModelObjectDescriptor.class + ": " +
-																																			   "cannot use the marshaller to convert the [db tuple] to [object]!");
-			return this.convertingTupleToObjectUsing(// [db tuple] to [obj]
-													 dbTuple -> {
-														String desc = dbTuple.get("_descriptor",String.class);	// DBEntityHasModelObjectDescriptor
-
-														M outObj = _modelObjectsMarshaller.forReading()
-										   												  .fromXml(desc,
-										   														   _modelObjectType);
-														return outObj;
-													 });
+			return this.convertingTupleToObjectUsing(_createTupleToObjectConverterUsingDescriptorData());
+		}
+		////////// --- FindSummariesResult conversion
+		public <S extends SummarizedModelObject<M>> Stream<S> convertingTupleValuesToSummaryUsingAsStream(final Function<Object[],S> dbTupleToSummaryConverter) {
+			return _tupleResult.stream()
+							   .map(tuple -> dbTupleToSummaryConverter.apply(tuple.toArray()));
+		}
+		public <S extends SummarizedModelObject<M>> Stream<S> convertingTupleToSummaryUsingAsStream(final Function<Tuple,S> dbTupleToSummaryConverter) {
+			return _tupleResult.stream()
+							   .map(tuple -> dbTupleToSummaryConverter.apply(tuple));
 		}
 		public <S extends SummarizedModelObject<M>> FindSummariesResult<M> convertingTupleValuesToSummaryUsing(final Function<Object[],S> dbTupleToSummaryConverter) {
 			FindSummariesResult<M> outFindResult = _buildSummariesResultFromTupleValues(_securityContext,
@@ -360,10 +475,24 @@ public abstract class DBFindForModelObjectBase<O extends PersistableObjectOID,M 
 															 					  _tupleResult,dbTupleToSummaryConverter);
 			return outFindResult;
 		}
+		private Function<Tuple,M> _createTupleToObjectConverterUsingDescriptorData() {
+			if (!ReflectionUtils.isImplementing(_DBEntityType,DBEntityHasModelObjectDescriptor.class)) throw new UnsupportedOperationException(_DBEntityType + " does NOT implement " + DBEntityHasModelObjectDescriptor.class + ": " +
+																																			   "cannot use the marshaller to convert the [db tuple] to [object]!");
+			return // [db tuple] to [obj]
+				   dbTuple -> {
+						String desc = dbTuple.get("_descriptor",String.class);	// DBEntityHasModelObjectDescriptor
+
+						M outObj = _modelObjectsMarshaller.forReading()
+		   												  .fromXml(desc,
+		   														   _modelObjectType);
+						return outObj;
+				   };
+		}
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //  RESULTS BUILDING
 /////////////////////////////////////////////////////////////////////////////////////////
+////////// --- BUILD RESULTS	
 	protected FindResult<M> _buildResultsFromDBEntities(final SecurityContext securityContext,
 													    final Collection<? extends DB> dbEntities) {
 		return _buildResultsFromDBEntities(securityContext,
@@ -410,7 +539,7 @@ public abstract class DBFindForModelObjectBase<O extends PersistableObjectOID,M 
 		}
 		return outObjs;
 
-	}
+	}	
 	protected FindResult<M> _buildResultFromTupleValues(final SecurityContext securityContext,
 														final Collection<Tuple> dbTuples,final Function<Object[],M> dbTupleToObjectConverter) {
 		FindResult<M> outObjs = null;
@@ -430,6 +559,46 @@ public abstract class DBFindForModelObjectBase<O extends PersistableObjectOID,M 
 		}
 		return outObjs;
 	}
+////////// --- BUILD OIDs STREAM	
+	protected Stream<O> _buildOIDsStreamFromDBEntities(final SecurityContext securityContext,
+												  		final Collection<? extends DB> dbEntities) {
+		Stream<O> outOids = null;
+		if (CollectionUtils.hasData(dbEntities)) {
+			outOids = dbEntities.stream()
+								.map(dbEntity -> OIDs.<O,M>createOIDFor(_modelObjectType,
+																	    dbEntity.getOid()));
+		} else {
+			outOids = Stream.empty();
+		}
+		return outOids;
+	}
+	protected Stream<O> _buildOIDsStreamFromDBTuples(final SecurityContext securityContext,
+												     final Collection<Tuple> dbTuples) {
+		Stream<O> outOids = null;
+		if (CollectionUtils.hasData(dbTuples)) {
+			Class<O> oidType = OIDs.oidTypeFor(_modelObjectType);
+			boolean isVersionableOid = Facetables.hasFacet(_modelObjectType,HasVersionableFacet.class);
+			FactoryFrom<Tuple,O> oidFactory = _createDefaultOidFromTupleFactory(oidType,isVersionableOid);
+			outOids = dbTuples.stream()
+							  .map(tuple -> oidFactory.from(tuple));
+		} else {
+			outOids = Stream.empty();
+		}
+		return outOids;
+	}
+	protected Stream<O> _buildOIDsStreamFromDBTuples(final SecurityContext securityContext,
+												     final Collection<Tuple> dbTuples,
+												     final FactoryFrom<Tuple,O> oidFromStringFactory) {
+		Stream<O> outOids = null;
+		if (CollectionUtils.hasData(dbTuples)) {
+			outOids = dbTuples.stream()
+							  .map(tuple -> oidFromStringFactory.from(tuple));
+		} else {
+			outOids = Stream.empty();
+		}
+		return outOids;
+	}
+////////// --- BUILD OIDs RESULTs	
 	protected FindOIDsResult<O> _buildOIDsResultsFromDBEntities(final SecurityContext securityContext,
 													    		final Collection<? extends DB> dbEntities) {
 		FindOIDsResult<O> outResult = null;
@@ -485,6 +654,7 @@ public abstract class DBFindForModelObjectBase<O extends PersistableObjectOID,M 
 		}
 		return outOids;
 	}
+////////// --- BUILD SUMMARIES RESULTs
 	protected <S extends SummarizedModelObject<M>> FindSummariesResult<M> _buildSummariesResultFromDBEntities(final SecurityContext securityContext,
 																											  final Collection<DB> dbEntities,final Function<DB,S> dbEntityToSummaryConverter) {
 		FindSummariesResult<M> outSummaries = null;
@@ -538,6 +708,9 @@ public abstract class DBFindForModelObjectBase<O extends PersistableObjectOID,M 
 		}
 		return outSummaries;
 	}
+/////////////////////////////////////////////////////////////////////////////////////////
+//	
+/////////////////////////////////////////////////////////////////////////////////////////	
 	private FactoryFrom<Tuple,O> _createDefaultOidFromTupleFactory(final Class<O> oidType,final boolean isVersionableOid) {
 		// factory from dbTuple
 		return dbTuple -> {

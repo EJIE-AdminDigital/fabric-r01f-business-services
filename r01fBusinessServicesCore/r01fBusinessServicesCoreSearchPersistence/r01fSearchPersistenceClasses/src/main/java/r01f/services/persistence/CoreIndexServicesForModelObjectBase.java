@@ -5,16 +5,15 @@ import java.util.Collection;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import r01f.eventbus.EventBus;
-import r01f.guids.CommonOIDs.TenantID;
-import r01f.guids.PersistableObjectOID;
-import r01f.model.IndexableModelObject;
 import r01f.model.ModelObject;
 import r01f.model.PersistableModelObject;
+import r01f.model.security.context.SecurityContext;
 import r01f.objectstreamer.Marshaller;
+import r01f.oids.CommonOIDs.TenantID;
+import r01f.oids.PersistableObjectOID;
 import r01f.persistence.index.HasIndexerProvider;
 import r01f.persistence.index.Indexer;
 import r01f.persistence.index.IndexerProvider;
-import r01f.securitycontext.SecurityContext;
 import r01f.services.core.ServicesCoreModuleConfig;
 import r01f.services.core.persistence.CoreServicesBase;
 import r01f.services.interfaces.CRUDServicesForModelObject;
@@ -30,7 +29,7 @@ import r01f.types.jobs.EnqueuedJob;
  * a delegated object
  */
 @Accessors(prefix="_")
-public abstract class CoreIndexServicesForModelObjectBase<O extends PersistableObjectOID,M extends IndexableModelObject>
+public abstract class CoreIndexServicesForModelObjectBase<O extends PersistableObjectOID,M extends PersistableModelObject<O>>
               extends CoreServicesBase					  
            implements HasIndexerProvider<M>,
            			  IndexServicesForModelObject<O,M> {
@@ -66,12 +65,12 @@ public abstract class CoreIndexServicesForModelObjectBase<O extends PersistableO
 		_crudServiceByModelObjectOidTypeProvider = crudServiceByModelObjectOidTypeProvider;
 		_findServiceByModelObjectTypeProvider = findServiceByModelObjectTypeProvider;
 	}
-	public <P extends PersistableModelObject<O> & IndexableModelObject> CoreIndexServicesForModelObjectBase(final ServicesCoreModuleConfig coreCfg,
-																											final Marshaller marshaller,
-										   	   																final EventBus eventBus,
-										   	   																final IndexerProvider<M> indexerProvider,
-											   																final CRUDServicesForModelObject<O,P> crudService,
-											   																final FindServicesForModelObject<O,P> findService) {
+	public <P extends PersistableModelObject<O>> CoreIndexServicesForModelObjectBase(final ServicesCoreModuleConfig coreCfg,
+																					 final Marshaller marshaller,
+				   	   																 final EventBus eventBus,
+				   	   																 final IndexerProvider<M> indexerProvider,
+					   																 final CRUDServicesForModelObject<O,P> crudService,
+					   																 final FindServicesForModelObject<O,P> findService) {
 		super(coreCfg,
 		      marshaller,
 			  eventBus);

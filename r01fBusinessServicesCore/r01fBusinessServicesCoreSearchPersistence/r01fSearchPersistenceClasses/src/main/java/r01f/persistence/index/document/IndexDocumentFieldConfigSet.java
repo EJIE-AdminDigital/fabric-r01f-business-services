@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import r01f.model.IndexableModelObject;
+import r01f.model.PersistableObject;
 import r01f.model.metadata.FieldMetaData;
 import r01f.model.metadata.TypeMetaData;
 import r01f.persistence.index.document.IndexDocumentFieldConfigFactories.IndexDocumentFieldConfigFactory;
@@ -20,7 +20,7 @@ import r01f.util.types.collections.CollectionUtils;
  */
 @Slf4j
 @Accessors(prefix="_")
-public class IndexDocumentFieldConfigSet<M extends IndexableModelObject> {
+public class IndexDocumentFieldConfigSet<M extends PersistableObject> {
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FIELDS
 /////////////////////////////////////////////////////////////////////////////////////////

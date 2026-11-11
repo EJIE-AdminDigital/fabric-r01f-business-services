@@ -4,7 +4,7 @@ import java.util.Properties;
 
 import org.w3c.dom.Node;
 
-import r01f.guids.CommonOIDs.IsAppCode;
+import r01f.oids.CommonOIDs.IsAppCode;
 import r01f.xmlproperties.XMLPropertiesForAppComponent;
 
 public class DBConnectionPoolSizeForHibernate

@@ -1,8 +1,8 @@
 package r01f.test.persistence;
 
-import r01f.guids.PersistableObjectOID;
 import r01f.model.ModelObjectRef;
 import r01f.model.PersistableModelObject;
+import r01f.oids.PersistableObjectOID;
 
 public interface ManagesTestMockDependentModelObjsLifeCycle<O extends PersistableObjectOID,M extends PersistableModelObject<O>,
 													 		P extends PersistableModelObject<?>> 

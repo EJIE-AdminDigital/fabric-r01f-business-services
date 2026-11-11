@@ -1,10 +1,10 @@
 package r01f.services.core.summarize;
 
-import r01f.guids.PersistableObjectOID;
 import r01f.locale.Language;
 import r01f.model.PersistableModelObject;
 import r01f.model.SummarizedPersistableObject;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.PersistableObjectOID;
 
 public interface SummarizerService<O extends PersistableObjectOID,M extends PersistableModelObject<O>,
 								   S extends SummarizedPersistableObject<O,M>> {

@@ -2,8 +2,8 @@ package r01f.services.api.delegates;
 
 import java.util.Map;
 
-import r01f.securitycontext.HasSecurityContext;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.HasSecurityContext;
+import r01f.model.security.context.SecurityContext;
 import r01f.services.interfaces.ServiceInterface;
 
 public abstract class ClientAPIDelegateBase 

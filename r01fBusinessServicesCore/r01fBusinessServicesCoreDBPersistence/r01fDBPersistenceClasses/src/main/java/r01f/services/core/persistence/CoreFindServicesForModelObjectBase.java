@@ -1,6 +1,7 @@
 package r01f.services.core.persistence;
 
 import java.time.Instant;
+import java.util.stream.Stream;
 
 import jakarta.inject.Provider;
 import jakarta.inject.Singleton;
@@ -8,13 +9,13 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.experimental.Accessors;
 import r01f.eventbus.EventBus;
-import r01f.guids.PersistableObjectOID;
 import r01f.model.PersistableModelObject;
 import r01f.model.persistence.FindOIDsResult;
+import r01f.model.security.context.SecurityContext;
 import r01f.objectstreamer.Marshaller;
-import r01f.securitycontext.SecurityContext;
-import r01f.securitycontext.SecurityIDS.LoginID;
-import r01f.securitycontext.SecurityOIDs.UserOID;
+import r01f.oids.PersistableObjectOID;
+import r01f.oids.SecurityIDs.SecurityPrincipalID;
+import r01f.oids.SecurityOIDs.SecurityPrincipalOID;
 import r01f.services.core.ServicesCoreModuleConfig;
 import r01f.services.interfaces.FindServicesForModelObject;
 import r01f.types.Range;
@@ -78,12 +79,20 @@ public abstract class CoreFindServicesForModelObjectBase<O extends PersistableOb
 /////////////////////////////////////////////////////////////////////////////////////////
 //  FIND
 /////////////////////////////////////////////////////////////////////////////////////////
+////////// --- FIND ALL	
 	@Override @SuppressWarnings("unchecked")
 	public FindOIDsResult<O> findAll(final SecurityContext securityContext) {
 		return this.forSecurityContext(securityContext)
 						.createDelegateAs(FindServicesForModelObject.class)
 							.findAll(securityContext);
 	}
+	@Override @SuppressWarnings("unchecked")
+	public Stream<O> findAllAsStream(final SecurityContext securityContext) {
+		return this.forSecurityContext(securityContext)
+						.createDelegateAs(FindServicesForModelObject.class)
+							.findAllAsStream(securityContext);
+	}
+////////// --- FIND BY CREATE DATE	
 	@Override @SuppressWarnings("unchecked")
 	public FindOIDsResult<O> findByCreateDate(final SecurityContext securityContext,
 											  final Range<Instant> createDate) {
@@ -93,6 +102,15 @@ public abstract class CoreFindServicesForModelObjectBase<O extends PersistableOb
 											  createDate);
 	}
 	@Override @SuppressWarnings("unchecked")
+	public Stream<O> findByCreateDateAsStream(final SecurityContext securityContext,
+											  final Range<Instant> createDate) {
+		return this.forSecurityContext(securityContext)
+						.createDelegateAs(FindServicesForModelObject.class)
+							.findByCreateDateAsStream(securityContext,
+													  createDate);
+	}
+////////// --- FIND BY LAST UPDATE DATE	
+	@Override @SuppressWarnings("unchecked")
 	public FindOIDsResult<O> findByLastUpdateDate(final SecurityContext securityContext,
 												  final Range<Instant> lastUpdateDate) {
 		return this.forSecurityContext(securityContext)
@@ -101,35 +119,79 @@ public abstract class CoreFindServicesForModelObjectBase<O extends PersistableOb
 												  lastUpdateDate);
 	}
 	@Override @SuppressWarnings("unchecked")
+	public Stream<O> findByLastUpdateDateAsStream(final SecurityContext securityContext,
+												  final Range<Instant> lastUpdateDate) {
+		return this.forSecurityContext(securityContext)
+						.createDelegateAs(FindServicesForModelObject.class)
+							.findByLastUpdateDateAsStream(securityContext,
+														  lastUpdateDate);
+	}
+////////// --- FIND BY CREATOR OID
+	@Override @SuppressWarnings("unchecked")
 	public FindOIDsResult<O> findByCreator(final SecurityContext securityContext,
-										   final LoginID creatorUserCode) {
+										   final SecurityPrincipalID creatorPrincipalId) {
 		return this.forSecurityContext(securityContext)
 						.createDelegateAs(FindServicesForModelObject.class)
 							.findByCreator(securityContext,
-										   creatorUserCode);
+										   creatorPrincipalId);
 	}
 	@Override @SuppressWarnings("unchecked")
+	public Stream<O> findByCreatorAsStream(final SecurityContext securityContext,
+										   final SecurityPrincipalID creatorPrincipalId) {
+		return this.forSecurityContext(securityContext)
+						.createDelegateAs(FindServicesForModelObject.class)
+							.findByCreatorAsStream(securityContext,
+										   	   		 creatorPrincipalId);
+	}
+////////// --- FIND BY CREATOR ID	
+	@Override @SuppressWarnings("unchecked")
 	public FindOIDsResult<O> findByCreator(final SecurityContext securityContext,
-										   final UserOID creatorUserOid) {
+										   final SecurityPrincipalOID creatorPrincipalOid) {
 		return this.forSecurityContext(securityContext)
 						.createDelegateAs(FindServicesForModelObject.class)
 							.findByCreator(securityContext,
-										   creatorUserOid);
+										   creatorPrincipalOid);
 	}
 	@Override @SuppressWarnings("unchecked")
-	public FindOIDsResult<O> findByLastUpdator(final SecurityContext securityContext,
-											   final LoginID lastUpdtorUserCode) {
+	public Stream<O> findByCreatorAsStream(final SecurityContext securityContext,
+										   final SecurityPrincipalOID creatorPrincipalOid) {
 		return this.forSecurityContext(securityContext)
 						.createDelegateAs(FindServicesForModelObject.class)
-							.findByLastUpdator(securityContext,
-											   lastUpdtorUserCode);
+							.findByCreatorAsStream(securityContext,
+										   	   		 creatorPrincipalOid);
+	}
+////////// --- FIND BY LAST UPDATER OID	
+	@Override @SuppressWarnings("unchecked")
+	public FindOIDsResult<O> findByLastUpdater(final SecurityContext securityContext,
+											   final SecurityPrincipalID updaterPrincipalId) {
+		return this.forSecurityContext(securityContext)
+						.createDelegateAs(FindServicesForModelObject.class)
+							.findByLastUpdater(securityContext,
+											   updaterPrincipalId);
 	}
 	@Override @SuppressWarnings("unchecked")
-	public FindOIDsResult<O> findByLastUpdator(final SecurityContext securityContext,
-											   final UserOID lastUpdtorUserOid) {
+	public Stream<O> findByLastUpdaterAsStream(final SecurityContext securityContext,
+											   final SecurityPrincipalID updaterPrincipalId) {
 		return this.forSecurityContext(securityContext)
 						.createDelegateAs(FindServicesForModelObject.class)
-							.findByLastUpdator(securityContext,
-											   lastUpdtorUserOid);
+							.findByLastUpdaterAsStream(securityContext,
+											   	   		 updaterPrincipalId);
+	}
+////////// --- FIND BY LAST UPDATER ID	
+	@Override @SuppressWarnings("unchecked")
+	public FindOIDsResult<O> findByLastUpdater(final SecurityContext securityContext,
+											   final SecurityPrincipalOID updaterPrincipalOid) {
+		return this.forSecurityContext(securityContext)
+						.createDelegateAs(FindServicesForModelObject.class)
+							.findByLastUpdater(securityContext,
+											   updaterPrincipalOid);
+	}
+	@Override @SuppressWarnings("unchecked")
+	public Stream<O> findByLastUpdaterAsStream(final SecurityContext securityContext,
+											   final SecurityPrincipalOID updaterPrincipalOid) {
+		return this.forSecurityContext(securityContext)
+						.createDelegateAs(FindServicesForModelObject.class)
+							.findByLastUpdaterAsStream(securityContext,
+											   	   		 updaterPrincipalOid);
 	}
 }

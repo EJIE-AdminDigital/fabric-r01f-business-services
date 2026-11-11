@@ -18,6 +18,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import r01f.reflection.ReflectionUtils;
 import r01f.services.core.persistence.db.DBCoreBaseConstants;
 import r01f.services.core.persistence.db.DBEntity;
 import r01f.services.ids.ServiceIDs.CoreModule;
@@ -49,23 +50,26 @@ public abstract class CoreSpringBootstrapPersistenceConfigurationAbstract
 		implements CoreSpringBootstrapPersistenceConfiguration {	
 /////////////////////////////////////////////////////////////////////////////////////////
 //  MEMBERS
-/////////////////////////////////////////////////////////////////////////////////////////	
+/////////////////////////////////////////////////////////////////////////////////////////
 	@Getter protected final CoreModule _coreModule;	
-	@Getter protected final Class<? extends DBEntity> _entityBase;     
+	@Getter protected final Class<? extends DBEntity>[] _entitiesBase;
 	@Getter protected final CoreSpringDBComponentesNames _beanNames;
    
     final String _dbPrefix; // f.e  db + "persona" (CoreModule)    
 /////////////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTORs
-/////////////////////////////////////////////////////////////////////////////////////////	   
-    protected CoreSpringBootstrapPersistenceConfigurationAbstract(final CoreModule coreModule,
-    													          final  Class<? extends DBEntity> entityBase) {
+/////////////////////////////////////////////////////////////////////////////////////////
+    @SuppressWarnings("unchecked")
+	protected CoreSpringBootstrapPersistenceConfigurationAbstract(final CoreModule coreModule,
+    													          final  Class<? extends DBEntity> ... entitiesBase) {
 		_coreModule = coreModule;
-	    _entityBase = entityBase;
+		_entitiesBase = entitiesBase; //(Class<? extends DBEntity>[]) new Class<?>[] { entityBase };
 	    _dbPrefix =   Strings.customized("{}.{}",
 	    										DBCoreBaseConstants.DB_PROPS_PREFIX,coreModule.asString());
 	    _beanNames = new CoreSpringDBComponentesNames(_coreModule);
-	}	
+	            
+	    
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
 // METHODS
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -184,25 +188,97 @@ public abstract class CoreSpringBootstrapPersistenceConfigurationAbstract
      * Create LocalContainerEntityManagerFactoryBean based on constructor passed entityPackageClass
      */
     protected LocalContainerEntityManagerFactoryBean createEntityManagerFactory( final DataSource ds, 
-																	             final JpaProperties props, 
+																	             final JpaProperties jpaProps, 
 																	             final EntityManagerFactoryBuilder builder) {
     	log.warn("#############################################################################");
-    	log.warn(" createFactory, properties: {}", props.getProperties().values());
+    	log.warn(" createFactory, properties: {}", jpaProps.getProperties().values());
     	log.warn("#############################################################################");
-    	
-		String  puName = Strings.customized("{}.{}",_coreModule.asString(),"persistenceUnit"); 
+    	Map<String, Object> jpaProperties = new HashMap<>(jpaProps.getProperties());
+    	// 1. Set persistence unit name 	
+		String  persitenceUnitName = Strings.customized("{}.{}",_coreModule.asString(),"persistenceUnit"); 
+		
+		// 2. Dynamically instantiate the PhysicalNamingStrategy if configured
+	    Object customNamingStrategy = _createPhysicalNamingStrategyIfRequired(jpaProperties);
+	    if (customNamingStrategy != null) {
+	        jpaProperties.put("hibernate.physical_naming_strategy", customNamingStrategy);	      
+	    }
 		return builder
 					.dataSource(ds)
-						.packages(_entityBase)
-						.persistenceUnit(puName)
-						.properties(props.getProperties())
-						.mappingResources(new String[0]) 
+						.packages(_entitiesBase)
+						.persistenceUnit(persitenceUnitName)
+						.properties(jpaProperties)
+						.mappingResources( new String[0]) 
 					.build();
 		}
   
 /////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE METHODS
-/////////////////////////////////////////////////////////////////////////////////////////    
+///////////////////////////////////////////////////////////////////////////////////////// 
+    /**
+     * Evaluates JPA properties and, if a physical naming strategy is defined as a String (FQDN),
+     * attempts to dynamically instantiate it. If the target class provides a constructor accepting
+     * a String argument, the 'db.tables.prefix' property value will be injected into it.
+     *
+     * @param jpaProperties Map of properties returned by JpaProperties
+     * @return The instantiated PhysicalNamingStrategy object, or null if not required or instantiation failed
+     */
+    /**
+     * Evaluates JPA properties and, if a physical naming strategy is defined as a String (FQDN),
+     * attempts to dynamically instantiate it. If the target class provides a constructor accepting
+     * a String argument, the 'db.tables.prefix' property value will be injected into it.
+     *
+     * @param jpaProperties Map of properties returned by JpaProperties
+     * @return The instantiated PhysicalNamingStrategy object, or null if not required or instantiation failed
+     */
+    @SuppressWarnings("static-method")
+	private Object _createPhysicalNamingStrategyIfRequired(Map<String, Object> jpaProperties ) {
+    	
+        if (jpaProperties == null || jpaProperties.isEmpty()) {
+            return null;
+        }
+
+        // 1. Extract the physical naming strategy class name (supporting both property keys)
+        String strategyClassName = (String) jpaProperties.get("hibernate.physical_naming_strategy");
+        if (strategyClassName == null) {
+            strategyClassName = (String) jpaProperties.get("physical_naming_strategy");
+        }
+
+        // Return null immediately if no strategy FQDN is defined or if it's blank
+        if (strategyClassName == null
+        		|| strategyClassName.trim().isEmpty()) {
+            return null;
+        }
+
+        // 2. Extract the table prefix property (supporting both property keys)
+        String prefix = (String) jpaProperties.get("db.tables.prefix");
+        if (prefix == null) {
+            prefix = (String) jpaProperties.get("hibernate.db.tables.prefix");
+        }
+        String safePrefix = (prefix != null) ? prefix : "";
+        // 3. Dynamically load the class and instantiate it via ReflectionUtils
+        try {
+            Class<?> clazz = Class.forName(strategyClassName.trim());
+            try {
+                // Attempt to instantiate using the String-arg constructor (prefix)
+                Class<?>[] paramTypes = new Class<?>[] { String.class };
+                Object[] args = new Object[] { safePrefix };
+
+                Object instance = ReflectionUtils.createInstanceOf(clazz, paramTypes, args);
+                log.warn("PhysicalNamingStrategy instantiated dynamically with prefix '{}': {}", safePrefix, strategyClassName);
+                return instance;
+
+            } catch (final Throwable e) {
+                // Fallback: If no String constructor exists, use the default no-arg constructor
+                Object instance = ReflectionUtils.createInstanceOf(clazz, new Class<?>[]{}, new Object[]{});
+                log.warn("PhysicalNamingStrategy instantiated dynamically using default constructor: {}", strategyClassName);
+                return instance;
+            }
+
+        } catch (Throwable e) {
+            log.error("Failed to dynamically instantiate PhysicalNamingStrategy: {}", strategyClassName, e);
+            return null;
+        }
+    }
     @SuppressWarnings("unused")
 	private void _debugShowAllProperties(final ConfigurableEnvironment env) {
         log.warn("#############################################################################");

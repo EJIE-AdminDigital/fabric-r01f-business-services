@@ -1,14 +1,14 @@
 package r01f.persistence.index;
 
-import r01f.guids.OID;
-import r01f.model.IndexableModelObject;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.PersistableObject;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.OID;
 
 /**
  * Interface to be implemented by types in charge to index persistable records
  * @param <M>
  */
-public interface Indexer<M extends IndexableModelObject> {
+public interface Indexer<M extends PersistableObject> {
 	/**
 	 * Index a model object
 	 * @param securityContext

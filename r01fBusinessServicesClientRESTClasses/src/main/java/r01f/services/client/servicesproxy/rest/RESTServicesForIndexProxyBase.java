@@ -6,10 +6,10 @@ import r01f.exceptions.Throwables;
 import r01f.facets.Facetable;
 import r01f.facets.HasOID;
 import r01f.facets.util.Facetables;
-import r01f.guids.OID;
-import r01f.model.IndexableModelObject;
+import r01f.model.PersistableModelObject;
+import r01f.model.security.context.SecurityContext;
 import r01f.objectstreamer.Marshaller;
-import r01f.securitycontext.SecurityContext;
+import r01f.oids.PersistableObjectOID;
 import r01f.services.client.servicesproxy.rest.RESTServiceResourceUrlPathBuilders.RESTServiceResourceUrlPathBuilderForModelObjectPersistence;
 import r01f.services.interfaces.IndexServicesForModelObject;
 import r01f.types.Path;
@@ -17,7 +17,7 @@ import r01f.types.jobs.EnqueuedJob;
 import r01f.types.url.Url;
 import r01f.util.types.Paths;
 
-public abstract class RESTServicesForIndexProxyBase<O extends OID,M extends IndexableModelObject>
+public abstract class RESTServicesForIndexProxyBase<O extends PersistableObjectOID,M extends PersistableModelObject<O>>
               extends RESTServicesProxyBase
            implements IndexServicesForModelObject<O,M> {
 /////////////////////////////////////////////////////////////////////////////////////////

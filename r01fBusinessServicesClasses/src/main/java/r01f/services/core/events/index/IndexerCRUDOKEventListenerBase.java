@@ -5,10 +5,10 @@ import com.google.common.eventbus.Subscribe;
 
 import lombok.extern.slf4j.Slf4j;
 import r01f.facets.HasOID;
-import r01f.guids.OID;
-import r01f.model.IndexableModelObject;
+import r01f.model.PersistableModelObject;
 import r01f.model.persistence.CRUDOK;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.PersistableObjectOID;
 import r01f.services.core.events.COREServiceMethodExecEvents.COREServiceMethodExecOKEvent;
 import r01f.services.core.events.crud.CRUDOKEventListenerBase;
 import r01f.services.interfaces.IndexServicesForModelObject;
@@ -19,7 +19,7 @@ import r01f.types.jobs.EnqueuedJob;
  * @param <M>
  */
 @Slf4j
-abstract class IndexerCRUDOKEventListenerBase<O extends OID,M extends IndexableModelObject,
+abstract class IndexerCRUDOKEventListenerBase<O extends PersistableObjectOID,M extends PersistableModelObject<O>,
 											  S extends IndexServicesForModelObject<O,M>> 
        extends CRUDOKEventListenerBase {
 
@@ -49,8 +49,8 @@ abstract class IndexerCRUDOKEventListenerBase<O extends OID,M extends IndexableM
 		//				b) the operation is an update, create or delete operation
 		CRUDOK<? extends M> opOK = opOKEvent.getAsCOREServiceMethodExecOK()
 											.as(CRUDOK.class);
-		boolean hasToBeHandled = opOK.getObjectType() == _type													// a)										
-						      && (opOK.hasBeenUpdated() || opOK.hasBeenCreated() || opOK.hasBeenDeleted());		// b)
+		boolean hasToBeHandled = _eventFilter.hasTobeHandled(opOKEvent)										// a)										
+						      && (opOK.hasBeenUpdated() || opOK.hasBeenCreated() || opOK.hasBeenDeleted());	// b)
 		
 		// [2] - Debug
 		_debugEvent(log,

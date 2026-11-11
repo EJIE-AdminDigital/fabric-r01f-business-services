@@ -7,12 +7,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import r01f.debug.Debuggable;
 import r01f.eventbus.Event;
+import r01f.model.security.context.HasSecurityContext;
+import r01f.model.security.context.SecurityContext;
 import r01f.model.services.COREServiceMethodExecError;
 import r01f.model.services.COREServiceMethodExecOK;
 import r01f.model.services.COREServiceMethodExecResult;
 import r01f.model.services.HasCOREServiceMethodExecResult;
-import r01f.securitycontext.HasSecurityContext;
-import r01f.securitycontext.SecurityContext;
 import r01f.services.core.callback.spec.COREServiceMethodCallbackSpec;
 import r01f.services.core.callback.spec.HasCOREServiceMethodCallbackSpec;
 

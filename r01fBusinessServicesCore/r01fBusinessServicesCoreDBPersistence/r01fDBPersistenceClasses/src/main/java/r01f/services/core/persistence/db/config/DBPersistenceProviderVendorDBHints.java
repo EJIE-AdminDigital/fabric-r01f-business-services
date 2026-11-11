@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import jakarta.persistence.EntityManager;
-import r01f.guids.OID;
 import r01f.objectstreamer.annotations.MarshallType;
+import r01f.oids.OID;
 import r01f.services.core.persistence.db.config.DBPersistenceProviderVendorDBHints.DBHintKeyTranslation;
 import r01f.util.types.collections.CollectionUtils;
 

@@ -5,11 +5,10 @@ import java.util.Collection;
 
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
 import lombok.experimental.Accessors;
-import r01f.guids.OID;
-import r01f.model.IndexableModelObject;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.PersistableModelObject;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.PersistableObjectOID;
 import r01f.services.core.rest.RESTOperationsResponseBuilder;
 import r01f.services.interfaces.IndexServicesForModelObject;
 import r01f.types.jobs.EnqueuedJob;
@@ -19,7 +18,7 @@ import r01f.util.types.collections.CollectionUtils;
  * Base type for REST services that encapsulates the common search index ops: indexing, searching
  */
 @Accessors(prefix="_")
-public abstract class RESTIndexDelegateBase<O extends OID,M extends IndexableModelObject>
+public abstract class RESTIndexDelegateBase<O extends PersistableObjectOID,M extends PersistableModelObject<O>>
               extends RESTDelegateForModelObjectBase<M> {
 /////////////////////////////////////////////////////////////////////////////////////////
 //  FIELDS

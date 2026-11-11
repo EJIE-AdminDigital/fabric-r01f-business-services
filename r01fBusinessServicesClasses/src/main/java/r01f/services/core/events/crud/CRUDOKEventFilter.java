@@ -6,23 +6,11 @@ import r01f.model.persistence.CRUDOK;
 import r01f.model.persistence.PersistencePerformedOperation;
 import r01f.model.services.COREServiceMethodExecOK;
 import r01f.services.core.events.COREServiceMethodExecEvents.COREServiceMethodExecOKEvent;
+import r01f.services.core.events.IsCOREEventFilter;
 
 @FunctionalInterface
-public interface CRUDOKEventFilter {
-/////////////////////////////////////////////////////////////////////////////////////////
-//	
-/////////////////////////////////////////////////////////////////////////////////////////
-	public boolean hasTobeHandled(COREServiceMethodExecOKEvent opEvent);
-	
-	public default CRUDOKEventFilter joinedWith(final CRUDOKEventFilter other) {
-		return new CRUDOKEventFilter() {
-						@Override
-						public boolean hasTobeHandled(final COREServiceMethodExecOKEvent opOKEvent) {
-							return CRUDOKEventFilter.this.hasTobeHandled(opOKEvent)
-									&& other.hasTobeHandled(opOKEvent);
-						}
-			   		};
-	}
+public interface CRUDOKEventFilter
+	     extends IsCOREEventFilter<COREServiceMethodExecOKEvent> {
 /////////////////////////////////////////////////////////////////////////////////////////
 //	
 /////////////////////////////////////////////////////////////////////////////////////////

@@ -8,9 +8,9 @@ import lombok.RequiredArgsConstructor;
 import r01f.model.persistence.CountResultForEntityBuilder.CountResultBuilderForErrorExtErrorCodeStep;
 import r01f.model.persistence.CountResultForEntityBuilder.CountResultBuilderForErrorStep;
 import r01f.model.persistence.CountResultForEntityBuilder.CountResultBuilderForOKStep;
+import r01f.model.security.context.SecurityContext;
 import r01f.model.services.COREServiceErrorTypes;
 import r01f.patterns.IsBuilder;
-import r01f.securitycontext.SecurityContext;
 import r01f.util.types.Strings;
 
 /**

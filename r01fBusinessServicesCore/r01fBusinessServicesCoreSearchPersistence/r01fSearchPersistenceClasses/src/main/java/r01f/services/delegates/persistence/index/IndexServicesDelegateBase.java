@@ -7,11 +7,11 @@ import com.google.common.base.Throwables;
 
 import lombok.extern.slf4j.Slf4j;
 import r01f.eventbus.EventBus;
-import r01f.guids.PersistableObjectOID;
-import r01f.model.IndexableModelObject;
+import r01f.model.PersistableModelObject;
 import r01f.model.persistence.PersistenceException;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.PersistableObjectOID;
 import r01f.persistence.index.Indexer;
-import r01f.securitycontext.SecurityContext;
 import r01f.services.core.ServicesCoreModuleConfig;
 import r01f.services.interfaces.CRUDServicesForModelObject;
 import r01f.services.interfaces.FindServicesForModelObject;
@@ -28,7 +28,7 @@ import r01f.util.types.collections.CollectionUtils;
  * Service layer delegated type for index operations
  */
 @Slf4j
-public abstract class IndexServicesDelegateBase<O extends PersistableObjectOID,M extends IndexableModelObject>
+public abstract class IndexServicesDelegateBase<O extends PersistableObjectOID,M extends PersistableModelObject<O>>
 		   implements IndexServicesForModelObject<O,M>,
 					  SuppliesJobOID {
 /////////////////////////////////////////////////////////////////////////////////////////

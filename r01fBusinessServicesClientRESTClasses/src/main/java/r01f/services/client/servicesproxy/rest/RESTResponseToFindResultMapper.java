@@ -1,11 +1,11 @@
 package r01f.services.client.servicesproxy.rest;
 
 import lombok.experimental.Accessors;
-import r01f.guids.PersistableObjectOID;
 import r01f.httpclient.HttpResponseResult;
 import r01f.model.PersistableModelObject;
 import r01f.model.persistence.FindResult;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.PersistableObjectOID;
 import r01f.types.url.Url;
 
 

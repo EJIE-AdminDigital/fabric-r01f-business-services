@@ -1,7 +1,7 @@
 package r01f.services.core.persistence.db;
 
 import r01f.model.ModelObject;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
 
 /**
  * This interface is intended to be used at DAO-level and ensures that some immutable object's properties 

@@ -3,8 +3,8 @@ package r01f.services.core.persistence.index.db;
 import jakarta.inject.Inject;
 
 import lombok.experimental.Accessors;
+import r01f.model.security.context.SecurityContext;
 import r01f.persistence.index.IndexManager;
-import r01f.securitycontext.SecurityContext;
 
 /**
  * Base DB index manager

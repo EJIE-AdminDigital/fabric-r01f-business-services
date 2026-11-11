@@ -1,9 +1,9 @@
 package r01f.services.core.persistence.db;
 
-import r01f.guids.OIDForVersionableModelObject;
-import r01f.guids.PersistableObjectOID;
 import r01f.model.PersistableModelObject;
 import r01f.model.facets.Versionable.HasVersionableFacet;
+import r01f.oids.OIDForVersionableModelObject;
+import r01f.oids.PersistableObjectOID;
 import r01f.services.interfaces.CRUDServicesForVersionableModelObject;
 
 /**

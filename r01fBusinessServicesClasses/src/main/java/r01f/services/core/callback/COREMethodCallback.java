@@ -1,9 +1,9 @@
 package r01f.services.core.callback;
 
+import r01f.model.security.context.SecurityContext;
 import r01f.model.services.COREServiceMethodExecError;
 import r01f.model.services.COREServiceMethodExecOK;
 import r01f.model.services.HasCOREServiceMethodExecResult;
-import r01f.securitycontext.SecurityContext;
 
 /**
  * CORE method callback interface

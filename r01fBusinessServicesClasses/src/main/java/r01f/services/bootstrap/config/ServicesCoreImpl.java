@@ -7,19 +7,28 @@ import java.util.stream.Stream;
 
 import com.google.common.collect.Sets;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import r01f.enums.EnumExtended;
+import r01f.services.core.IsCoreService;
+import r01f.services.interfaces.IsProxyToCoreService;
 import r01f.util.types.collections.CollectionUtils;
 
+@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
 public enum ServicesCoreImpl
  implements EnumExtended<ServicesCoreImpl> {
-	DEFAULT,		// Priority 0 (highest)
-	IN_PROCESS,		// Priority 1
-	REST,			// Priority 2
-	EJB,			// Priority 3
-	SERVLET,		// Priority 4 (it's NOT a full-fledged service since it's NOT consumed using a client api; it's called from a web browser so it has NO associated client-proxy)
-	MOCK,			// Priority 5 (lower)
-	NULL;			// used at ServicesCore annotation
+	IN_PROCESS(Set.of(IsCoreService.class)),		
+	REST(Set.of(IsProxyToCoreService.class)),			
+	SERVLET(Set.of(IsProxyToCoreService.class));		
 	
+	private final Set<Class<? extends IsCoreServiceImplOrProxyToCoreServiceImpl>> _allowedBaseTypes;
+	
+	public boolean isAllowedBaseType(final Class<?> type) {
+		return CollectionUtils.hasData(_allowedBaseTypes)
+					? _allowedBaseTypes.stream()
+									   .anyMatch(baseType -> baseType.isAssignableFrom(type))
+					: false;
+	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //  
 /////////////////////////////////////////////////////////////////////////////////////////

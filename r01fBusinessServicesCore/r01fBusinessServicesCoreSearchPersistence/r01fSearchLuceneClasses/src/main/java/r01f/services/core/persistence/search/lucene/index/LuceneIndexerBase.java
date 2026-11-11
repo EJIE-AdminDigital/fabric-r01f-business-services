@@ -21,20 +21,21 @@ import r01f.enums.EnumWithCode;
 import r01f.exceptions.Throwables;
 import r01f.facets.HasOID;
 import r01f.facets.util.Facetables;
-import r01f.guids.OID;
-import r01f.guids.OIDBase;
-import r01f.guids.OIDForVersionableModelObject;
-import r01f.guids.VersionIndependentOID;
-import r01f.guids.VersionOID;
 import r01f.locale.Language;
 import r01f.locale.LanguageTexts;
-import r01f.model.IndexableModelObject;
+import r01f.model.PersistableObject;
 import r01f.model.facets.Versionable.HasVersionableFacet;
 import r01f.model.metadata.FieldID;
 import r01f.model.metadata.FieldMetaData;
 import r01f.model.metadata.HasMetaDataForPersistableModelObject;
 import r01f.model.metadata.TypeMetaData;
 import r01f.model.persistence.PersistenceRequestedOperation;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.OID;
+import r01f.oids.OIDBase;
+import r01f.oids.OIDForVersionableModelObject;
+import r01f.oids.VersionIndependentOID;
+import r01f.oids.VersionOID;
 import r01f.persistence.index.IndexableFieldValuesExtractor;
 import r01f.persistence.index.IndexerBase;
 import r01f.persistence.index.document.IndexDocumentFieldConfigSet;
@@ -43,7 +44,6 @@ import r01f.persistence.index.document.IndexDocumentFieldValue;
 import r01f.persistence.index.document.IndexDocumentFieldValueSet;
 import r01f.persistence.index.document.IndexDocumentStandardFieldType;
 import r01f.reflection.ReflectionUtils;
-import r01f.securitycontext.SecurityContext;
 import r01f.servcies.core.persistence.search.lucene.LuceneIndex;
 import r01f.types.CanBeRepresentedAsString;
 import r01f.types.IsPath;
@@ -65,7 +65,7 @@ import r01f.util.types.locale.Languages;
  */
 @Slf4j
 @Accessors(prefix="_")
-public abstract class LuceneIndexerBase<P extends IndexableModelObject>
+public abstract class LuceneIndexerBase<P extends PersistableObject>
 		      extends IndexerBase<P> {
 /////////////////////////////////////////////////////////////////////////////////////////
 //  FINAL STATUS

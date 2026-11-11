@@ -17,23 +17,22 @@ import jakarta.inject.Qualifier;
  *                 _provideSystemSecurityContext,_provideUserSecurityContext"
  * Use this way:
  *  @Bean @SecurityContextProviderForLoggedAppClient
-	@Inject
-	public SecurityContext _provideSystemSecurityContext(final ServiceBootstrapSpringHandler servicesBootstrap) {
-		SecurityContext outCtx = servicesBootstrap.getInjector()
-												  .getProvider(Key.get(SecurityContext.class,
-														  			   SecurityContextProviderForSystemUser.class))
-												  .get();
-		return outCtx;
-	}
-	@Bean @SecurityContextProviderForLoggedAppClient
-	@Inject
-	public SecurityContext _provideUserSecurityContext(final ServiceBootstrapSpringHandler servicesBootstrap) {
-		SecurityContext outCtx = servicesBootstrap.getInjector()
-												  .getProvider(SecurityContext.class)
-												  .get();
-		return outCtx;
-	}
- +
+ *	@Inject
+ *	public SecurityContext _provideSystemSecurityContext(final ServiceBootstrapSpringHandler servicesBootstrap) {
+ *		SecurityContext outCtx = servicesBootstrap.getInjector()
+ *												  .getProvider(Key.get(SecurityContext.class,
+ *														  			   SecurityContextProviderForSystemUser.class))
+ *												  .get();
+ *		return outCtx;
+ *	}
+ *	@Bean @SecurityContextProviderForLoggedAppClient
+ *	@Inject
+ *	public SecurityContext _provideUserSecurityContext(final ServiceBootstrapSpringHandler servicesBootstrap) {
+ * 		SecurityContext outCtx = servicesBootstrap.getInjector()
+ *												  .getProvider(SecurityContext.class)
+ *												  .get();
+ *		return outCtx;
+ *	}
  * </pre>
  */
 @Qualifier //@BindingAnnotation

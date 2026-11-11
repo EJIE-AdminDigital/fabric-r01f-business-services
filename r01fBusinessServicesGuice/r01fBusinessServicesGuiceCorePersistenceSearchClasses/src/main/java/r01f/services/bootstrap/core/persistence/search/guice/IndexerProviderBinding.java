@@ -3,10 +3,10 @@ package r01f.services.bootstrap.core.persistence.search.guice;
 import com.google.inject.TypeLiteral;
 
 import r01f.inject.GuiceGenericBinding;
-import r01f.model.IndexableModelObject;
+import r01f.model.PersistableObject;
 import r01f.persistence.index.IndexerProvider;
 
-public class IndexerProviderBinding<M extends IndexableModelObject>
+public class IndexerProviderBinding<M extends PersistableObject>
 	 extends GuiceGenericBinding<IndexerProvider<M>> {
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -16,15 +16,15 @@ public class IndexerProviderBinding<M extends IndexableModelObject>
 		super(genericType,
 			  implementingType);
 	}
-	public static <M extends IndexableModelObject> IndexerProviderBinding<M> of(final TypeLiteral<IndexerProvider<M>> typeLiteral,
-																				final Class<? extends IndexerProvider<M>> implementingType) {
+	public static <M extends PersistableObject> IndexerProviderBinding<M> of(final TypeLiteral<IndexerProvider<M>> typeLiteral,
+																			 final Class<? extends IndexerProvider<M>> implementingType) {
 		return new IndexerProviderBinding<M>(typeLiteral,
 											 implementingType);
 	}
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-	public static class IndexerProviderType<M extends IndexableModelObject>
+	public static class IndexerProviderType<M extends PersistableObject>
 				extends TypeLiteral<IndexerProvider<M>> {
 		//
 	}

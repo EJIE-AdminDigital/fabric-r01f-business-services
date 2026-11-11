@@ -28,7 +28,7 @@ public class CoreDBTransactionAdvisorHandlerDefault
 	    //[2] Pointcut 2 : Packages   
 	    AspectJExpressionPointcut packagePointcut = new AspectJExpressionPointcut();        
 	    StringBuilder expression = new StringBuilder();	    
-	     // [2.1] Important! Set Fabric classes  [ look inside...a  jakarta @Transnsacion is used...]
+	     // [2.1] Important! Set Fabric classes  [ look inside...a  jakarta @Transacion is used...]
 	    Class<?>[] r01fFabricClasses = { CoreCRUDServicesForModelObjectBase.class };
 	    
 	     //[2.2] Build an array with  Fabric Classes +  Final Serices.
@@ -39,7 +39,7 @@ public class CoreDBTransactionAdvisorHandlerDefault
 	    for (int i = 0; i < allAnchors.size(); i++) {
 	        expression.append("within(").append(allAnchors.get(i).getPackage().getName()).append("..*)");
 	        if (i < allAnchors.size() - 1) expression.append(" || ");
-	    }
+	    }	
 	    packagePointcut.setExpression(expression.toString());
 
 	    //[n] Join Poincuts

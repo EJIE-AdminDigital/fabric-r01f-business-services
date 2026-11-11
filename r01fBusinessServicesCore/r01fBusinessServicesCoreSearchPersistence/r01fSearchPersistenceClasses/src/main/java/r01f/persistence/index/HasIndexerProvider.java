@@ -1,13 +1,13 @@
 package r01f.persistence.index;
 
-import r01f.guids.CommonOIDs.TenantID;
-import r01f.model.IndexableModelObject;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.PersistableObject;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.CommonOIDs.TenantID;
 
 /**
  * Interface to be implemented by types that holds a {@link IndexerProvider}
  */
-public interface HasIndexerProvider<M extends IndexableModelObject> {
+public interface HasIndexerProvider<M extends PersistableObject> {
 	/**
 	 * @return the repository {@link Indexer}
 	 */

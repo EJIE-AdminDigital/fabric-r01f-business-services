@@ -1,6 +1,6 @@
 package r01f.persistence.index;
 
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
 
 /**
  * Interface to be implemented by types in charge to manage indexes

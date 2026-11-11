@@ -2,13 +2,13 @@ package r01f.services.interfaces;
 
 import java.util.Collection;
 
-import r01f.guids.PersistableObjectOID;
-import r01f.model.IndexableModelObject;
+import r01f.model.PersistableObject;
 import r01f.model.search.SearchFilterForModelObject;
 import r01f.model.search.SearchResultItemForModelObject;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.PersistableObjectOID;
 
-public interface SearchServicesForModelObject<F extends SearchFilterForModelObject,I extends SearchResultItemForModelObject<? extends IndexableModelObject>> 
+public interface SearchServicesForModelObject<F extends SearchFilterForModelObject,I extends SearchResultItemForModelObject<? extends PersistableObject>> 
 		 extends SearchServices<F,I> {
     /**
      * Returns the OIDs of the records verifying the search filter

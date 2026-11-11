@@ -21,16 +21,16 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import r01f.guids.OID;
-import r01f.guids.PersistableObjectOID;
 import r01f.model.HasTrackingInfo;
 import r01f.model.PersistableModelObject;
 import r01f.model.facets.HasEntityVersion;
+import r01f.model.security.context.SecurityContext;
 import r01f.objectstreamer.Marshaller;
+import r01f.oids.OID;
+import r01f.oids.PersistableObjectOID;
+import r01f.oids.SecurityIDs.SecurityPrincipalID;
+import r01f.oids.SecurityOIDs.SecurityPrincipalOID;
 import r01f.patterns.FactoryFrom;
-import r01f.securitycontext.SecurityContext;
-import r01f.securitycontext.SecurityIDS.LoginID;
-import r01f.securitycontext.SecurityOIDs.UserOID;
 import r01f.services.core.persistence.db.config.DBModuleConfig;
 import r01f.services.core.persistence.db.entities.DBEntityForModelObject;
 import r01f.services.core.persistence.db.entities.primarykeys.DBPrimaryKeyForModelObject;
@@ -154,11 +154,12 @@ public abstract class DBBaseForModelObject<O extends PersistableObjectOID,M exte
 
 		////////// --- Methods
 		public CriteriaQuery<? extends DB> composeCriteriaQuery() {
-			if (CollectionUtils.hasData(_filterPredicates)) this.getCriteriaQuery()
-																.where(_filterPredicates.toArray(new Predicate[_filterPredicates.size()]));
-			return this.getCriteriaQuery();
+			return this.composeCriteriaQuery(this.getCriteriaQuery());
 		}
-
+		public <T> CriteriaQuery<T> composeCriteriaQuery(final CriteriaQuery<T> criteriaQuery) {
+			if (CollectionUtils.hasData(_filterPredicates)) criteriaQuery.where(_filterPredicates.toArray(new Predicate[_filterPredicates.size()]));
+			return criteriaQuery;
+		}
 		public <T> Subquery<T> createSubQuery(final Class<T> dbEntityColType) {
 			Subquery<T> subQuery = this.getCriteriaQuery()
 									   .subquery(dbEntityColType);
@@ -300,16 +301,16 @@ public abstract class DBBaseForModelObject<O extends PersistableObjectOID,M exte
 			return (SELF_TYPE)this;
 		}
 		@SuppressWarnings("unchecked")
-		public SELF_TYPE addFilterByUserPredicate(final UserOID userCode,final String dbEntityCol) {
-			Predicate userCodePredicate = this.buildUserPredicate(this.getCriteriaBuilder(),this.getRoot(),
-															  	  dbEntityCol,userCode);
+		public SELF_TYPE addFilterBySecurityPrincipalPredicate(final SecurityPrincipalOID principalOid,final String dbEntityCol) {
+			Predicate userCodePredicate = this.buildSecurityPrincipalPredicate(this.getCriteriaBuilder(),this.getRoot(),
+															  	 			   dbEntityCol,principalOid);
 			this.addPredicate(userCodePredicate);
 			return (SELF_TYPE)this;
 		}
 		@SuppressWarnings("unchecked")
-		public SELF_TYPE addFilterByUserPredicate(final LoginID userCode,final String dbEntityCol) {
-			Predicate userCodePredicate = this.buildUserPredicate(this.getCriteriaBuilder(),this.getRoot(),
-															  	  dbEntityCol,userCode);
+		public SELF_TYPE addFilterBySecurityPrincipalPredicate(final SecurityPrincipalID principalId,final String dbEntityCol) {
+			Predicate userCodePredicate = this.buildSecurityPrincipalPredicate(this.getCriteriaBuilder(),this.getRoot(),
+															  	  			   dbEntityCol,principalId);
 			this.addPredicate(userCodePredicate);
 			return (SELF_TYPE)this;
 		}
@@ -327,6 +328,17 @@ public abstract class DBBaseForModelObject<O extends PersistableObjectOID,M exte
 										  .equal(this.getRoot().<E>get(dbEntityCol),
 										 		 en);
 			this.addPredicate(enumPredicate);
+			return (SELF_TYPE)this;
+		}
+		@SuppressWarnings("unchecked")
+		public <E extends Enum<E>> SELF_TYPE addFilterByEnumWithinPredicate(final Collection<E> enums,final String dbEntityCol) {
+			if (CollectionUtils.isNullOrEmpty(enums)) return (SELF_TYPE)this;
+			
+			CriteriaBuilder.In<E> inPredicate = this.getCriteriaBuilder()
+										  		    .in(this.getRoot().<E>get(dbEntityCol)); 
+			enums.forEach(inPredicate::value);
+			
+			this.addPredicate(inPredicate);
 			return (SELF_TYPE)this;
 		}
 		@SuppressWarnings("unchecked")
@@ -363,19 +375,19 @@ public abstract class DBBaseForModelObject<O extends PersistableObjectOID,M exte
 											 	   bool);
 			return outPredicate;
 		}
-		public Predicate buildUserPredicate(final CriteriaBuilder builder,
-										    final Root<? extends DB> root,final String dbColName,
-											final LoginID userCode) {
+		public Predicate buildSecurityPrincipalPredicate(final CriteriaBuilder builder,
+										    	 		 final Root<? extends DB> root,final String dbColName,
+										    	 		 final SecurityPrincipalID principalId) {
 			Predicate outPredicate = null;
-			if (userCode != null) {
+			if (principalId != null) {
 				outPredicate = builder.equal(root.<String>get(dbColName),
-											 userCode.asString());
+											 principalId.asString());
 			}
 			return outPredicate;
 		}
-		public Predicate buildUserPredicate(final CriteriaBuilder builder,
-											final Root<? extends DB> root,final String dbColName,
-											final UserOID userOid) {
+		public Predicate buildSecurityPrincipalPredicate(final CriteriaBuilder builder,
+												 		 final Root<? extends DB> root,final String dbColName,
+												 		 final SecurityPrincipalOID userOid) {
 			Predicate outPredicate = null;
 			if (userOid != null) {
 				outPredicate = builder.equal(root.<String>get(dbColName),

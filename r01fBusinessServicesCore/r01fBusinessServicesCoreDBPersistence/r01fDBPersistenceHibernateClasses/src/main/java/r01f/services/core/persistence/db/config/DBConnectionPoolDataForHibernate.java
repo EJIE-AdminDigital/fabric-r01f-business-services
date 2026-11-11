@@ -6,7 +6,7 @@ import java.util.Properties;
 import org.hibernate.cfg.JdbcSettings;
 
 import lombok.experimental.Accessors;
-import r01f.guids.CommonOIDs.IsAppCode;
+import r01f.oids.CommonOIDs.IsAppCode;
 import r01f.util.types.collections.CollectionUtils;
 import r01f.xmlproperties.XMLPropertiesForAppComponent;
 

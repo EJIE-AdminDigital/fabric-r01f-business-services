@@ -1,7 +1,7 @@
 package r01f.services.core.persistence.search.lucene;
 
 import lombok.experimental.Accessors;
-import r01f.model.IndexableModelObject;
+import r01f.model.PersistableObject;
 import r01f.model.metadata.TypeMetaData;
 import r01f.model.metadata.TypeMetaDataInspector;
 import r01f.model.search.SearchFilter;
@@ -30,11 +30,11 @@ public abstract class LuceneSearcherProviderBase<F extends SearchFilter,I extend
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 	@SuppressWarnings({ "unchecked","rawtypes" })
-	protected IndexDocumentFieldConfigSet<? extends IndexableModelObject> getIndexableObjTypeFieldsConfigSet(final Class<? extends IndexableModelObject> indexableObjectType) {
-		IndexDocumentFieldConfigSet<? extends IndexableModelObject> outFieldsConfigSet = _fieldsConfigSetByIndexableObjType.get(indexableObjectType);
+	protected IndexDocumentFieldConfigSet<? extends PersistableObject> getIndexableObjTypeFieldsConfigSet(final Class<? extends PersistableObject> indexableObjectType) {
+		IndexDocumentFieldConfigSet<? extends PersistableObject> outFieldsConfigSet = _fieldsConfigSetByIndexableObjType.get(indexableObjectType);
 		if (outFieldsConfigSet == null) {
-			TypeMetaData<? extends IndexableModelObject> indexableObjTypeMetadata = TypeMetaDataInspector.singleton()
-													  													 .getTypeMetaDataFor(indexableObjectType);
+			TypeMetaData<? extends PersistableObject> indexableObjTypeMetadata = TypeMetaDataInspector.singleton()
+													  												  .getTypeMetaDataFor(indexableObjectType);
 			outFieldsConfigSet = new IndexDocumentFieldConfigSet(indexableObjectType,
 															     indexableObjTypeMetadata);
 			_fieldsConfigSetByIndexableObjType.put(indexableObjectType,

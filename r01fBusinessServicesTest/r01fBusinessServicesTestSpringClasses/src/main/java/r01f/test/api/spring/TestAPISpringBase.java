@@ -84,23 +84,18 @@ import r01f.test.api.TestAPIBase;
 @Accessors(prefix="_")
 @RequiredArgsConstructor
 public abstract class TestAPISpringBase 
-		extends TestAPIBase {	
-// /////////////////////////////////////////////////////////////////////////////////////////
-//	CONSTANTS
+		      extends TestAPIBase {
 /////////////////////////////////////////////////////////////////////////////////////////
+//	CONSTANTS
+/////////////////////////////////////////////////////////////////////////////////////////	
 	@Autowired
 	protected  ApplicationContext _context;	 	
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-	/*public static Marshaller getMarshaller() {
-		return GUICE_INJECTOR.getInstance(Key.get(Marshaller.class,
-												  ModelObjectsMarshaller.class));
-	}*/
 	public  <A extends ClientAPI> A getClientApi(final Class<A> apiType) {
 		return _context.getBean(apiType);
 	}
-
 	public  <O> O getOther(final Class<O> instance) {
 		return _context.getBean(instance);
 	}
@@ -109,12 +104,12 @@ public abstract class TestAPISpringBase
 	 * Get a client api binded as @ClientAPIForSystemUser
      * ..... so (IMPORTANT !) requires a ClientAPIForSystemUser Provider at client api bootstrap guice module , fe
      * 	    @Provides					// provides a client api
-			@ClientAPIForSystemUser		// for SYSTEM system usage
-			@Singleton					// BEWARE!!!
-			@SuppressWarnings({ "rawtypes","static-method" })
-			private MT01GeoClientAPI _provideMasterClientAPI(@SecurityContextProviderForSystemUser final Provider<SecurityContext> securityContextProvider,
-													    	   			   @ModelObjectsMarshaller final Marshaller modelObjectsMarshaller,
-													    	  @Named(MT01AppCodes.API_APPCODE_STR) final Map<Class,ServiceInterface> srvcIfaceMappings
+	 *		@ClientAPIForSystemUser		// for SYSTEM system usage
+	 *		@Singleton					// BEWARE!!!
+	 *		@SuppressWarnings({ "rawtypes","static-method" })
+	 *		private MT01GeoClientAPI _provideMasterClientAPI(@SecurityContextProviderForSystemUser final Provider<SecurityContext> securityContextProvider,
+	 *												    	   			   @ModelObjectsMarshaller final Marshaller modelObjectsMarshaller,
+	 *												    	  @Named(MT01AppCodes.API_APPCODE_STR) final Map<Class,ServiceInterface> srvcIfaceMappings
 	 * @param <A>
 	 * @param apiType
 	 * @return

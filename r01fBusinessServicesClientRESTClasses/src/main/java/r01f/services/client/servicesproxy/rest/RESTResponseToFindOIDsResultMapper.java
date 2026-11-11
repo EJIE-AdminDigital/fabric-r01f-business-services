@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import com.google.common.reflect.TypeToken;
 
 import r01f.exceptions.Throwables;
-import r01f.guids.PersistableObjectOID;
 import r01f.httpclient.HttpResponseResult;
 import r01f.io.util.StringPersistenceUtils;
 import r01f.model.PersistableModelObject;
@@ -14,8 +13,9 @@ import r01f.model.persistence.FindOIDsError;
 import r01f.model.persistence.FindOIDsOK;
 import r01f.model.persistence.FindOIDsResult;
 import r01f.model.persistence.FindOIDsResultBuilder;
+import r01f.model.security.context.SecurityContext;
 import r01f.objectstreamer.Marshaller;
-import r01f.securitycontext.SecurityContext;
+import r01f.oids.PersistableObjectOID;
 import r01f.services.api.COREServiceProxyException;
 import r01f.types.url.Url;
 import r01f.util.types.Strings;

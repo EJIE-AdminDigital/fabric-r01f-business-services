@@ -10,8 +10,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import r01f.concurrent.Threads;
-import r01f.securitycontext.SecurityIDS.LoginID;
-import r01f.securitycontext.SecurityOIDs.UserOID;
+import r01f.oids.SecurityIDs.IdentityProvider;
+import r01f.oids.SecurityIDs.SecurityPrincipalID;
+import r01f.oids.SecurityOIDs.SecurityPrincipalOID;
 import r01f.types.TimeLapse;
 import r01f.util.types.Strings;
 
@@ -32,8 +33,10 @@ public abstract class TestAPIBase {  // Just required at this lever for this con
 /////////////////////////////////////////////////////////////////////////////////////////
 //	CONSTANTS
 /////////////////////////////////////////////////////////////////////////////////////////
-	public static final UserOID TEST_USER_OID = UserOID.supply();
-	public static final LoginID TEST_USER = LoginID.forId("testUser");		
+	public static final SecurityPrincipalOID TEST_PRINCIPAL_OID = SecurityPrincipalOID.forId("testPrincipalOid");
+	public static final SecurityPrincipalID TEST_PRINCIPAL_ID = SecurityPrincipalID.forId("testPrincipalId");
+	
+	public static final IdentityProvider TEST_IDENTITY_PROVIDER = IdentityProvider.GOOGLE; 		
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////////////

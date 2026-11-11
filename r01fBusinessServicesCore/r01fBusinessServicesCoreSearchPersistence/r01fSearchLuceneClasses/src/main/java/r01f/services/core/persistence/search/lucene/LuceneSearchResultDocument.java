@@ -22,14 +22,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import r01f.enums.EnumWithCode;
 import r01f.exceptions.Throwables;
-import r01f.guids.OID;
-import r01f.guids.OIDBase;
-import r01f.guids.OIDs;
 import r01f.locale.Language;
 import r01f.locale.LanguageTexts;
 import r01f.locale.LanguageTexts.LangTextNotFoundBehabior;
 import r01f.locale.LanguageTextsMapBacked;
-import r01f.model.IndexableModelObject;
+import r01f.model.PersistableObject;
 import r01f.model.metadata.FieldID;
 import r01f.model.metadata.FieldMetaData;
 import r01f.model.metadata.FieldMetaDataForCollection;
@@ -41,6 +38,9 @@ import r01f.model.metadata.TypeFieldMetaData;
 import r01f.model.metadata.TypeMetaData;
 import r01f.model.metadata.TypeMetaDataForModelObjectBase;
 import r01f.model.metadata.TypeMetaDataInspector;
+import r01f.oids.OID;
+import r01f.oids.OIDBase;
+import r01f.oids.OIDs;
 import r01f.persistence.index.document.IndexDocumentBase;
 import r01f.persistence.index.document.IndexDocumentFieldID;
 import r01f.persistence.index.document.IndexDocumentFieldValue;
@@ -61,7 +61,7 @@ import r01f.util.types.datetime.DateTimeMarshaller;
 import r01f.util.types.locale.Languages;
 
 @Slf4j
-public class LuceneSearchResultDocument<M extends IndexableModelObject>
+public class LuceneSearchResultDocument<M extends PersistableObject>
      extends IndexDocumentBase<M> {
 /////////////////////////////////////////////////////////////////////////////////////////
 //  FIELDS
@@ -74,11 +74,11 @@ public class LuceneSearchResultDocument<M extends IndexableModelObject>
 		super();
 		_luceneDoc = luceneDoc;
 	}
-	public static <M extends IndexableModelObject> LuceneSearchResultDocumentBuilderTypeMetaDataInspectorStep<M> from(final Document doc) {
+	public static <M extends PersistableObject> LuceneSearchResultDocumentBuilderTypeMetaDataInspectorStep<M> from(final Document doc) {
 		return new LuceneSearchResultDocumentBuilderTypeMetaDataInspectorStep<>(doc);
 	}
 	@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
-	public static class LuceneSearchResultDocumentBuilderTypeMetaDataInspectorStep<M extends IndexableModelObject> {
+	public static class LuceneSearchResultDocumentBuilderTypeMetaDataInspectorStep<M extends PersistableObject> {
 		private final Document _doc;
 
 		public LuceneSearchResultDocument<M> using(final HasTypesMetaData hasTypesMetaData) {
@@ -117,7 +117,7 @@ public class LuceneSearchResultDocument<M extends IndexableModelObject>
 			// 1.a - Find the metadata id from the stored indexFieldId
 			IndexDocumentFieldID fieldId = IndexDocumentFieldID.forId(luceneField.name());
 			FieldID metaDataId = IndexDocumentFieldID.findMetaDataId(modelObjMetaData,
-																			  fieldId);
+																	 fieldId);
 			if (metaDataId == null) throw new IllegalStateException(Throwables.message("The index-stored metadata with id={} is NOT configured on model object with type={}",
 																					   fieldId,modelObjMetaData.getRawType()));
 			// 1.b - Store the indexed field indexed by the metaData id
@@ -155,9 +155,9 @@ public class LuceneSearchResultDocument<M extends IndexableModelObject>
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 	@SuppressWarnings("unchecked")
-	private static <M extends IndexableModelObject,T> IndexDocumentFieldValue<T> _toIndexDocumentField(final TypeMetaData<M> modelObjMetaData,
-																 									   final FieldMetaData fieldMetaData,
-																 									   final Collection<IndexableField> luceneFields) {
+	private static <M extends PersistableObject,T> IndexDocumentFieldValue<T> _toIndexDocumentField(final TypeMetaData<M> modelObjMetaData,
+																 									final FieldMetaData fieldMetaData,
+																 									final Collection<IndexableField> luceneFields) {
 		IndexDocumentFieldValue<T> outValue = null;
 
 		// Collection metadata
@@ -190,9 +190,9 @@ public class LuceneSearchResultDocument<M extends IndexableModelObject>
 		return outValue;
 	}
 	@SuppressWarnings("unchecked")
-	private static <M extends IndexableModelObject,T> T _createValueFromLuceneIndexField(final TypeMetaData<M> modelObjMetaData,
-																						 final FieldMetaData fieldMetaData,
-																						 final IndexableField luceneField) {
+	private static <M extends PersistableObject,T> T _createValueFromLuceneIndexField(final TypeMetaData<M> modelObjMetaData,
+																					  final FieldMetaData fieldMetaData,
+																					  final IndexableField luceneField) {
 		if (fieldMetaData.isJavaTypeField()) return (T)((FieldMetaDataForJavaType)fieldMetaData).getDataType();
 
 		// Usually...

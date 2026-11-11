@@ -1,7 +1,7 @@
 package r01f.services.core.persistence.search.lucene.index;
 
 import lombok.experimental.Accessors;
-import r01f.model.IndexableModelObject;
+import r01f.model.PersistableObject;
 import r01f.model.metadata.TypeMetaData;
 import r01f.model.metadata.TypeMetaDataInspector;
 import r01f.objectstreamer.Marshaller;
@@ -10,7 +10,7 @@ import r01f.persistence.index.document.IndexDocumentFieldConfigSet;
 import r01f.servcies.core.persistence.search.lucene.LuceneIndex;
 
 @Accessors(prefix="_")
-public abstract class LuceneIndexerProviderBase<M extends IndexableModelObject>
+public abstract class LuceneIndexerProviderBase<M extends PersistableObject>
   			  extends IndexerProviderBase<M> {
 
 /////////////////////////////////////////////////////////////////////////////////////////

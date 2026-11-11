@@ -4,7 +4,7 @@ import java.util.Properties;
 
 import org.eclipse.persistence.config.PersistenceUnitProperties;
 
-import r01f.guids.CommonOIDs.IsAppCode;
+import r01f.oids.CommonOIDs.IsAppCode;
 import r01f.xmlproperties.XMLPropertiesForAppComponent;
 
 public class DBConnectionPoolSizeForEclipseLink

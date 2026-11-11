@@ -6,11 +6,11 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import lombok.experimental.Accessors;
-import r01f.guids.PersistableObjectOID;
 import r01f.model.PersistableModelObject;
 import r01f.model.persistence.CRUDResult;
 import r01f.model.persistence.PersistenceException;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.PersistableObjectOID;
 import r01f.services.core.rest.RESTOperationsResponseBuilder;
 import r01f.services.core.rest.RESTOperationsResponseBuilder.PersistenceOperationOnObjectResulToReponseEntity;
 import r01f.services.interfaces.CRUDServicesForModelObject;

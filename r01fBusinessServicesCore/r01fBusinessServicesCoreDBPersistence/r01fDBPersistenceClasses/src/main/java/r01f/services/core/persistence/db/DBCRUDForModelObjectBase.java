@@ -27,8 +27,6 @@ import r01f.facets.HasName;
 import r01f.facets.LangDependentNamed;
 import r01f.facets.LangInDependentNamed;
 import r01f.facets.Summarizable.HasSummaryFacet;
-import r01f.guids.OID;
-import r01f.guids.PersistableObjectOID;
 import r01f.locale.Language;
 import r01f.model.HasTrackingInfo;
 import r01f.model.ModelObjectTracking;
@@ -43,10 +41,12 @@ import r01f.model.persistence.PersistenceOperationResult;
 import r01f.model.persistence.PersistencePerformedOperation;
 import r01f.model.persistence.PersistenceRequestedOperation;
 import r01f.model.persistence.PersistenceServiceErrorTypes;
+import r01f.model.security.context.SecurityContext;
 import r01f.model.services.COREServiceMethod;
 import r01f.objectstreamer.Marshaller;
+import r01f.oids.OID;
+import r01f.oids.PersistableObjectOID;
 import r01f.reflection.ReflectionUtils;
-import r01f.securitycontext.SecurityContext;
 import r01f.services.core.callback.spec.COREServiceMethodCallbackSpec;
 import r01f.services.core.delegates.persistence.CRUDServicesForModelObjectDelegateBase;
 import r01f.services.core.persistence.db.config.DBModuleConfig;
@@ -796,13 +796,16 @@ public abstract class DBCRUDForModelObjectBase<O extends PersistableObjectOID,M 
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 	protected CRUDResult<M> _crudResultForSingleEntity(final SecurityContext securityContext,
+													   final PersistenceRequestedOperation requestedOp,
 													   final Collection<DB> dbEntities) {
 		return _crudResultForSingleEntity(securityContext,
+										  requestedOp,
 										  dbEntities,
 										  null,
 										  null);	// no meta & value
 	}
 	protected CRUDResult<M> _crudResultForSingleEntity(final SecurityContext securityContext,
+													   final PersistenceRequestedOperation requestedOp,
 													   final Collection<DB> dbEntities,
 													   final String meta,final String value) {
 		if (CollectionUtils.hasData(dbEntities)
@@ -819,18 +822,22 @@ public abstract class DBCRUDForModelObjectBase<O extends PersistableObjectOID,M 
 																		    .pickOneAndOnlyElement()	// this is now safe
 														  : null;
 		return _crudResultForSingleEntity(securityContext,
+										  requestedOp,
 										  dbEntity,
 										  meta,value);
 
 	}
 	protected CRUDResult<M> _crudResultForSingleEntity(final SecurityContext securityContext,
+													   final PersistenceRequestedOperation requestedOp,
 													   final DB dbEntity) {
 		return _crudResultForSingleEntity(securityContext,
+										  requestedOp,
 										  dbEntity,
 										  null,
 										  null);	// no meta & value
 	}
 	protected CRUDResult<M> _crudResultForSingleEntity(final SecurityContext securityContext,
+													   final PersistenceRequestedOperation requestedOp,
 													   final DB dbEntity,
 													   final String meta,final String value) {
 		CRUDResult<M> outResult = null;
@@ -838,14 +845,14 @@ public abstract class DBCRUDForModelObjectBase<O extends PersistableObjectOID,M 
 			// normal
 			outResult = CRUDResultBuilder.using(securityContext)
 										 .on(_modelObjectType)
-										 .loaded()
+										 .executed(requestedOp)
 										 .dbEntity(dbEntity)
 										 .transformedToModelObjectUsing(_dbEntityIntoModelObjectTransformer);
 		} else {
 			// no results
 			outResult = CRUDResultBuilder.using(securityContext)
 										 .on(_modelObjectType)
-										 .notLoaded()
+										 .not(requestedOp)
 									 	 .becauseClientRequestedEntityWasNOTFound()
 									 	 .about(meta,value)
 									 	 .build();

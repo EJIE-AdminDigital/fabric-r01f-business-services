@@ -12,9 +12,9 @@ import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import r01f.aspects.dirtytrack.DirtyTrackAdapter;
 import r01f.concurrent.Threads;
-import r01f.guids.PersistableObjectOID;
 import r01f.model.ModelObjectTracking;
 import r01f.model.PersistableModelObject;
+import r01f.oids.PersistableObjectOID;
 import r01f.patterns.Factory;
 import r01f.reflection.ReflectionUtils;
 import r01f.services.api.delegates.ClientAPIDelegateForModelObjectCRUDServices;
@@ -91,7 +91,7 @@ abstract class TestPersistableModelObjectManagerBase<O extends PersistableObject
 		}
 		objectToBeCreated.setEntityVersion(0);						// ensure it have a zero entity numeric id
 
-		objectToBeCreated.setTrackingInfo(new ModelObjectTracking(TestAPIBase.TEST_USER_OID,TestAPIBase.TEST_USER,
+		objectToBeCreated.setTrackingInfo(new ModelObjectTracking(TestAPIBase.TEST_PRINCIPAL_OID,TestAPIBase.TEST_PRINCIPAL_ID,
 																  Instant.now()));			// Ensure tracking info
 		
 		if (_preSetupAction != null) _preSetupAction.apply(objectToBeCreated);	// pre setup

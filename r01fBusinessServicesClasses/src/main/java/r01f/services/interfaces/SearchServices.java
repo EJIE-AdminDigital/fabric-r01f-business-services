@@ -6,7 +6,7 @@ import r01f.model.search.SearchFilter;
 import r01f.model.search.SearchResultItem;
 import r01f.model.search.SearchResults;
 import r01f.model.search.query.SearchResultsOrdering;
-import r01f.securitycontext.SecurityContext;
+import r01f.model.security.context.SecurityContext;
 
 public interface SearchServices<F extends SearchFilter,I extends SearchResultItem> 
 		 extends ServiceInterface {

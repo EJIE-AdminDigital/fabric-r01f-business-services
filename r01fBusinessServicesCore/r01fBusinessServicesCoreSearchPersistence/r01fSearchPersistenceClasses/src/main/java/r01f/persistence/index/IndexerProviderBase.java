@@ -6,20 +6,20 @@ import com.google.common.collect.Maps;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import r01f.model.IndexableModelObject;
+import r01f.model.PersistableObject;
 import r01f.model.metadata.TypeMetaData;
 import r01f.model.metadata.TypeMetaDataInspector;
 import r01f.objectstreamer.Marshaller;
 import r01f.persistence.index.document.IndexDocumentFieldConfigSet;
 
 @RequiredArgsConstructor(access=AccessLevel.PROTECTED)
-public abstract class IndexerProviderBase<M extends IndexableModelObject> 
+public abstract class IndexerProviderBase<M extends PersistableObject> 
 		   implements IndexerProvider<M> {
 /////////////////////////////////////////////////////////////////////////////////////////
 //	FIELDS                                                                          
 /////////////////////////////////////////////////////////////////////////////////////////	
 	protected final Class<M> _indexableObjectType;
-	protected final Map<Class<? extends IndexableModelObject>,IndexDocumentFieldConfigSet<? extends IndexableModelObject>> _fieldsConfigSetByIndexableObjType = Maps.newHashMap();
+	protected final Map<Class<? extends PersistableObject>,IndexDocumentFieldConfigSet<? extends PersistableObject>> _fieldsConfigSetByIndexableObjType = Maps.newHashMap();
 	protected final Marshaller _marshaller;
 
 /////////////////////////////////////////////////////////////////////////////////////////

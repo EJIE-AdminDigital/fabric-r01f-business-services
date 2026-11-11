@@ -9,19 +9,19 @@ import r01f.facets.HasLangDependentName;
 import r01f.facets.HasLangInDependentName;
 import r01f.facets.HasName;
 import r01f.facets.HasOID;
-import r01f.guids.OID;
 import r01f.locale.Language;
 import r01f.locale.LanguageTexts;
 import r01f.model.HasTrackableFacet;
-import r01f.model.IndexableModelObject;
 import r01f.model.PersistableModelObject;
+import r01f.model.PersistableObject;
 import r01f.model.facets.HasEntityVersion;
 import r01f.model.facets.HasNumericID;
 import r01f.model.metadata.TypeMetaData;
 import r01f.model.search.SearchResultItem;
 import r01f.model.search.SearchResultItemForModelObject;
+import r01f.model.security.context.SecurityContext;
+import r01f.oids.OID;
 import r01f.patterns.Factory;
-import r01f.securitycontext.SecurityContext;
 
 /**
  * Transforms a {@link PersistableModelObject} to a {@link SearchResultItem}
@@ -29,7 +29,7 @@ import r01f.securitycontext.SecurityContext;
  * @param <I>
  */
 @RequiredArgsConstructor
-public class PersistableObjectToSearchResultItem<M extends IndexableModelObject,
+public class PersistableObjectToSearchResultItem<M extends PersistableObject,
 												 I extends SearchResultItemForModelObject<M>>
   implements TransformsPersistableObjectToSearchResultItem<M,I> {
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -63,7 +63,7 @@ public class PersistableObjectToSearchResultItem<M extends IndexableModelObject,
 		I item = _searchResultItemFactory.create();
 		
 		// Model object type
-		item.unsafeSetModelObjectType((Class<? extends IndexableModelObject>)modelObj.getClass());
+		item.unsafeSetModelObjectType(modelObj.getClass());
 		item.setModelObjectTypeCode(_modelObjectMetadata.getTypeMetaData()
 													    .modelObjTypeCode());
 		

@@ -1,10 +1,9 @@
 package r01f.persistence.index;
 
 import jakarta.inject.Provider;
+import r01f.model.PersistableObject;
 
-import r01f.model.IndexableModelObject;
-
-public interface IndexerProvider<M extends IndexableModelObject>
+public interface IndexerProvider<M extends PersistableObject>
 		 extends Provider<Indexer<M>> {
 
 //	public Class<? extends M> getIndexableObjectType();
